@@ -1,8 +1,3 @@
-```
-npm install
-npm run dev
-```
+# fortuna-api
 
-```
-open http://localhost:3000
-```
+Fortuna API

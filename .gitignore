@@ -28,7 +28,8 @@ lerna-debug.log*
 .DS_Store
 
 /src/generated/prisma
-dev.db
+degit push -u origin master
+v.db
 
 # build
 dist/
