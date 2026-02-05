@@ -1,0 +1,7 @@
+node_modules
+dist
+coverage
+*.db
+*.sqlite
+build.mjs
+package-lock.json

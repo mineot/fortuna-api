@@ -1,0 +1,36 @@
+{
+  "name": "fortuna-api",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "node build.mjs",
+    "build:check": "npm run typecheck && npm run format:check && npm run lint",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/fortuna-api.js",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prisma:init": "npx prisma migrate dev --name init",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.9",
+    "@prisma/client": "^7.3.0",
+    "hono": "^4.11.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^20.11.17",
+    "esbuild": "^0.27.2",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "prisma": "^7.3.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.54.0"
+  }
+}
