@@ -1,9 +1,12 @@
-import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { initDb, type DB } from '@/database/db';
+import { serve } from '@hono/node-server';
 
-const app = new Hono();
+const db: DB = initDb();
+const app: Hono = new Hono();
 
 app.get('/', (c) => {
+  console.log(db);
   return c.text('Hello Hono!');
 });
 
