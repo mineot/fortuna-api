@@ -1,8 +1,8 @@
 import { build } from 'esbuild';
 
 await build({
-  entryPoints: ['src/index.ts'],
-  outfile: 'dist/index.js',
+  entryPoints: ['src/main.ts'],
+  outfile: 'dist/fortuna-api.js',
   bundle: true,
   platform: 'node',
   target: 'node20', // ou node18, conforme seu Node
@@ -13,4 +13,4 @@ await build({
   legalComments: 'none',
 });
 
-console.log('✅ Build concluído: dist/index.js');
+console.log('✅ Build concluído: dist/fortuna-api.js');
