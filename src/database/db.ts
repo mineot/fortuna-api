@@ -1,11 +1,39 @@
-import { migrations } from '@/database/migrations';
+import { migrations } from './migrations';
 import Database from 'better-sqlite3';
+import dotenv from 'dotenv';
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 export type DB = Database.Database;
 
+const distEnvPath = new URL('../.env', import.meta.url);
+if (fs.existsSync(distEnvPath)) {
+  dotenv.config({ path: distEnvPath });
+} else {
+  dotenv.config();
+}
+
 function getDbPath() {
-  return path.resolve(process.cwd(), 'dev.db');
+  const env = process.env.ENV ?? process.env.NODE_ENV;
+
+  switch (env) {
+    case 'prod':
+    case 'production': {
+      const dir = path.resolve(os.homedir(), '.fortuna');
+      fs.mkdirSync(dir, { recursive: true });
+      return path.resolve(dir, 'fortuna.db');
+    }
+    case 'dev':
+    case 'development': {
+      return path.resolve(process.cwd(), 'dev.db');
+    }
+    default: {
+      throw new Error(
+        `Invalid ENV/NODE_ENV "${env ?? ''}", expected "dev"/"prod" or "development"/"production"`,
+      );
+    }
+  }
 }
 
 function ensureMigrationsTable(db: DB) {

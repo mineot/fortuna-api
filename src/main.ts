@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { initDb, type DB } from '@/database/db';
+import { initDb, type DB } from './database/db';
 import { serve } from '@hono/node-server';
 
 const db: DB = initDb();

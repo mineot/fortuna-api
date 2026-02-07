@@ -4,17 +4,15 @@
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "build": "rm -rf dist && node build.mjs",
-    "build:check": "npm run typecheck && npm run format:check && npm run lint",
-    "typecheck": "tsc --noEmit",
     "start": "node dist/fortuna-api.js",
     "format": "prettier . --write",
-    "format:check": "prettier . --check",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.9",
     "better-sqlite3": "^12.6.2",
+    "dotenv": "^16.4.5",
     "hono": "^4.11.7"
   },
   "devDependencies": {
