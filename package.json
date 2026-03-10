@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "concurrently -k \"npm:dev:renderer\" \"npm:dev:main\" \"npm:dev:electron\"",
     "dev:renderer": "ng serve",
-    "dev:main": "esbuild src/electron/main.ts src/electron/preload.ts --bundle --platform=node --target=node20 --format=cjs --outdir=dist --out-extension:.js=.cjs --external:electron --sourcemap --watch",
-    "dev:electron": "wait-on tcp:4200 dist/main.cjs dist/preload.cjs && NODE_ENV=development ELECTRON_RENDERER_URL=http://localhost:4200 electron . --no-sandbox",
+    "dev:main": "esbuild src/electron/main.ts src/electron/preload.ts --bundle --platform=node --target=node20 --format=cjs --outdir=dist-dev --out-extension:.js=.cjs --external:electron --sourcemap --watch",
+    "dev:electron": "wait-on tcp:4200 dist-dev/main.cjs dist-dev/preload.cjs && NODE_ENV=development ELECTRON_RENDERER_URL=http://localhost:4200 electron dist-dev/main.cjs --no-sandbox",
     "build": "npm run build:renderer && npm run build:electron",
     "build:renderer": "ng build",
     "build:electron": "esbuild src/electron/main.ts src/electron/preload.ts --bundle --platform=node --target=node20 --format=cjs --outdir=dist --out-extension:.js=.cjs --external:electron --minify",
     "start": "NODE_ENV=production electron . --no-sandbox",
+    "dist:linux": "npm run build && electron-builder --linux dir AppImage",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -50,6 +51,7 @@
     "@types/node": "^24.0.0",
     "concurrently": "^9.2.1",
     "electron": "^36.0.0",
+    "electron-builder": "^26.0.12",
     "esbuild": "^0.27.3",
     "eslint": "^10.0.3",
     "eslint-config-prettier": "^10.1.8",
@@ -58,5 +60,26 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1",
     "wait-on": "^8.0.5"
+  },
+  "build": {
+    "appId": "com.mineot.fortuna",
+    "productName": "fortuna",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "dist/main.cjs",
+      "dist/preload.cjs",
+      "dist/renderer/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "dir",
+        "AppImage"
+      ],
+      "artifactName": "fortuna-${version}.${ext}",
+      "category": "Utility"
+    }
   }
 }
