@@ -2,11 +2,16 @@
   "name": "fortuna",
   "version": "1.0.0",
   "description": "Fortuna project",
-  "main": "dist/main.js",
+  "main": "dist/main.cjs",
   "scripts": {
-    "dev": "esbuild src/main.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/main.js --sourcemap --watch",
-    "build": "esbuild src/main.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/main.js --minify",
-    "start": "electron dist/main.js",
+    "dev": "concurrently -k \"npm:dev:renderer\" \"npm:dev:main\" \"npm:dev:electron\"",
+    "dev:renderer": "ng serve",
+    "dev:main": "esbuild src/electron/main.ts src/electron/preload.ts --bundle --platform=node --target=node20 --format=cjs --outdir=dist --out-extension:.js=.cjs --external:electron --sourcemap --watch",
+    "dev:electron": "wait-on tcp:4200 dist/main.cjs dist/preload.cjs && NODE_ENV=development ELECTRON_RENDERER_URL=http://localhost:4200 electron . --no-sandbox",
+    "build": "npm run build:renderer && npm run build:electron",
+    "build:renderer": "ng build",
+    "build:electron": "esbuild src/electron/main.ts src/electron/preload.ts --bundle --platform=node --target=node20 --format=cjs --outdir=dist --out-extension:.js=.cjs --external:electron --minify",
+    "start": "NODE_ENV=production electron . --no-sandbox",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -24,26 +29,34 @@
   },
   "homepage": "https://github.com/mineot/fortuna#readme",
   "dependencies": {
+    "@angular/animations": "^21.2.1",
     "@angular/common": "^21.2.1",
     "@angular/compiler": "^21.2.1",
     "@angular/core": "^21.2.1",
+    "@angular/forms": "^21.2.1",
     "@angular/platform-browser": "^21.2.1",
+    "@angular/platform-browser-dynamic": "^21.2.1",
+    "@angular/router": "^21.2.1",
     "better-sqlite3": "^12.6.2",
-    "esbuild": "^0.27.3",
     "hono": "^4.12.5",
     "kysely": "^0.28.11",
     "rxjs": "^7.8.2",
-    "typescript": "^5.9.3",
     "zone.js": "^0.16.1"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^21.2.1",
+    "@angular/cli": "^21.2.1",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.0.0",
+    "concurrently": "^9.2.1",
     "electron": "^36.0.0",
+    "esbuild": "^0.27.3",
     "eslint": "^10.0.3",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
-    "typescript-eslint": "^8.56.1"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "wait-on": "^8.0.5"
   }
 }
