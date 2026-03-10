@@ -14,7 +14,6 @@
             "outputPath": "dist/renderer",
             "main": "src/main.ts",
             "index": "src/index.html",
-            "baseHref": "./",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": [],
@@ -22,11 +21,13 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "./",
               "optimization": true,
               "sourceMap": false,
               "outputHashing": "all"
             },
             "development": {
+              "baseHref": "/",
               "optimization": false,
               "sourceMap": true
             }

@@ -4,6 +4,10 @@ import path from 'node:path';
 const isDev = process.env.NODE_ENV === 'development';
 const devServerUrl = process.env.ELECTRON_RENDERER_URL ?? 'http://localhost:4200';
 
+if (process.platform === 'linux') {
+  app.commandLine.appendSwitch('no-sandbox');
+}
+
 function createWindow(): void {
   const win = new BrowserWindow({
     width: 1280,

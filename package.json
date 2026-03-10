@@ -2,12 +2,12 @@
   "name": "fortuna",
   "version": "1.0.0",
   "description": "Fortuna project",
-  "main": "dist/main.cjs",
+  "main": "electron.cjs",
   "scripts": {
     "dev": "concurrently -k \"npm:dev:renderer\" \"npm:dev:main\" \"npm:dev:electron\"",
     "dev:renderer": "ng serve",
     "dev:main": "esbuild src/electron/main.ts src/electron/preload.ts --bundle --platform=node --target=node20 --format=cjs --outdir=dist-dev --out-extension:.js=.cjs --external:electron --sourcemap --watch",
-    "dev:electron": "wait-on tcp:4200 dist-dev/main.cjs dist-dev/preload.cjs && NODE_ENV=development ELECTRON_RENDERER_URL=http://localhost:4200 electron dist-dev/main.cjs --no-sandbox",
+    "dev:electron": "wait-on tcp:4200 dist-dev/main.cjs dist-dev/preload.cjs && NODE_ENV=development ELECTRON_RENDERER_URL=http://localhost:4200 electron . --no-sandbox",
     "build": "npm run build:renderer && npm run build:electron",
     "build:renderer": "ng build",
     "build:electron": "esbuild src/electron/main.ts src/electron/preload.ts --bundle --platform=node --target=node20 --format=cjs --outdir=dist --out-extension:.js=.cjs --external:electron --minify",
@@ -68,6 +68,7 @@
       "output": "dist"
     },
     "files": [
+      "electron.cjs",
       "dist/main.cjs",
       "dist/preload.cjs",
       "dist/renderer/**/*",
@@ -77,6 +78,9 @@
       "target": [
         "dir",
         "AppImage"
+      ],
+      "executableArgs": [
+        "--no-sandbox"
       ],
       "artifactName": "fortuna-${version}.${ext}",
       "category": "Utility"
