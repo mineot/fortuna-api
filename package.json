@@ -4,11 +4,16 @@
   "private": true,
   "description": "Aplicativo de controle financeiro com CLI, UI e SQLite.",
   "main": "dist/main.js",
+  "type": "module",
   "scripts": {
     "dev": "FORTUNA_ENV=dev tsx src/main.ts",
-    "build": "tsc",
-    "start": "node dist/main.js",
-    "check": "tsc --noEmit"
+    "build": "rm -rf dist && tsup",
+    "start": "node dist/fortuna.js",
+    "check": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "keywords": [
     "finance",
@@ -29,9 +34,14 @@
     "kysely": "^0.28.11"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.5.2",
+    "eslint": "^10.0.3",
+    "prettier": "^3.8.1",
+    "tsup": "^8.5.1",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.0"
   }
 }

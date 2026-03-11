@@ -1,4 +1,4 @@
-import type { Generated } from "kysely";
+import type { Generated } from 'kysely';
 
 export interface MigrationTable {
   id: Generated<number>;

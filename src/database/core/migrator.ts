@@ -1,6 +1,8 @@
-import { initMigration } from "../migrations/0001_init";
-import type { DatabaseSchema } from "./schema";
-import type { Kysely } from "kysely";
+import { initMigration } from '../migrations/0001_init';
+import fs from 'node:fs';
+import path from 'node:path';
+import type { DatabaseSchema } from './schema';
+import type { Kysely } from 'kysely';
 
 export type Migration = {
   name: string;
@@ -12,7 +14,7 @@ export type Migration = {
 const migrations: Migration[] = [initMigration];
 
 function normalizeVersion(version: string): [number, number, number] {
-  const [major = "0", minor = "0", patch = "0"] = version.split(".");
+  const [major = '0', minor = '0', patch = '0'] = version.split('.');
   return [Number(major) || 0, Number(minor) || 0, Number(patch) || 0];
 }
 
@@ -25,57 +27,55 @@ function compareVersions(a: string, b: string): number {
   return aPatch - bPatch;
 }
 
-async function ensureMigrationsTable(
-  database: Kysely<DatabaseSchema>,
-): Promise<void> {
+async function ensureMigrationsTable(database: Kysely<DatabaseSchema>): Promise<void> {
   await database.schema
-    .createTable("migrations")
+    .createTable('migrations')
     .ifNotExists()
-    .addColumn("id", "integer", (col) => col.primaryKey().autoIncrement())
-    .addColumn("name", "text", (col) => col.notNull().unique())
-    .addColumn("projectVersion", "text", (col) => col.notNull())
-    .addColumn("appliedAt", "text", (col) => col.notNull())
+    .addColumn('id', 'integer', (col) => col.primaryKey().autoIncrement())
+    .addColumn('name', 'text', (col) => col.notNull().unique())
+    .addColumn('projectVersion', 'text', (col) => col.notNull())
+    .addColumn('appliedAt', 'text', (col) => col.notNull())
     .execute();
 }
 
 function getProjectVersion(): string {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const packageJson = require("../../../package.json") as { version?: string };
-  return packageJson.version ?? "0.0.0";
+  try {
+    const packageJsonPath = path.resolve(process.cwd(), 'package.json');
+    const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8');
+    const packageJson = JSON.parse(packageJsonContent) as { version?: string };
+    return packageJson.version ?? '0.0.0';
+  } catch {
+    return '0.0.0';
+  }
 }
 
-export async function runMigrator(
-  database: Kysely<DatabaseSchema>,
-): Promise<void> {
+export async function runMigrator(database: Kysely<DatabaseSchema>): Promise<void> {
   await ensureMigrationsTable(database);
 
   const projectVersion = getProjectVersion();
-  const allowAutoRollback = process.env.ALLOW_DB_AUTO_ROLLBACK === "true";
+  const allowAutoRollback = process.env.ALLOW_DB_AUTO_ROLLBACK === 'true';
 
   const appliedMigrations = await database
-    .selectFrom("migrations")
-    .select(["id", "name", "projectVersion", "appliedAt"])
-    .orderBy("id", "asc")
+    .selectFrom('migrations')
+    .select(['id', 'name', 'projectVersion', 'appliedAt'])
+    .orderBy('id', 'asc')
     .execute();
 
-  const lastAppliedVersion =
-    appliedMigrations.at(-1)?.projectVersion ?? "0.0.0";
+  const lastAppliedVersion = appliedMigrations.at(-1)?.projectVersion ?? '0.0.0';
 
   if (compareVersions(lastAppliedVersion, projectVersion) > 0) {
     if (!allowAutoRollback) {
       throw new Error(
         [
-          "Database version is ahead of the application version.",
+          'Database version is ahead of the application version.',
           `Last applied migration version: ${lastAppliedVersion}.`,
           `Current application version: ${projectVersion}.`,
-          "Set ALLOW_DB_AUTO_ROLLBACK=true to allow automatic rollback.",
-        ].join(" "),
+          'Set ALLOW_DB_AUTO_ROLLBACK=true to allow automatic rollback.',
+        ].join(' '),
       );
     }
 
-    const appliedByName = new Map(
-      migrations.map((migration) => [migration.name, migration]),
-    );
+    const appliedByName = new Map(migrations.map((migration) => [migration.name, migration]));
 
     const appliedDesc = [...appliedMigrations].reverse();
 
@@ -91,17 +91,12 @@ export async function runMigrator(
 
       await database.transaction().execute(async (trx) => {
         await migration.down(trx);
-        await trx
-          .deleteFrom("migrations")
-          .where("name", "=", migration.name)
-          .execute();
+        await trx.deleteFrom('migrations').where('name', '=', migration.name).execute();
       });
     }
   }
 
-  const appliedNames = new Set(
-    appliedMigrations.map((migration) => migration.name),
-  );
+  const appliedNames = new Set(appliedMigrations.map((migration) => migration.name));
   const sortedMigrations = [...migrations].sort((a, b) =>
     compareVersions(a.projectVersion, b.projectVersion),
   );
@@ -118,7 +113,7 @@ export async function runMigrator(
     await database.transaction().execute(async (trx) => {
       await migration.up(trx);
       await trx
-        .insertInto("migrations")
+        .insertInto('migrations')
         .values({
           name: migration.name,
           projectVersion: migration.projectVersion,

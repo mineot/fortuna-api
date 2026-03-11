@@ -1,8 +1,8 @@
-import { getDatabasePath } from "./core/path";
-import { Kysely, SqliteDialect } from "kysely";
-import { runMigrator } from "./core/migrator";
-import SQLite from "better-sqlite3";
-import type { DatabaseSchema } from "./core/schema";
+import { getDatabasePath } from './core/path';
+import { Kysely, SqliteDialect } from 'kysely';
+import { runMigrator } from './core/migrator';
+import SQLite from 'better-sqlite3';
+import type { DatabaseSchema } from './core/schema';
 
 let databaseInstance: Kysely<DatabaseSchema> | null = null;
 let databaseInitPromise: Promise<Kysely<DatabaseSchema>> | null = null;
@@ -44,7 +44,7 @@ export async function initDatabase(): Promise<Kysely<DatabaseSchema>> {
 
 export function getDatabase(): Kysely<DatabaseSchema> {
   if (!databaseInstance) {
-    throw new Error("Database not initialized. Call initDatabase() first.");
+    throw new Error('Database not initialized. Call initDatabase() first.');
   }
 
   return databaseInstance;
