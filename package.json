@@ -1,0 +1,37 @@
+{
+  "name": "fortuna",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aplicativo de controle financeiro com CLI, UI e SQLite.",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js",
+    "check": "tsc --noEmit"
+  },
+  "keywords": [
+    "finance",
+    "cli",
+    "angular",
+    "hono",
+    "sqlite",
+    "kysely",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "commander": "^14.0.3",
+    "hono": "^4.12.5",
+    "inquirer": "^13.3.0",
+    "kysely": "^0.28.11"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3"
+  }
+}
