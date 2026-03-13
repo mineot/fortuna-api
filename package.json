@@ -2,7 +2,7 @@
   "name": "fortuna",
   "version": "1.0.0",
   "private": true,
-  "description": "Aplicativo de controle financeiro com CLI, UI e SQLite.",
+  "description": "Personal financial management.",
   "main": "dist/main.js",
   "type": "module",
   "scripts": {

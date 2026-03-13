@@ -1,4 +1,5 @@
 import { closeDatabase, initDatabase } from './database';
+import { runCli } from '@cli';
 
 let shuttingDown = false;
 
@@ -35,7 +36,7 @@ process.once('beforeExit', () => {
 
 async function bootstrap() {
   await initDatabase();
-  console.log('Fortuna Initiated');
+  await runCli();
 }
 
 bootstrap().catch((error) => {
