@@ -16,7 +16,8 @@
     "types": ["node"],
     "paths": {
       "@db": ["src/database/index.ts"],
-      "@cli": ["src/cli/index.ts"]
+      "@cli": ["src/cli/index.ts"],
+      "@srv": ["src/server/index.ts"]
     }
   },
   "include": ["src/**/*.ts"],

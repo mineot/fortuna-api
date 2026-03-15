@@ -1,4 +1,5 @@
 import { program } from 'commander';
+import { runServer } from '@srv';
 import pkg from '../../package.json';
 
 export async function runCli(): Promise<void> {
@@ -9,9 +10,7 @@ export async function runCli(): Promise<void> {
     .description(
       'Opens the financial control web interface in your browser for managing and editing your finances.',
     )
-    .action((name: string, options: unknown) => {
-      console.log(name, options);
-    });
+    .action(async () => await runServer());
 
   program.parse();
 }
