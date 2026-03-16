@@ -53,6 +53,10 @@ async function runProdUI(app: Hono) {
   app.get('*', async (c) => {
     const path = c.req.path;
 
+    if (path === '/api' || path.startsWith('/api/')) {
+      return c.json({ error: 'Not Found' }, 404);
+    }
+
     if (path === '/' || !extname(path)) {
       return serveFile(UI_INDEX_FILE);
     }

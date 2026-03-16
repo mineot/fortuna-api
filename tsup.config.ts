@@ -8,7 +8,7 @@ export default defineConfig({
   bundle: true,
   splitting: false,
   sourcemap: false,
-  clean: true,
+  clean: false,
   minify: true,
   target: 'node22',
   platform: 'node',

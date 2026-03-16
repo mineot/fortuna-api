@@ -15,7 +15,10 @@
   ],
   "scripts": {
     "dev": "FORTUNA_ENV=dev tsx src/main.ts",
-    "build": "rm -rf dist && tsup",
+    "build": "rm -rf dist && npm run build:ui && npm run build:ui:copy && npm run build:server",
+    "build:ui": "npm --prefix ui run build",
+    "build:ui:copy": "node -e \"const fs=require('node:fs');fs.mkdirSync('dist',{recursive:true});fs.cpSync('ui/dist/ui/browser','dist/browser',{recursive:true});\"",
+    "build:server": "tsup",
     "start": "node dist/fortuna.js",
     "check": "tsc --noEmit",
     "lint": "eslint .",
