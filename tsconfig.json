@@ -17,7 +17,8 @@
     "paths": {
       "@db": ["src/database/index.ts"],
       "@cli": ["src/cli/index.ts"],
-      "@srv": ["src/server/index.ts"]
+      "@srv": ["src/server/index.ts"],
+      "@env": ["src/environment.ts"],
     }
   },
   "include": ["src/**/*.ts"],

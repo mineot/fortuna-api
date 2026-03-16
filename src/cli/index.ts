@@ -10,9 +10,7 @@ export async function runCli(): Promise<void> {
     .description(
       'Opens the financial control web interface in your browser for managing and editing your finances.',
     )
-    .action(async () => {
-      await runServer();
-    });
+    .action(async () => runServer());
 
   program.parse();
 }

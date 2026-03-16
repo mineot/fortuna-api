@@ -1,13 +1,7 @@
+import { getEnvironment } from '@env';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-
-export type FortunaEnv = 'dev' | 'prod';
-
-function getEnvironment(): FortunaEnv {
-  const env = process.env.FORTUNA_ENV;
-  return env === 'dev' ? 'dev' : 'prod';
-}
 
 export function getDatabasePath(): string {
   const env = getEnvironment();
