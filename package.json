@@ -3,8 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "description": "Personal financial management.",
-  "main": "dist/main.js",
   "type": "module",
+  "main": "dist/fortuna.js",
+  "bin": {
+    "fortuna": "dist/fortuna.js"
+  },
+  "files": [
+    "dist/**",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "FORTUNA_ENV=dev tsx src/main.ts",
     "build": "rm -rf dist && tsup",
