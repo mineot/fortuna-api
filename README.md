@@ -1,3 +1,0 @@
-# fortuna-api
-
-Fortuna API
