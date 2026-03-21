@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
-import { indexRoute } from './routes';
+import { indexRoute } from './routes/index.route';
+import { apiRoutes } from './routes/api.route';
 
 export async function runServer() {
   // Create app
@@ -9,6 +10,7 @@ export async function runServer() {
 
   // Register routes
   await indexRoute(app);
+  await apiRoutes(app);
 
   // Start server
   serve({ fetch: app.fetch, port });
