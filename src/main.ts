@@ -1,1 +1,1 @@
-console.log("Projeto iniciado com TypeScript");
+console.log('Projeto iniciado com TypeScript');
