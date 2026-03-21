@@ -7,9 +7,9 @@
     "meuapp": "dist/main.js"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/main.js",
-    "dev": "tsx src/main.ts",
+    "build": "tsup",
+    "start": "node dist/bundle.js",
+    "preview": "tsx src/main.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
@@ -33,6 +33,7 @@
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.1",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.1"
