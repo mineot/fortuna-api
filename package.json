@@ -7,8 +7,13 @@
     "fortuna": "dist/fortuna.js"
   },
   "scripts": {
-    "build": "tsup",
-    "dev": "npm run build && electron . --no-sandbox",
+    "build:core": "tsup",
+    "build:ui": "npm --prefix ui run build -- --base-href ./ --deploy-url ./",
+    "build:ui:copy": "node scripts/copy-ui.cjs",
+    "build": "npm run build:core && npm run build:ui && npm run build:ui:copy",
+    "dev:electron": "npm run build && wait-on tcp:4200 && electron . --no-sandbox",
+    "dev:ui": "npm --prefix ui run start",
+    "dev": "NODE_ENV=dev concurrently \"npm run dev:ui\" \"npm run dev:electron\"",
     "preview": "node dist/fortuna.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -30,12 +35,14 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.5.0",
+    "concurrently": "^9.2.1",
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.1",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.1"
+    "typescript-eslint": "^8.57.1",
+    "wait-on": "^9.0.4"
   },
   "dependencies": {
     "electron": "^41.0.3"
