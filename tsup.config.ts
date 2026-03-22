@@ -3,6 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: {
     bundle: "src/main.ts",
+    fortuna: "cli.js",
   },
   format: ["cjs"],
   platform: "node",

@@ -4,12 +4,12 @@
   "description": "",
   "main": "dist/bundle.js",
   "bin": {
-    "fortuna": "dist/bundle.js"
+    "fortuna": "dist/fortuna.js"
   },
   "scripts": {
     "build": "tsup",
     "dev": "npm run build && electron . --no-sandbox",
-    "preview": "electron . --no-sandbox",
+    "preview": "node dist/fortuna.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
