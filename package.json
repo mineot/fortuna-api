@@ -3,12 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/bundle.js",
+  "type": "commonjs",
+  "license": "Apache-2.0",
   "bin": {
     "fortuna": "dist/fortuna.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build:core": "tsup",
-    "build:ui": "npm --prefix ui run build -- --base-href ./ --deploy-url ./",
+    "build:ui": "npm --prefix ui run build -- --base-href ./",
     "build:ui:copy": "node scripts/copy-ui.cjs",
     "build": "npm run build:core && npm run build:ui && npm run build:ui:copy",
     "dev:electron": "npm run build && wait-on tcp:4200 && electron . --no-sandbox",
@@ -18,20 +25,19 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prepack": "npm run build"
   },
+  "author": "Fabiano Pires (Mineot)",
+  "keywords": [],
+  "homepage": "https://github.com/mineot/fortuna#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mineot/fortuna.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/mineot/fortuna/issues"
   },
-  "homepage": "https://github.com/mineot/fortuna#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.5.0",
