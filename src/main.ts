@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 
-import { app, BrowserWindow } from "electron";
-import path from "node:path";
+import { app, BrowserWindow } from 'electron';
+import { migrateDatabase } from './database/migrator';
+import path from 'node:path';
+
+async function bootstrap(): Promise<void> {
+  await migrateDatabase();
+}
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -13,28 +18,38 @@ function createWindow(): void {
     },
   });
 
-  const isDev = process.env.NODE_ENV === "dev";
+  const isDev = process.env.NODE_ENV === 'dev';
 
   if (isDev) {
-    void win.loadURL("http://localhost:4200/");
+    void win.loadURL('http://localhost:4200/');
     return;
   }
 
-  void win.loadFile(path.join(__dirname, "index.html"));
+  void win.loadFile(path.join(__dirname, 'index.html'));
 }
 
-app.whenReady().then(() => {
+async function initApp(): Promise<void> {
+  await app.whenReady();
+
   createWindow();
 
-  app.on("activate", () => {
+  app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
   });
-});
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+}
+
+bootstrap()
+  .then(initApp)
+  .catch((error) => {
+    console.error('Failed to bootstrap app');
+    console.error(error);
+    process.exit(1);
+  });
