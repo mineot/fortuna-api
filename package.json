@@ -2,14 +2,14 @@
   "name": "fortuna",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main.js",
+  "main": "dist/bundle.js",
   "bin": {
-    "meuapp": "dist/main.js"
+    "fortuna": "dist/bundle.js"
   },
   "scripts": {
     "build": "tsup",
-    "start": "node dist/bundle.js",
-    "preview": "tsx src/main.ts",
+    "dev": "npm run build && electron . --no-sandbox",
+    "preview": "electron . --no-sandbox",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
@@ -34,8 +34,10 @@
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.1",
     "tsup": "^8.5.1",
-    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.1"
+  },
+  "dependencies": {
+    "electron": "^41.0.3"
   }
 }
