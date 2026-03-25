@@ -1,23 +1,4 @@
-<div class="app">
-  <div class="sidebar">
-    <header>
-      <h1>Fortuna</h1>
-    </header>
-    <aside>
-      <w-link />
-      <w-link />
-      <w-link />
-    </aside>
-  </div>
-  <div class="container">
-    <main>
-      <span>Main</span>
-      <router-outlet></router-outlet>
-    </main>
-    <footer>
-      <w-button />
-      <w-button />
-      <w-button />
-    </footer>
-  </div>
-</div>
+<w-navbar />
+<section class="flex-fill overflow-x-auto p-2">
+  <router-outlet></router-outlet>
+</section>
