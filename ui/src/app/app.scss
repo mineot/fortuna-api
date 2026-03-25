@@ -1,0 +1,62 @@
+@use 'theme' as *;
+
+$border: $border-size $border-style $border-color;
+$border-destak: $border-size $border-style $border-color-destak;
+
+.app {
+  display: flex;
+  flex-direction: row;
+  gap: $gap-md;
+  height: 100%;
+  padding: $gap-md;
+  width: 100%;
+
+  > .sidebar {
+    display: flex;
+    flex-direction: column;
+    flex: 0;
+    gap: $gap-md;
+
+    > header {
+      border: $border-destak;
+      color: $color-destak;
+      flex: 0;
+      padding: $gap-lg;
+    }
+
+    > aside {
+      border: $border;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      flex: 0;
+      gap: $gap-md;
+      justify-content: flex-start;
+      padding: $gap-md;
+    }
+  }
+
+  > .container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: $gap-md;
+
+    > main {
+      flex: 1;
+      padding: $gap-md;
+      border: $border;
+    }
+
+    > footer {
+      border: $border;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex: 0;
+      gap: $gap-md;
+      justify-content: center;
+      padding: $gap-md;
+    }
+  }
+}

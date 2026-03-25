@@ -22,6 +22,7 @@ function createWindow(): void {
 
   if (isDev) {
     void win.loadURL('http://localhost:4200/');
+    win.webContents.openDevTools();
     return;
   }
 
