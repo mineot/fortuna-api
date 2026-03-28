@@ -2,6 +2,7 @@
 
 import { app, BrowserWindow } from 'electron';
 import { migrateDatabase } from './database/migrator';
+import { registerAppHandlers } from './ipc/index';
 import path from 'node:path';
 
 async function bootstrap(): Promise<void> {
@@ -15,6 +16,7 @@ function createWindow(): void {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
@@ -32,6 +34,7 @@ function createWindow(): void {
 async function initApp(): Promise<void> {
   await app.whenReady();
 
+  registerAppHandlers();
   createWindow();
 
   app.on('activate', () => {

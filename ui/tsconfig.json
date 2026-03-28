@@ -16,6 +16,7 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
+      "@i18n/*": ["src/app/i18n/*"],
       "@widgets/*": ["src/app/widgets/*"]
     }
   },

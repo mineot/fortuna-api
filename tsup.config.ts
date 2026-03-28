@@ -1,14 +1,15 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: {
-    bundle: "src/main.ts",
-    fortuna: "cli.js",
+    bundle: 'src/main.ts',
+    fortuna: 'cli.js',
+    preload: 'src/preload.ts',
   },
-  format: ["cjs"],
-  platform: "node",
-  target: "node22",
-  outDir: "dist",
+  format: ['cjs'],
+  platform: 'node',
+  target: 'node22',
+  outDir: 'dist',
   clean: true,
   minify: true,
   splitting: false,
