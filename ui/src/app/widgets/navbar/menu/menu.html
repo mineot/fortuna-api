@@ -14,7 +14,7 @@
         <div class="dropdown-item d-flex gap-2">
           <input
             (change)="item.change($event, item)"
-            [checked]="item.checked"
+            [checked]="item.checked()"
             [id]="item.id"
             [value]="item.value"
             class="form-check-input"

@@ -2,6 +2,11 @@ export const en = {
   app: {
     title: 'Fortuna US',
   },
+  menu: {
+    configurations: 'Configurations',
+    english: 'English',
+    portuguese: 'Portuguese',
+  },
   common: {
     save: 'Save',
     cancel: 'Cancel',

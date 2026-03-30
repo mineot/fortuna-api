@@ -1,4 +1,3 @@
-import { AppMenuService } from './app.menu';
 import { Component } from '@angular/core';
 import { LanguageService } from '@i18n/language.service';
 import { Navbar } from '@widgets/navbar/navbar';
@@ -11,8 +10,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.scss',
 })
 export class App {
-  constructor(
-    public readonly i18n: LanguageService,
-    public readonly appMenuService: AppMenuService,
-  ) {}
+  constructor(public readonly i18n: LanguageService) {}
 }

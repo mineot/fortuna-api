@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Menu } from '@widgets/navbar/menu/menu';
-import { MenuConfiguration } from './navbar.types';
+import { MenuService } from '@shared/menu.service';
 
 @Component({
   imports: [Menu],
@@ -10,5 +10,5 @@ import { MenuConfiguration } from './navbar.types';
   templateUrl: './navbar.html',
 })
 export class Navbar {
-  @Input('menu-items') menuItems: MenuConfiguration[] = [];
+  constructor(public readonly menu: MenuService) {}
 }

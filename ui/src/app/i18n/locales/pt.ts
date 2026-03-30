@@ -4,6 +4,11 @@ export const pt = {
   app: {
     title: 'Fortuna BR',
   },
+  menu: {
+    configurations: 'Configurações',
+    english: 'Inglês',
+    portuguese: 'Português',
+  },
   common: {
     save: 'Salvar',
     cancel: 'Cancelar',

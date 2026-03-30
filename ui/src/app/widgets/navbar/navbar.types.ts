@@ -8,8 +8,8 @@ export type MenuLink = {
 };
 
 export type MenuCheckbox = {
-  change: (event: Event, item: MenuCheckbox) => void;
-  checked: boolean;
+  change: (event?: Event, item?: MenuCheckbox) => void;
+  checked: () => boolean;
   i18nLabel: string;
   id: string;
   type: 'checkbox';

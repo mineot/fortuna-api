@@ -44,6 +44,10 @@ export class LanguageService {
     localStorage.setItem(STORAGE_KEY, language);
   }
 
+  getLanguage(): Language {
+    return this.currentLanguage();
+  }
+
   private getStoredLanguage(): Language | null {
     const stored = localStorage.getItem(STORAGE_KEY);
 
