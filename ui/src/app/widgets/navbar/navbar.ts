@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Menu } from '@widgets/navbar/menu/menu';
+import { MenuConfiguration } from './navbar.types';
 
 @Component({
   imports: [Menu],
@@ -8,4 +9,6 @@ import { Menu } from '@widgets/navbar/menu/menu';
   styleUrl: './navbar.scss',
   templateUrl: './navbar.html',
 })
-export class Navbar {}
+export class Navbar {
+  @Input('menu-items') menuItems: MenuConfiguration[] = [];
+}

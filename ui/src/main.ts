@@ -1,3 +1,4 @@
+import './window.global';
 import { App } from './app/app';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { LanguageService } from './app/i18n/language.service';

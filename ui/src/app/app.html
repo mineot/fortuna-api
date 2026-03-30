@@ -1,4 +1,4 @@
-<w-navbar />
+<w-navbar [menu-items]="appMenuService.menuItems" />
 <section class="flex-fill overflow-x-auto p-2">
   <h1>{{ i18n.t('app.title') }}</h1>
   <router-outlet></router-outlet>

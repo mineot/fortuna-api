@@ -1,12 +1,12 @@
 export const en = {
+  app: {
+    title: 'Fortuna US',
+  },
   common: {
     save: 'Save',
     cancel: 'Cancel',
     delete: 'Delete',
     edit: 'Edit',
-  },
-  app: {
-    title: 'Fortuna US',
   },
   types: {
     title: 'Types',
