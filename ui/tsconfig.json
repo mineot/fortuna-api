@@ -17,8 +17,9 @@
     "module": "preserve",
     "paths": {
       "@i18n/*": ["src/app/i18n/*"],
+      "@pages/*": ["src/app/pages/*"],
+      "@shared/*": ["src/app/shared/*"],
       "@widgets/*": ["src/app/widgets/*"],
-      "@shared/*": ["src/app/shared/*"]
     }
   },
   "angularCompilerOptions": {

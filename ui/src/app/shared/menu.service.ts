@@ -12,20 +12,10 @@ export class MenuService {
       i18nLabel: 'menu.configurations',
       items: [
         {
-          type: 'checkbox',
-          id: 'menu-configuration-lang-en',
-          i18nLabel: 'menu.english',
-          value: 'config-lang',
-          checked: () => i18n.getLanguage() === 'en',
-          change: () => i18n.setLanguage('en'),
-        },
-        {
-          type: 'checkbox',
-          id: 'menu-configuration-lang-pt',
-          i18nLabel: 'menu.portuguese',
-          value: 'config-lang',
-          checked: () => i18n.getLanguage() === 'pt',
-          change: () => i18n.setLanguage('pt'),
+          type: 'link',
+          id: 'menu-configuration-languages',
+          i18nLabel: this.i18n.t('lenguages.title'),
+          href: '/languages',
         },
       ],
     });

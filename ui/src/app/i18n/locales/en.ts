@@ -4,14 +4,17 @@ export const en = {
   },
   menu: {
     configurations: 'Configurations',
-    english: 'English',
-    portuguese: 'Portuguese',
   },
   common: {
     save: 'Save',
     cancel: 'Cancel',
     delete: 'Delete',
     edit: 'Edit',
+  },
+  lenguages: {
+    title: 'Languages',
+    english: 'English',
+    portuguese: 'Portuguese',
   },
   types: {
     title: 'Types',

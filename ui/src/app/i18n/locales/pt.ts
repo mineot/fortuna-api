@@ -6,14 +6,17 @@ export const pt = {
   },
   menu: {
     configurations: 'Configurações',
-    english: 'Inglês',
-    portuguese: 'Português',
   },
   common: {
     save: 'Salvar',
     cancel: 'Cancelar',
     delete: 'Excluir',
     edit: 'Editar',
+  },
+  lenguages: {
+    title: 'Idiomas',
+    english: 'Inglês',
+    portuguese: 'Português',
   },
   types: {
     title: 'Tipos',
