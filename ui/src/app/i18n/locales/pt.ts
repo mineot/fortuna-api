@@ -8,20 +8,24 @@ export const pt = {
     configurations: 'Configurações',
   },
   common: {
-    save: 'Salvar',
     cancel: 'Cancelar',
     delete: 'Excluir',
     edit: 'Editar',
+    save: 'Salvar',
+    title: 'Título',
+  },
+  home: {
+    title: 'Principal',
   },
   lenguages: {
-    title: 'Idiomas',
     english: 'Inglês',
     portuguese: 'Português',
+    title: 'Idiomas',
   },
   types: {
-    title: 'Tipos',
     create: 'Criar tipo',
-    name: 'Nome',
     empty: 'Nenhum tipo encontrado',
+    name: 'Nome',
+    title: 'Tipos',
   },
 } satisfies TranslationSchema;

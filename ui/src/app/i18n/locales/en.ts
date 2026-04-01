@@ -6,20 +6,24 @@ export const en = {
     configurations: 'Configurations',
   },
   common: {
-    save: 'Save',
     cancel: 'Cancel',
     delete: 'Delete',
     edit: 'Edit',
+    save: 'Save',
+    title: 'Title',
+  },
+  home: {
+    title: 'Home',
   },
   lenguages: {
-    title: 'Languages',
     english: 'English',
     portuguese: 'Portuguese',
+    title: 'Languages',
   },
   types: {
-    title: 'Types',
     create: 'Create type',
-    name: 'Name',
     empty: 'No types found',
+    name: 'Name',
+    title: 'Types',
   },
 } as const;

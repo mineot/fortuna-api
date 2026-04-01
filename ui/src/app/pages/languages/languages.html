@@ -1,110 +1,26 @@
-<w-page>
-  <div class="form-check">
-    <input class="form-check-input" type="radio" name="radioLenguage" id="radio/English" />
-    <label class="form-check-label" for="radio/English">
-      <span>{{ i18n.t('lenguages.english') }}</span>
-    </label>
-  </div>
-  <div class="form-check">
-    <input
-      class="form-check-input"
-      type="radio"
-      name="radioLenguage"
-      id="radioPortuguese"
-      checked
-    />
-    <label class="form-check-label" for="radioPortuguese">
-      <span>{{ i18n.t('lenguages.portuguese') }}</span>
-    </label>
-  </div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-  <div>abc</div>
-</w-page>
+<div class="form-check">
+  <input
+    class="form-check-input"
+    type="radio"
+    name="radioLenguage"
+    id="radio/English"
+    [checked]="isLanguage('en')"
+    (change)="onChange('en')"
+  />
+  <label class="form-check-label" for="radio/English">
+    <span>{{ i18n.t('lenguages.english') }}</span>
+  </label>
+</div>
+<div class="form-check">
+  <input
+    class="form-check-input"
+    type="radio"
+    name="radioLenguage"
+    id="radioPortuguese"
+    [checked]="isLanguage('pt')"
+    (change)="onChange('pt')"
+  />
+  <label class="form-check-label" for="radioPortuguese">
+    <span>{{ i18n.t('lenguages.portuguese') }}</span>
+  </label>
+</div>

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LanguageService } from '@i18n/language.service';
+import { PageService } from '@shared/page.service';
 import { Navbar } from '@widgets/navbar/navbar';
 
 @Component({
@@ -9,5 +10,8 @@ import { Navbar } from '@widgets/navbar/navbar';
   styleUrl: './page.scss',
 })
 export class Page {
-  constructor(public readonly i18n: LanguageService) {}
+  constructor(
+    public readonly i18n: LanguageService,
+    public readonly page: PageService,
+  ) {}
 }
