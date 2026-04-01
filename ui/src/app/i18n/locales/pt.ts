@@ -4,9 +4,6 @@ export const pt = {
   app: {
     title: 'Fortuna BR',
   },
-  menu: {
-    configurations: 'Configurações',
-  },
   common: {
     cancel: 'Cancelar',
     delete: 'Excluir',
@@ -17,15 +14,21 @@ export const pt = {
   home: {
     title: 'Principal',
   },
-  lenguages: {
-    english: 'Inglês',
-    portuguese: 'Português',
-    title: 'Idiomas',
+  configs: {
+    title: 'Configurações',
+    languages: {
+      english: 'Inglês',
+      portuguese: 'Português',
+      title: 'Idiomas',
+    },
   },
-  types: {
-    create: 'Criar tipo',
-    empty: 'Nenhum tipo encontrado',
-    name: 'Nome',
-    title: 'Tipos',
+  adds: {
+    title: 'Cadastros',
+    types: {
+      create: 'Criar tipo',
+      empty: 'Nenhum tipo encontrado',
+      name: 'Nome',
+      title: 'Tipos',
+    },
   },
 } satisfies TranslationSchema;

@@ -1,6 +1,6 @@
 <li class="nav-item dropdown">
   <a
-    class="nav-link dropdown-toggle"
+    class="nav-link dropdown-toggle fs-6 py-1"
     href="#"
     role="button"
     data-bs-toggle="dropdown"
@@ -11,7 +11,7 @@
   <ul class="dropdown-menu">
     @for (item of menuConfig.items; track item.id) {
       @if (item.type === 'checkbox') {
-        <div class="dropdown-item d-flex gap-2">
+        <div class="dropdown-item d-flex gap-2 fs-6 py-1">
           <input
             (change)="item.change($event, item)"
             [checked]="item.checked()"
@@ -28,7 +28,7 @@
 
       @if (item.type === 'link') {
         <li>
-          <a class="dropdown-item" [routerLink]="item.href">
+          <a class="dropdown-item fs-6 py-1" [routerLink]="item.href">
             <span>{{ i18n.t(item.i18nLabel) }}</span>
           </a>
         </li>

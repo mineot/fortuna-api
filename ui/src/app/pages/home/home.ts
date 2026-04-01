@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { PageService } from '@shared/page.service';
-import { Page } from '@widgets/page/page';
 
 @Component({
   selector: 'p-home',
-  imports: [Page],
+  imports: [],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

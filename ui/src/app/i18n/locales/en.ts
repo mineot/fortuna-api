@@ -2,9 +2,6 @@ export const en = {
   app: {
     title: 'Fortuna US',
   },
-  menu: {
-    configurations: 'Configurations',
-  },
   common: {
     cancel: 'Cancel',
     delete: 'Delete',
@@ -15,15 +12,21 @@ export const en = {
   home: {
     title: 'Home',
   },
-  lenguages: {
-    english: 'English',
-    portuguese: 'Portuguese',
-    title: 'Languages',
+  configs: {
+    title: 'Configurations',
+    languages: {
+      english: 'English',
+      portuguese: 'Portuguese',
+      title: 'Languages',
+    },
   },
-  types: {
-    create: 'Create type',
-    empty: 'No types found',
-    name: 'Name',
-    title: 'Types',
+  adds: {
+    title: 'Adds',
+    types: {
+      create: 'Create type',
+      empty: 'No types found',
+      name: 'Name',
+      title: 'Types',
+    },
   },
 } as const;

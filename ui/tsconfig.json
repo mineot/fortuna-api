@@ -16,10 +16,11 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
+      "@app/*": ["src/app/*"],
       "@i18n/*": ["src/app/i18n/*"],
       "@pages/*": ["src/app/pages/*"],
       "@shared/*": ["src/app/shared/*"],
-      "@widgets/*": ["src/app/widgets/*"],
+      "@widgets/*": ["src/app/widgets/*"]
     }
   },
   "angularCompilerOptions": {

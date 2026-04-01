@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/">
+<nav class="navbar navbar-expand-lg bg-body-tertiary py-1">
+  <div class="container">
+    <a class="navbar-brand fs-6 py-0" routerLink="/">
       <i class="bi bi-house-fill"></i>
     </a>
     <button
@@ -15,7 +15,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         @for (item of menu.menuItems; track item.id) {
           <w-navbar-menu [menu-config]="item" />
         }
