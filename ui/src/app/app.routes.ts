@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 
 import { Home } from '@pages/home/home';
 import { Languages } from '@pages/languages/languages';
-import { Types } from '@pages/adds/types/types';
+import { Types } from '@app/pages/registers/types/types';
 
 export const APP_ROUTES_MAP = {
   configurations: {
     languages: '/configs/langs',
   },
-  adds: {
-    types: '/adds/types',
+  registers: {
+    types: '/registers/types',
   },
 };
 
@@ -28,7 +28,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'adds',
+    path: 'registers',
     children: [
       {
         path: 'types',

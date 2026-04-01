@@ -1,3 +1,4 @@
+import { ApiService } from '@app/shared/api.service';
 import { Injectable, computed, signal } from '@angular/core';
 import { translations } from './index';
 import type { Language, TranslationSchema } from './index';
@@ -14,6 +15,8 @@ export class LanguageService {
   readonly terms = computed<TranslationSchema>(() => {
     return translations[this.currentLanguage()];
   });
+
+  constructor(private readonly api: ApiService) {}
 
   async init(): Promise<void> {
     const savedLanguage = this.getStoredLanguage();
@@ -59,13 +62,7 @@ export class LanguageService {
   }
 
   private async detectSystemLanguage(): Promise<Language> {
-    const api = window.electronApi;
-
-    if (!api?.app?.getSystemLanguage) {
-      return this.defaultLanguage;
-    }
-
-    const preferredLanguages = await api.app.getSystemLanguage();
+    const preferredLanguages = (await this.api.getSystemLanguage()) ?? this.defaultLanguage;
 
     for (const locale of preferredLanguages) {
       const normalized = this.normalizeLocale(locale);

@@ -20,8 +20,8 @@ export const en = {
       title: 'Languages',
     },
   },
-  adds: {
-    title: 'Adds',
+  registers: {
+    title: 'Registers',
     types: {
       create: 'Create type',
       empty: 'No types found',

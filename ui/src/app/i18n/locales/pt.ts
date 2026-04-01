@@ -22,7 +22,7 @@ export const pt = {
       title: 'Idiomas',
     },
   },
-  adds: {
+  registers: {
     title: 'Cadastros',
     types: {
       create: 'Criar tipo',
