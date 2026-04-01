@@ -4,7 +4,7 @@ import type { Database } from './schema';
 
 import { migration0001Init } from './migrations/0001_init';
 
-export const version = 1;
+export const version = 2;
 
 export interface MigrationDefinition {
   name: string;
