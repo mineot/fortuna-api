@@ -10,9 +10,6 @@ export const en = {
   home: {
     title: 'Home',
   },
-  configs: {
-    title: 'Configurations',
-  },
   registers: {
     title: 'Registers',
     types: {

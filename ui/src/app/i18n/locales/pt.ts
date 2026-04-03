@@ -12,9 +12,6 @@ export const pt = {
   home: {
     title: 'Principal',
   },
-  configs: {
-    title: 'Configurações',
-  },
   registers: {
     title: 'Cadastros',
     types: {

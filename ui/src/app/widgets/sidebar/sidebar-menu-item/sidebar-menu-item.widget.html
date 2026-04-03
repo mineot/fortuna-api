@@ -1,0 +1,12 @@
+@for (item of items; track item.id) {
+  <a
+    [routerLink]="[item.routerLink]"
+    routerLinkActive="active disabled"
+    class="list-group-item list-group-item-secondary list-group-item-action"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#sidebar"
+    aria-current="true"
+  >
+    <span>{{ item.label }}</span>
+  </a>
+}
