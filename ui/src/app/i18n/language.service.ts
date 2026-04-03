@@ -45,6 +45,7 @@ export class LanguageService {
   setLanguage(language: Language): void {
     this.currentLanguage.set(language);
     localStorage.setItem(STORAGE_KEY, language);
+    window.location.reload();
   }
 
   getLanguage(): Language {

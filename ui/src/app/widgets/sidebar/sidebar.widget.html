@@ -1,9 +1,53 @@
 <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebar" aria-labelledby="sidbarLabel">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasExampleLabel">{{ i18n.t('common.menu') }}</h5>
+    <h5 class="offcanvas-title d-flex gap-3 align-items-center" id="offcanvasExampleLabel">
+      <span>{{ i18n.t('common.menu') }}</span>
+      <a class="btn p-0" routerLink="/" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+        <i class="bi bi-house-fill"></i>
+      </a>
+      <button class="btn p-0" (click)="changeLanguage('en')">🇺🇸</button>
+      <button class="btn p-0" (click)="changeLanguage('pt')">🇧🇷</button>
+    </h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body">
-    <div>Home</div>
+    <div class="accordion accordion-flush" id="menu">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseOne"
+            aria-expanded="true"
+            aria-controls="collapseOne"
+          >
+            Accordion Item #1
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#menu">
+          <div class="accordion-body p-0">
+            <div class="list-group list-group-flush">
+              <a
+                href="#"
+                class="list-group-item list-group-item-secondary list-group-item-action active"
+                aria-current="true"
+              >
+                The current link item
+              </a>
+              <a href="#" class="list-group-item list-group-item-action">A second link item</a>
+              <a href="#" class="list-group-item list-group-item-action">A third link item</a>
+              <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
+              <a
+                href="#"
+                class="list-group-item list-group-item-action disabled"
+                aria-disabled="true"
+                >A disabled link item</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

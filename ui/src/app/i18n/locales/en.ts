@@ -3,20 +3,15 @@ export const en = {
     cancel: 'Cancel',
     delete: 'Delete',
     edit: 'Edit',
+    menu: 'Menu',
     save: 'Save',
     title: 'Title',
-    menu: 'Menu',
   },
   home: {
     title: 'Home',
   },
   configs: {
     title: 'Configurations',
-    languages: {
-      english: 'English',
-      portuguese: 'Portuguese',
-      title: 'Languages',
-    },
   },
   registers: {
     title: 'Registers',

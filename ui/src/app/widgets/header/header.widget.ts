@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
+import { HeaderWidgetService } from './header.widget.service';
 import { RouterLink } from '@angular/router';
 import { SidebarWidget } from '@app/widgets/sidebar/sidebar.widget';
-import { HeaderWidgetService } from './header.widget.service';
 
 @Component({
   selector: 'w-header',
@@ -10,5 +10,5 @@ import { HeaderWidgetService } from './header.widget.service';
   styleUrl: './header.widget.scss',
 })
 export class HeaderWidget {
-  constructor(readonly service: HeaderWidgetService) {}
+  constructor(public readonly service: HeaderWidgetService) {}
 }

@@ -5,20 +5,15 @@ export const pt = {
     cancel: 'Cancelar',
     delete: 'Excluir',
     edit: 'Editar',
+    menu: 'Menu',
     save: 'Salvar',
     title: 'Título',
-    menu: 'Menu',
   },
   home: {
     title: 'Principal',
   },
   configs: {
     title: 'Configurações',
-    languages: {
-      english: 'Inglês',
-      portuguese: 'Português',
-      title: 'Idiomas',
-    },
   },
   registers: {
     title: 'Cadastros',
