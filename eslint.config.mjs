@@ -1,11 +1,11 @@
-import js from "@eslint/js";
-import { defineConfig } from "eslint/config";
-import tseslint from "typescript-eslint";
-import eslintConfigPrettier from "eslint-config-prettier";
+import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
+import tseslint from 'typescript-eslint';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default defineConfig(
   {
-    ignores: ["dist/**", "node_modules/**", "coverage/**", "*.log"],
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', '*.log'],
   },
 
   js.configs.recommended,
@@ -13,19 +13,19 @@ export default defineConfig(
   eslintConfigPrettier,
 
   {
-    files: ["src/**/*.ts"],
+    files: ['src/**/*.ts'],
     rules: {
-      "no-console": "off",
+      'no-console': 'off',
     },
   },
 
   {
-    files: ["*.cjs"],
+    files: ['*.cjs'],
     languageOptions: {
-      sourceType: "commonjs",
+      sourceType: 'commonjs',
       globals: {
-        module: "readonly",
-        require: "readonly",
+        module: 'readonly',
+        require: 'readonly',
       },
     },
   },

@@ -26,27 +26,27 @@ export class TypesPage implements OnInit, OnDestroy {
     this.header.title.set(this.i18n.t(I18N_KEYS.REGISTERS.TYPES.TITLE));
     this.footer.enabledSearch.set(true);
 
-    this.service.listAll();
-
-    this.$subscriptions.push(
-      this.footer.searchSubject.subscribe((search: string | null | undefined) => {
-        console.log(search);
-      }),
-    );
-
     this.footer.setButtons([
       {
         id: 'new-type',
         type: 'button',
         variant: 'primary',
-        label: this.i18n.t('registers.types.create'),
+        label: this.i18n.t(I18N_KEYS.REGISTERS.TYPES.CREATE),
         click: () => console.log('create a new type'),
       },
     ]);
+
+    this.$subscriptions.push(
+      this.footer.searchSubject.subscribe((search: string | null | undefined) => {
+        this.service.listAll({ name: search ?? undefined });
+      }),
+    );
+
+    this.service.listAll();
   }
 
   ngOnDestroy(): void {
-    this.footer.reset();
     this.$subscriptions.forEach((s) => s.unsubscribe());
+    this.footer.reset();
   }
 }

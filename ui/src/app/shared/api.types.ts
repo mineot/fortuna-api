@@ -6,16 +6,21 @@ export type Type = {
   updated_at: string;
 };
 
+export type ListAllTypes = {
+  group?: number;
+  name?: string;
+};
+
 export type Api = {
   getSystemLanguage: () => Promise<string | null>;
   types: {
-    listAll: () => Promise<Type[]>;
+    listAll: (params?: ListAllTypes) => Promise<Type[]>;
   };
 };
 
 export interface OnApi {
   getSystemLanguage: () => Promise<string | null>;
   types: {
-    listAll: () => Promise<Type[]>;
+    listAll: (params?: ListAllTypes) => Promise<Type[]>;
   };
 }

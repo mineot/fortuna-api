@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Api, OnApi } from './api.types';
+import { Api, ListAllTypes, OnApi } from './api.types';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +12,6 @@ export class ApiService implements OnApi {
   }
 
   readonly types = {
-    listAll: () => this.api?.types.listAll() ?? Promise.resolve([]),
+    listAll: (params?: ListAllTypes) => this.api?.types.listAll(params) ?? Promise.resolve([]),
   };
 }
