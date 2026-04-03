@@ -1,7 +1,62 @@
-<div class="list-group">
-  @for (item of service.types(); track item.id) {
-    <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-      {{ item.group }}: {{ item.name }}
-    </a>
-  }
-</div>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>{{ i18n.t('common.group') }}</th>
+      <th>{{ i18n.t('common.name') }}</th>
+      <th class="table-fit-column"></th>
+    </tr>
+    <tr>
+      <th>
+        <input
+          type="number"
+          class="form-control form-control-sm border-0 p-0 focus-ring table-fix-search"
+          [placeholder]="`${i18n.t('common.search')} ${i18n.t('common.group')}`"
+          [value]="searchGroup()"
+          (input)="searchGroup.set($event.target.value)"
+        />
+      </th>
+      <th>
+        <input
+          type="text"
+          class="form-control form-control-sm border-0 p-0 focus-ring table-fix-search"
+          [placeholder]="`${i18n.t('common.search')} ${i18n.t('common.name')}`"
+          [value]="searchName()"
+          (input)="searchName.set($event.target.value)"
+        />
+      </th>
+      <th class="table-fit-column">
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-secondary" (click)="onSearch()">
+            <i class="bi bi-search"></i>
+          </button>
+          <button class="btn btn-sm btn-secondary" (click)="onSearchClear()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (service.types().length === 0) {
+      <tr>
+        <td colspan="3" class="text-center">{{ i18n.t('registers.types.empty') }}</td>
+      </tr>
+    }
+    @for (item of service.types(); track item.id) {
+      <tr>
+        <td>{{ item.group }}</td>
+        <td>{{ item.name }}</td>
+        <td class="table-fit-column">
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-secondary">
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+            <button class="btn btn-sm btn-danger">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

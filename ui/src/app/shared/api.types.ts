@@ -1,26 +1,11 @@
-export type Type = {
-  id?: number;
-  name: string;
-  group: number;
-  created_at: string;
-  updated_at: string;
-};
-
-export type ListAllTypes = {
-  group?: number;
-  name?: string;
-};
+import type { RegisterTypes } from './models/types.model';
 
 export type Api = {
   getSystemLanguage: () => Promise<string | null>;
-  types: {
-    listAll: (params?: ListAllTypes) => Promise<Type[]>;
-  };
+  types: RegisterTypes;
 };
 
 export interface OnApi {
   getSystemLanguage: () => Promise<string | null>;
-  types: {
-    listAll: (params?: ListAllTypes) => Promise<Type[]>;
-  };
+  types: RegisterTypes;
 }

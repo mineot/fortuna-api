@@ -1,6 +1,4 @@
-import { APP_ROUTES_MAP } from 'src/app/app.routes';
 import { Component, OnInit } from '@angular/core';
-import { I18N_KEYS } from '@i18n/language.types';
 import { LanguageService } from '@i18n/language.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarMenu } from './sidebar-menu/sidebar-menu.widget';
@@ -21,12 +19,12 @@ export class SidebarWidget implements OnInit {
   ngOnInit(): void {
     this.menus.push({
       id: 0,
-      label: this.i18n.t(I18N_KEYS.REGISTERS.TITLE),
+      label: this.i18n.t('registers.title'),
       items: [
         {
           id: 0,
-          routerLink: APP_ROUTES_MAP.registers.types,
-          label: this.i18n.t(I18N_KEYS.REGISTERS.TYPES.TITLE),
+          routerLink: '/registers/types',
+          label: this.i18n.t('registers.types.title'),
         },
       ],
     });

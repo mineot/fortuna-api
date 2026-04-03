@@ -23,3 +23,12 @@ body {
     gap: 0px;
   }
 }
+
+.table-fit-column {
+  width: 1px;
+  white-space: nowrap;
+}
+
+.table-fix-search {
+  --bs-focus-ring-color: transparent;
+}

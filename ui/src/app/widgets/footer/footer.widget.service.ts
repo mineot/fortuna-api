@@ -1,19 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Subject } from 'rxjs';
-
-type ButtonDetail = {
-  key: string;
-  value: unknown;
-};
-
-type Button = {
-  id: string;
-  type: 'button';
-  variant: 'primary' | 'secondary' | 'success' | 'warning' | 'info' | 'danger';
-  label: string;
-  details?: ButtonDetail[];
-  click: (event: Event, details?: ButtonDetail[]) => void;
-};
+import type { Button } from './footer.widget.types';
 
 @Injectable({
   providedIn: 'root',

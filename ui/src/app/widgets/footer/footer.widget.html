@@ -15,20 +15,21 @@
     }
   </div>
   @if (service.enabledSearch()) {
-    <div>
-      <form class="d-flex gap-1" role="search" [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+    <form class="d-flex gap-1" role="search" [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+      <div class="input-group input-group-sm">
         <input
-          class="form-control form-control-sm"
+          class="form-control"
           type="search"
           [placeholder]="i18n.t('common.search')"
           [aria-label]="i18n.t('common.search')"
+          aria-describedby="basic-addon2"
           formControlName="search"
           (input)="onSearchInput($event)"
         />
-        <button class="btn btn-sm btn-secondary" type="submit">
-          <span>{{ i18n.t('common.search') }}</span>
+        <button class="btn btn-sm btn-secondary input-group-text" id="basic-addon2" type="submit">
+          <i class="bi bi-search"></i>
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   }
 </footer>

@@ -1,13 +1,8 @@
 import { Routes } from '@angular/router';
 
 import { HomePage } from '@pages/home/home.page';
+import { TypeFormPage } from '@pages/registers/types/type-form/type-form.page';
 import { TypesPage } from '@pages/registers/types/types.page';
-
-export const APP_ROUTES_MAP = {
-  registers: {
-    types: '/registers/types',
-  },
-};
 
 export const routes: Routes = [
   {
@@ -15,12 +10,11 @@ export const routes: Routes = [
     component: HomePage,
   },
   {
-    path: 'registers',
-    children: [
-      {
-        path: 'types',
-        component: TypesPage,
-      },
-    ],
+    path: 'registers/types',
+    component: TypesPage,
+  },
+  {
+    path: 'registers/types/create',
+    component: TypeFormPage,
   },
 ];
