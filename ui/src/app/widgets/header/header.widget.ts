@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HeaderWidgetService } from './header.widget.service';
-import { SidebarWidget } from '@app/widgets/sidebar/sidebar.widget';
+import { SidebarWidget } from '@widgets/sidebar/sidebar.widget';
 
 @Component({
   selector: 'w-header',

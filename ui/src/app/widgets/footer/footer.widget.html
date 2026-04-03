@@ -1,1 +1,34 @@
-<footer class="bg-body-tertiary border-top px-3 py-2">Footer</footer>
+<footer
+  class="bg-body-tertiary border-top px-3 py-2 d-flex gap-1 justify-content-between align-items-center"
+>
+  <div class="d-flex gap-2 align-items-center">
+    @for (item of service.items; track item.id) {
+      @if (item.type === 'button') {
+        <button
+          type="button"
+          [class]="['btn', 'btn-sm', `btn-${item.variant}`]"
+          (click)="item.click($event, item.details)"
+        >
+          <span>{{ item.label }}</span>
+        </button>
+      }
+    }
+  </div>
+  @if (service.enabledSearch()) {
+    <div>
+      <form class="d-flex gap-1" role="search" [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+        <input
+          class="form-control form-control-sm"
+          type="search"
+          [placeholder]="i18n.t('common.search')"
+          [aria-label]="i18n.t('common.search')"
+          formControlName="search"
+          (input)="onSearchInput($event)"
+        />
+        <button class="btn btn-sm btn-secondary" type="submit">
+          <span>{{ i18n.t('common.search') }}</span>
+        </button>
+      </form>
+    </div>
+  }
+</footer>

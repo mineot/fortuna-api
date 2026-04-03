@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { ApiService } from '@app/shared/api.service';
-import { Type } from '@app/shared/api.types';
+import { ApiService } from '@shared/api.service';
+import { Type } from '@shared/api.types';
 
 @Injectable({
   providedIn: 'root',

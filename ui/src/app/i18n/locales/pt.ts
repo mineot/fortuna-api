@@ -7,6 +7,7 @@ export const pt = {
     edit: 'Editar',
     menu: 'Menu',
     save: 'Salvar',
+    search: 'Pesquisar',
     title: 'Título',
   },
   home: {
@@ -15,9 +16,8 @@ export const pt = {
   registers: {
     title: 'Cadastros',
     types: {
-      create: 'Criar tipo',
+      create: 'Novo Tipo',
       empty: 'Nenhum tipo encontrado',
-      name: 'Nome',
       title: 'Cadastro de Tipos',
     },
   },

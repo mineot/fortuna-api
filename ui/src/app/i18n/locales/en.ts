@@ -5,6 +5,7 @@ export const en = {
     edit: 'Edit',
     menu: 'Menu',
     save: 'Save',
+    search: 'Search',
     title: 'Title',
   },
   home: {
@@ -13,9 +14,8 @@ export const en = {
   registers: {
     title: 'Registers',
     types: {
-      create: 'Create type',
+      create: 'New Type',
       empty: 'No types found',
-      name: 'Name',
       title: 'Register Types',
     },
   },

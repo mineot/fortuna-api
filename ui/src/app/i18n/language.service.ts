@@ -1,4 +1,4 @@
-import { ApiService } from '@app/shared/api.service';
+import { ApiService } from '@shared/api.service';
 import { Injectable, computed, signal } from '@angular/core';
 import { translations } from './index';
 import type { Language, TranslationSchema } from './index';

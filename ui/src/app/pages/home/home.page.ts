@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { I18N_KEYS } from '@app/i18n/language.types';
+import { I18N_KEYS } from '@i18n/language.types';
 import { LanguageService } from '@i18n/language.service';
 import { HeaderWidgetService } from '@widgets/header/header.widget.service';
 
@@ -11,11 +11,11 @@ import { HeaderWidgetService } from '@widgets/header/header.widget.service';
 })
 export class HomePage implements OnInit {
   constructor(
-    private readonly $header: HeaderWidgetService,
-    private readonly $i18n: LanguageService,
+    public readonly header: HeaderWidgetService,
+    public readonly i18n: LanguageService,
   ) {}
 
   ngOnInit(): void {
-    this.$header.title = this.$i18n.t(I18N_KEYS.HOME.TITLE);
+    this.header.title.set(this.i18n.t(I18N_KEYS.HOME.TITLE));
   }
 }

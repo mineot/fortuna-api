@@ -1,10 +1,10 @@
-import { APP_ROUTES_MAP } from '@app/app.routes';
+import { APP_ROUTES_MAP } from 'src/app/app.routes';
 import { Component, OnInit } from '@angular/core';
-import { I18N_KEYS } from '@app/i18n/language.types';
+import { I18N_KEYS } from '@i18n/language.types';
 import { LanguageService } from '@i18n/language.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarMenu } from './sidebar-menu/sidebar-menu.widget';
-import type { Language } from '@app/i18n';
+import type { Language } from '@i18n/language.types';
 import type { Menu } from './sidebar-menu/sidebar-menu.widget';
 
 @Component({
