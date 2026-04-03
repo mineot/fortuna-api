@@ -5,7 +5,7 @@ import { Type } from '@app/shared/api.types';
 @Injectable({
   providedIn: 'root',
 })
-export class TypesService {
+export class TypesPageService {
   readonly types = signal<Type[]>([]);
 
   constructor(private readonly api: ApiService) {}

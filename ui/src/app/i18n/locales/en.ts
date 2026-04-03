@@ -1,13 +1,11 @@
 export const en = {
-  app: {
-    title: 'Fortuna US',
-  },
   common: {
     cancel: 'Cancel',
     delete: 'Delete',
     edit: 'Edit',
     save: 'Save',
     title: 'Title',
+    menu: 'Menu',
   },
   home: {
     title: 'Home',
@@ -26,7 +24,7 @@ export const en = {
       create: 'Create type',
       empty: 'No types found',
       name: 'Name',
-      title: 'Types',
+      title: 'Register Types',
     },
   },
 } as const;

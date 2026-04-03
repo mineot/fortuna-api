@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { HeaderWidgetService } from '@widgets/header/header.widget.service';
 import { LanguageService } from '@i18n/language.service';
-import { Language } from '@i18n/language.types';
-import { PageService } from '@shared/page.service';
+import { I18N_KEYS, Language } from '@i18n/language.types';
 
 @Component({
   selector: 'p-languages',
   imports: [],
-  templateUrl: './languages.html',
-  styleUrl: './languages.scss',
+  templateUrl: './languages.page.html',
+  styleUrl: './languages.page.scss',
 })
-export class Languages implements OnInit {
+export class LanguagesPage implements OnInit {
   constructor(
+    private readonly header: HeaderWidgetService,
     public readonly i18n: LanguageService,
-    private readonly page: PageService,
   ) {}
 
   ngOnInit(): void {
-    this.page.i18nTitle.set('configs.languages.title');
+    this.header.title = this.i18n.t(I18N_KEYS.CONFIGS.LANGUAGES.TITLE);
   }
 
   isLanguage(language: Language): boolean {

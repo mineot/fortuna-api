@@ -1,15 +1,13 @@
 import type { TranslationSchema } from '../language.types';
 
 export const pt = {
-  app: {
-    title: 'Fortuna BR',
-  },
   common: {
     cancel: 'Cancelar',
     delete: 'Excluir',
     edit: 'Editar',
     save: 'Salvar',
     title: 'Título',
+    menu: 'Menu',
   },
   home: {
     title: 'Principal',
@@ -28,7 +26,7 @@ export const pt = {
       create: 'Criar tipo',
       empty: 'Nenhum tipo encontrado',
       name: 'Nome',
-      title: 'Tipos',
+      title: 'Cadastro de Tipos',
     },
   },
 } satisfies TranslationSchema;

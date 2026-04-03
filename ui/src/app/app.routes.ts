@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 
-import { Home } from '@pages/home/home';
-import { Languages } from '@pages/languages/languages';
-import { Types } from '@app/pages/registers/types/types';
+import { HomePage } from '@app/pages/home/home.page';
+import { LanguagesPage } from '@app/pages/languages/languages.page';
+import { TypesPage } from '@app/pages/registers/types/types.page';
 
 export const APP_ROUTES_MAP = {
   configurations: {
@@ -16,14 +16,14 @@ export const APP_ROUTES_MAP = {
 export const routes: Routes = [
   {
     path: '',
-    component: Home,
+    component: HomePage,
   },
   {
     path: 'configs',
     children: [
       {
         path: 'langs',
-        component: Languages,
+        component: LanguagesPage,
       },
     ],
   },
@@ -32,7 +32,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'types',
-        component: Types,
+        component: TypesPage,
       },
     ],
   },

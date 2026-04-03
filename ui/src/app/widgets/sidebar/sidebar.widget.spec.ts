@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Types } from './types';
+import { Sidebar } from './sidebar.widget';
 
-describe('Types', () => {
-  let component: Types;
-  let fixture: ComponentFixture<Types>;
+describe('Sidebar', () => {
+  let component: Sidebar;
+  let fixture: ComponentFixture<Sidebar>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Types],
+      imports: [Sidebar],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Types);
+    fixture = TestBed.createComponent(Sidebar);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
