@@ -25,6 +25,6 @@ export const Backgrounds: Record<Variant, string> = {
 export const Texts: Record<Variant, string> = {
   success: 'text-white',
   warning: 'text-black',
-  info: 'text-black',
+  info: 'text-white',
   error: 'text-white',
 };

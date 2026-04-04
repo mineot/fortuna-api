@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FooterWidgetService } from '@widgets/footer/footer.widget.service';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HeaderWidgetService } from '@widgets/header/header.widget.service';
 import { LanguageService } from '@i18n/language.service';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ToastWidgetService } from '@widgets/toast/toast.widget.service';
+import { TypesPageService } from '../types.page.service';
 
 @Component({
   selector: 'p-type-form',
@@ -13,7 +15,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 })
 export class TypeFormPage implements OnInit, OnDestroy {
   form: FormGroup = new FormGroup({
-    group: new FormControl('', [Validators.required]),
+    group: new FormControl('', [Validators.required, Validators.min(1)]),
     name: new FormControl('', [Validators.required]),
   });
 
@@ -22,6 +24,8 @@ export class TypeFormPage implements OnInit, OnDestroy {
     public readonly header: HeaderWidgetService,
     public readonly i18n: LanguageService,
     public readonly router: Router,
+    public readonly service: TypesPageService,
+    public readonly toast: ToastWidgetService,
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +38,20 @@ export class TypeFormPage implements OnInit, OnDestroy {
         variant: 'success',
         label: this.i18n.t('common.save'),
         click: () => {
-          console.log('Save Type');
+          if (this.form.valid) {
+            this.service.create(this.form.value).then(() => {
+              this.toast.show({
+                variant: 'success',
+                message: this.i18n.t('registers.types.success_create'),
+              });
+              this.router.navigate(['/registers/types']);
+            });
+          } else {
+            this.toast.show({
+              variant: 'warning',
+              message: this.i18n.t('common.invalid_form'),
+            });
+          }
         },
       },
       {
@@ -51,5 +68,7 @@ export class TypeFormPage implements OnInit, OnDestroy {
     this.footer.reset();
   }
 
-  onSubmit() {}
+  validate(field: 'group' | 'name', type: 'required' | 'min'): boolean | undefined {
+    return this.form.get(field)?.hasError(type);
+  }
 }

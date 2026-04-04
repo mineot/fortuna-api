@@ -22,7 +22,7 @@ export class TypesPageService {
       const list: ApiMessageBody<TypeSelect[]> = await this.api.types.listAll(params);
       this.types.set(list.data ?? []);
     } catch (err) {
-      this.toastError('types_error_list_all', err as Error);
+      this.toastError('error_list_all', err as Error);
     }
   }
 
@@ -31,7 +31,7 @@ export class TypesPageService {
       await this.api.types.create(type);
       await this.listAll();
     } catch (err) {
-      this.toastError('types_error_create', err as Error);
+      this.toastError('error_create', err as Error);
     }
   }
 
@@ -40,7 +40,7 @@ export class TypesPageService {
       await this.api.types.update(type, id);
       await this.listAll();
     } catch (err) {
-      this.toastError('types_error_update', err as Error);
+      this.toastError('error_update', err as Error);
     }
   }
 
@@ -49,14 +49,14 @@ export class TypesPageService {
       await this.api.types.delete(id);
       await this.listAll();
     } catch (err) {
-      this.toastError('types_error_delete', err as Error);
+      this.toastError('error_delete', err as Error);
     }
   }
 
   private toastError(message: string, err: Error) {
     this.toast.show({
       variant: 'error',
-      message: this.i18n.t(`messages.${message}`),
+      message: this.i18n.t(`registers.types.${message}`),
       details: [err.message],
     });
   }

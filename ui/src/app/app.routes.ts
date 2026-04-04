@@ -17,4 +17,8 @@ export const routes: Routes = [
     path: 'registers/types/create',
     component: TypeFormPage,
   },
+  {
+    path: 'registers/types/:id/edit',
+    component: TypeFormPage,
+  },
 ];
