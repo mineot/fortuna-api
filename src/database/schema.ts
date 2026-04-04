@@ -32,6 +32,7 @@ export type Migration = Selectable<MigrationTable>;
 export type NewMigration = Insertable<MigrationTable>;
 export type MigrationUpdate = Updateable<MigrationTable>;
 
-export type Type = Selectable<TypeTable>;
+export type FilterTypes = { group?: number; name?: string };
 export type NewType = Insertable<TypeTable>;
+export type TypeSelect = Selectable<TypeTable>;
 export type TypeUpdate = Updateable<TypeTable>;

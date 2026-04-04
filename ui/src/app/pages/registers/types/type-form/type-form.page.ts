@@ -3,14 +3,20 @@ import { FooterWidgetService } from '@widgets/footer/footer.widget.service';
 import { HeaderWidgetService } from '@widgets/header/header.widget.service';
 import { LanguageService } from '@i18n/language.service';
 import { Router } from '@angular/router';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'p-type-form',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './type-form.page.html',
   styleUrl: './type-form.page.scss',
 })
 export class TypeFormPage implements OnInit, OnDestroy {
+  form: FormGroup = new FormGroup({
+    group: new FormControl('', [Validators.required]),
+    name: new FormControl('', [Validators.required]),
+  });
+
   constructor(
     public readonly footer: FooterWidgetService,
     public readonly header: HeaderWidgetService,
@@ -44,4 +50,6 @@ export class TypeFormPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.footer.reset();
   }
+
+  onSubmit() {}
 }

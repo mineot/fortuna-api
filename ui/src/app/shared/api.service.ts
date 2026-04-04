@@ -1,29 +1,29 @@
+import { Api, OnApi, Types } from './api.types';
+import { FilterTypes, NewType, TypeUpdate } from './models/types.model';
 import { Injectable } from '@angular/core';
-import { Api, OnApi } from './api.types';
-import { CreateType, ListAllTypes, UpdateType } from './models/types.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService implements OnApi {
-  private readonly api: Api | undefined = window.electronApi?.app;
+  private $api: Api;
 
-  getSystemLanguage(): Promise<string | null> {
-    return this.api?.getSystemLanguage() ?? Promise.resolve(null);
+  constructor() {
+    if (!window.electronApi?.app) {
+      throw new Error('Electron API is not available.');
+    } else {
+      this.$api = window.electronApi.app;
+    }
   }
 
-  readonly types = {
-    listAll: (params?: ListAllTypes) => {
-      return this.api?.types.listAll(params) ?? Promise.resolve([]);
-    },
-    create: (type: CreateType) => {
-      return this.api?.types.create(type) ?? Promise.resolve([]);
-    },
-    update: (type: UpdateType) => {
-      return this.api?.types.update(type) ?? Promise.resolve([]);
-    },
-    delete: (id: number) => {
-      return this.api?.types.delete(id) ?? Promise.resolve([]);
-    },
+  async getSystemLanguage() {
+    return this.$api.getSystemLanguage();
+  }
+
+  readonly types: Types = {
+    listAll: (params?: FilterTypes) => this.$api.types.listAll(params),
+    create: (type: NewType) => this.$api.types.create(type),
+    update: (type: TypeUpdate, id: number) => this.$api.types.update(type, id),
+    delete: (id: number) => this.$api.types.delete(id),
   };
 }

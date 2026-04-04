@@ -63,17 +63,23 @@ export class LanguageService {
   }
 
   private async detectSystemLanguage(): Promise<Language> {
-    const preferredLanguages = (await this.api.getSystemLanguage()) ?? this.defaultLanguage;
+    try {
+      const systemLanguage = await this.api.getSystemLanguage();
+      const preferredLanguages = systemLanguage?.data ?? [this.defaultLanguage];
 
-    for (const locale of preferredLanguages) {
-      const normalized = this.normalizeLocale(locale);
+      for (const locale of preferredLanguages) {
+        const normalized = this.normalizeLocale(locale);
 
-      if (normalized) {
-        return normalized;
+        if (normalized) {
+          return normalized;
+        }
       }
-    }
 
-    return this.defaultLanguage;
+      return this.defaultLanguage;
+    } catch (err) {
+      console.log(err);
+      return this.defaultLanguage;
+    }
   }
 
   private normalizeLocale(locale: string): Language | null {

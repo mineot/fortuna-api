@@ -1,34 +1,17 @@
-export type Type = {
-  id?: number;
-  name: string;
-  group: number;
+import { Selectable, Insertable, Updateable } from 'kysely';
+
+interface BaseTable {
+  id: number;
   created_at: string;
   updated_at: string;
-};
+}
 
-export type ListAllTypes = {
-  group?: number;
-  name?: string;
-};
-
-export type CreateType = {
+export interface TypeTable extends BaseTable {
   group: number;
   name: string;
-};
+}
 
-export type UpdateType = {
-  id: number;
-  group: number;
-  name: string;
-};
-
-export type DeleteType = {
-  id: number;
-};
-
-export type RegisterTypes = {
-  listAll: (params?: ListAllTypes) => Promise<Type[]>;
-  create: (type: CreateType) => Promise<unknown[]>;
-  update: (type: UpdateType) => Promise<unknown[]>;
-  delete: (id: number) => Promise<unknown[]>;
-};
+export type FilterTypes = { group?: number; name?: string };
+export type NewType = Insertable<TypeTable>;
+export type TypeSelect = Selectable<TypeTable>;
+export type TypeUpdate = Updateable<TypeTable>;

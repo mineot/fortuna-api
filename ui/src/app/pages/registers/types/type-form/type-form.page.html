@@ -1,9 +1,16 @@
-<div class="mb-3">
-  <label for="inputGroup" class="form-label">{{ i18n.t('common.group') }}</label>
-  <input type="number" class="form-control" id="inputGroup" />
-</div>
-
-<div class="mb-3">
-  <label for="inputName" class="form-label">{{ i18n.t('common.name') }}</label>
-  <input type="text" class="form-control" id="inputName" />
-</div>
+<form class="d-flex flex-column gap-3" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="inputGroup" class="form-label">
+      <span>{{ i18n.t('common.group') }}</span>
+    </label>
+    <input type="number" class="form-control" id="inputGroup" formControlName="group" />
+    <small class="text-danger d-none">Error</small>
+  </div>
+  <div>
+    <label for="inputName" class="form-label">
+      <span>{{ i18n.t('common.name') }}</span>
+    </label>
+    <input type="text" class="form-control" id="inputName" formControlName="name" />
+    <small class="text-danger d-none">Error</small>
+  </div>
+</form>
