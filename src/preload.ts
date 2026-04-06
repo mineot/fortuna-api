@@ -1,20 +1,19 @@
-import { ApiMessage } from './api-message';
 import { contextBridge, ipcRenderer } from 'electron';
-import { FilterTypes, NewType, TypeSelect, TypeUpdate } from './database/schema';
+import { FilterTypes, NewType, Type, TypeUpdate } from './database/schemas';
 import { DeleteResult, InsertResult, UpdateResult } from 'kysely';
 
 contextBridge.exposeInMainWorld('electronApi', {
   app: {
-    getSystemLanguage: (): ApiMessage<string[]> => ipcRenderer.invoke('app:get-system-language'),
+    getSystemLanguage: (): Promise<string[]> => ipcRenderer.invoke('app:get-system-language'),
     types: {
-      listAll: async (params?: FilterTypes): ApiMessage<TypeSelect[]> =>
+      listAll: async (params?: FilterTypes): Promise<Type[]> =>
         ipcRenderer.invoke('types:list-all', params),
-      create: async (type: NewType): ApiMessage<InsertResult[]> =>
+      find: async (id: number): Promise<Type | undefined> => ipcRenderer.invoke('types:find', id),
+      create: async (type: NewType): Promise<InsertResult[]> =>
         ipcRenderer.invoke('types:create', type),
-      update: async (type: TypeUpdate, id: number): ApiMessage<UpdateResult[]> =>
+      update: async (type: TypeUpdate, id: number): Promise<UpdateResult[]> =>
         ipcRenderer.invoke('types:update', type, id),
-      delete: async (id: number): ApiMessage<DeleteResult[]> =>
-        ipcRenderer.invoke('types:delete', id),
+      delete: async (id: number): Promise<DeleteResult[]> => ipcRenderer.invoke('types:delete', id),
     },
   },
 });

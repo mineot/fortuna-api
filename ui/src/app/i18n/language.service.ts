@@ -65,7 +65,7 @@ export class LanguageService {
   private async detectSystemLanguage(): Promise<Language> {
     try {
       const systemLanguage = await this.api.getSystemLanguage();
-      const preferredLanguages = systemLanguage?.data ?? [this.defaultLanguage];
+      const preferredLanguages = systemLanguage ?? [this.defaultLanguage];
 
       for (const locale of preferredLanguages) {
         const normalized = this.normalizeLocale(locale);

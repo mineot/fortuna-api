@@ -1,10 +1,5 @@
 import { Selectable, Insertable, Updateable } from 'kysely';
-
-interface BaseTable {
-  id: number;
-  created_at: string;
-  updated_at: string;
-}
+import { BaseTable } from '.';
 
 export interface TypeTable extends BaseTable {
   group: number;
@@ -13,5 +8,5 @@ export interface TypeTable extends BaseTable {
 
 export type FilterTypes = { group?: number; name?: string };
 export type NewType = Insertable<TypeTable>;
-export type TypeSelect = Selectable<TypeTable>;
+export type Type = Selectable<TypeTable>;
 export type TypeUpdate = Updateable<TypeTable>;

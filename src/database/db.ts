@@ -1,7 +1,7 @@
 import { getDatabasePath } from './path';
 import { Kysely, SqliteDialect } from 'kysely';
 import Database from 'better-sqlite3';
-import type { Database as DatabaseSchema } from './schema';
+import type { Database as DatabaseSchema } from './schemas';
 
 let db: Kysely<DatabaseSchema> | null = null;
 

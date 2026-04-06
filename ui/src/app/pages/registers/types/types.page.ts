@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { FooterWidgetService } from '@widgets/footer/footer.widget.service';
 import { HeaderWidgetService } from '@widgets/header/header.widget.service';
 import { LanguageService } from '@i18n/language.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TypesPageService } from './types.page.service';
 
 @Component({
   selector: 'p-types',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './types.page.html',
   styleUrl: './types.page.scss',
 })

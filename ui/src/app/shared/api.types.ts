@@ -1,14 +1,14 @@
 import { DeleteResult, InsertResult, UpdateResult } from 'kysely';
-import { ApiMessage } from './api-message';
-import { FilterTypes, NewType, TypeSelect, TypeUpdate } from './models/types.model';
+import { FilterTypes, NewType, Type, TypeUpdate } from './models';
 
-type SystemLanguage = () => ApiMessage<string[]>;
+type SystemLanguage = () => Promise<string[]>;
 
 export type Types = {
-  listAll: (params?: FilterTypes) => ApiMessage<TypeSelect[]>;
-  create: (type: NewType) => ApiMessage<InsertResult[]>;
-  update: (type: TypeUpdate, id: number) => ApiMessage<UpdateResult[]>;
-  delete: (id: number) => ApiMessage<DeleteResult[]>;
+  listAll: (params?: FilterTypes) => Promise<Type[]>;
+  find(id: number): Promise<Type | undefined>;
+  create: (type: NewType) => Promise<InsertResult[]>;
+  update: (type: TypeUpdate, id: number) => Promise<UpdateResult[]>;
+  delete: (id: number) => Promise<DeleteResult[]>;
 };
 
 export type Api = {

@@ -1,6 +1,6 @@
 import { getDatabase } from './db';
 import { Kysely } from 'kysely';
-import type { Database } from './schema';
+import type { Database } from './schemas';
 
 import { migration0001Init } from './migrations/0001_init';
 

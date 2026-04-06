@@ -1,13 +1,12 @@
-import { ApiMessage } from 'src/api-message';
 import { DeleteResult, InsertResult, UpdateResult } from 'kysely';
 import { getDatabase } from '@db';
 import { IpcMainInvokeEvent } from 'electron';
-import type { FilterTypes, NewType, TypeSelect, TypeUpdate } from 'src/database/schema';
+import type { FilterTypes, NewType, Type, TypeUpdate } from 'src/database/schemas';
 
 export async function registerListAllTypes(
   _event: IpcMainInvokeEvent,
   params?: FilterTypes,
-): ApiMessage<TypeSelect[]> {
+): Promise<Type[]> {
   const db = getDatabase();
   const { group, name } = params ?? {};
 
@@ -21,47 +20,41 @@ export async function registerListAllTypes(
     query = query.where('name', 'like', `%${name}%`);
   }
 
-  return {
-    type: 'success',
-    data: await query.orderBy('group').orderBy('name').execute(),
-  };
+  return await query.orderBy('group').orderBy('name').execute();
+}
+
+export async function registerFindType(
+  _event: IpcMainInvokeEvent,
+  id: number,
+): Promise<Type | undefined> {
+  const db = getDatabase();
+  return await db.selectFrom('types').selectAll().where('id', '=', id).executeTakeFirst();
 }
 
 export async function registerCreateType(
   _event: IpcMainInvokeEvent,
   type: NewType,
-): ApiMessage<InsertResult[]> {
+): Promise<InsertResult[]> {
   const db = getDatabase();
   type.created_at = new Date().toISOString();
   type.updated_at = new Date().toISOString();
-
-  return {
-    type: 'success',
-    data: await db.insertInto('types').values(type).execute(),
-  };
+  return await db.insertInto('types').values(type).execute();
 }
 
 export async function registerUpdateType(
   _event: IpcMainInvokeEvent,
   type: TypeUpdate,
   id: number,
-): ApiMessage<UpdateResult[]> {
+): Promise<UpdateResult[]> {
   const db = getDatabase();
   type.updated_at = new Date().toISOString();
-
-  return {
-    type: 'success',
-    data: await db.updateTable('types').set(type).where('id', '=', id).execute(),
-  };
+  return await db.updateTable('types').set(type).where('id', '=', id).execute();
 }
 
 export async function registerDeleteType(
   _event: IpcMainInvokeEvent,
   id: number,
-): ApiMessage<DeleteResult[]> {
+): Promise<DeleteResult[]> {
   const db = getDatabase();
-  return {
-    type: 'success',
-    data: await db.deleteFrom('types').where('id', '=', id).execute(),
-  };
+  return await db.deleteFrom('types').where('id', '=', id).execute();
 }

@@ -1,5 +1,5 @@
 import { Kysely } from 'kysely';
-import type { Database } from '../schema';
+import type { Database } from '../schemas';
 import type { MigrationDefinition } from '../migrator';
 
 export const migration0001Init: MigrationDefinition = {
