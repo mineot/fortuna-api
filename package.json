@@ -7,7 +7,9 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "tsup && node scripts/copy-renderer.mjs",
-    "dev": "NODE_OPTIONS='--import tsx' electron --no-sandbox --disable-setuid-sandbox src/main.ts",
+    "dev": "cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts",
+    "postinstall": "npm run rebuild:electron",
+    "rebuild:electron": "electron-rebuild -f -w better-sqlite3",
     "start": "electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js",
     "check": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
@@ -36,6 +38,8 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "@electron/rebuild": "^4.0.1",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.2",
     "@typescript-eslint/eslint-plugin": "^8.58.1",
     "@typescript-eslint/parser": "^8.58.1",
@@ -43,11 +47,14 @@
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
+    "cross-env": "^7.0.3",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2"
   },
   "dependencies": {
-    "electron": "^37.6.0"
+    "better-sqlite3": "^12.8.0",
+    "electron": "^41.2.0",
+    "kysely": "^0.28.15"
   }
 }

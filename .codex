@@ -14,6 +14,8 @@
 - npm distribution as a single bundle via `tsup` in `dist/fortuna.js` (minified, no sourcemap).
 - Code quality stack: `ESLint` (modern flat config) + `Prettier`.
 - Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
+- Database layer initialized with `Kysely` + `SQLite` (`better-sqlite3`).
+- Database access uses a singleton instance (`getDb`) in the Electron main process lifecycle.
 
 ## 3) Licensing
 - License file created: `LICENSE`.
@@ -30,25 +32,35 @@
 - `.prettierrc`: formatting rules.
 - `.prettierignore`: Prettier exclusions.
 - `src/main.ts`: current entrypoint.
+- `src/database/schema.ts`: base DB schema types for Kysely.
+- `src/database/client.ts`: Kysely SQLite factory + singleton access (`getDb`) + cleanup (`destroyDb`).
+- `src/database/index.ts`: database module exports.
 - `src/renderer/index.html`: basic renderer HTML used by Electron window.
 - `scripts/copy-renderer.mjs`: copies renderer HTML to `dist/` during build.
 - `LICENSE`: Apache License 2.0 text.
 - `.codex`: this project context.
-- `.gitignore`: ignores `dist/` and `node_modules/`.
+- `.gitignore`: ignores `dist/`, `node_modules/`, and `dev.*`.
 - Historical note: entrypoint was renamed from `src/index.ts` to `src/main.ts`.
 
 ## 5) Installed dev dependencies
-- `typescript` (`^5.8.3`)
-- `tsx` (`^4.19.3`)
-- `@types/node` (`^22.15.3`)
+- `@types/better-sqlite3` (`^7.6.13`)
+- `@electron/rebuild` (`^4.0.1`)
+- `@types/node` (`^25.5.2`)
+- `@typescript-eslint/eslint-plugin` (`^8.58.1`)
+- `@typescript-eslint/parser` (`^8.58.1`)
+- `cross-env` (`^7.0.3`)
+- `eslint` (`^10.2.0`)
+- `eslint-config-prettier` (`^10.1.8`)
+- `globals` (`^17.4.0`)
+- `prettier` (`^3.8.1`)
 - `tsup` (`^8.5.1`)
-- `electron` (`^37.x`)
-- `eslint` (`^9.x`)
-- `@typescript-eslint/parser` (`^8.x`)
-- `@typescript-eslint/eslint-plugin` (`^8.x`)
-- `eslint-config-prettier` (`^10.x`)
-- `prettier` (`^3.x`)
-- `globals` (`^16.x`)
+- `tsx` (`^4.21.0`)
+- `typescript` (`^6.0.2`)
+
+## 5.1) Installed runtime dependencies
+- `better-sqlite3` (`^12.8.0`)
+- `electron` (`^41.2.0`)
+- `kysely` (`^0.28.15`)
 
 ## 6) Configured npm scripts
 - `build`: `tsup && node scripts/copy-renderer.mjs`
@@ -56,21 +68,26 @@
 - `lint:fix`: `eslint . --fix`
 - `format`: `prettier . --write`
 - `format:check`: `prettier . --check`
-- `dev`: `NODE_OPTIONS='--import tsx' electron --no-sandbox --disable-setuid-sandbox src/main.ts`
+- `dev`: `cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts`
+- `postinstall`: `npm run rebuild:electron`
 - `start`: `electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js`
+- `rebuild:electron`: `electron-rebuild -f -w better-sqlite3`
 - `check`: `tsc --noEmit -p tsconfig.json`
 
 ## 7) TypeScript configuration (tsconfig)
 - Modern ECMAScript target: `target: ESNext`
 - Modern library set: `lib: ["ESNext"]`
-- Node module format: `module: NodeNext`
-- Module resolution: `moduleResolution: NodeNext`
+- Node module format: `module: ESNext`
+- Module resolution: `moduleResolution: Bundler`
+- Paths alias:
+  - `@db` -> `./src/database/index.ts`
 - Strict mode enabled: `strict: true`
 - Additional safety flags:
   - `noUncheckedIndexedAccess`
   - `exactOptionalPropertyTypes`
   - `isolatedModules`
   - `verbatimModuleSyntax`
+- Local TypeScript imports are written without `.js` extension (e.g., `./database`, `./client`, `./schema`).
 - Artifact generation:
   - `declaration: true`
   - `declarationMap: true`
@@ -90,6 +107,15 @@
 - Dev TypeScript loading is done via `NODE_OPTIONS='--import tsx'`.
 - `npm run start` opens Electron using the built bundle in `dist/`.
 - In Linux environments without configured `chrome-sandbox` SUID, dev/start run with `--no-sandbox --disable-setuid-sandbox`.
+- `better-sqlite3` must be rebuilt for Electron ABI (`npm run rebuild:electron`) after install/version changes.
+- Rebuild is automated on install via `postinstall`.
+- Electron was bumped to a secure major version line to address `npm audit` high-severity advisories.
+- Database path resolution by `NODE_ENV`:
+- `dev`: `path.join(process.cwd(), 'dev.db')`
+- default (no `NODE_ENV=dev`): `~/.fortuna/fortuna.db` (directory is created automatically)
+- Database lifecycle:
+- instance is created lazily via `getDb()` and reused (single process instance)
+- app quit is intercepted in `before-quit` to await `destroyDb()` before final shutdown
 - Lint and format should run before npm publish.
 - Type-aware ESLint uses `tsconfig.eslint.json` to avoid files outside `rootDir` from `tsconfig.json`.
 - Current Prettier rules:

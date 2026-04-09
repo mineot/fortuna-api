@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron';
+import { destroyDb, getDb } from '@db';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -24,14 +25,38 @@ function createWindow(): void {
   mainWindow.loadFile(resolveHtmlPath());
 }
 
-app.whenReady().then(() => {
-  createWindow();
+app
+  .whenReady()
+  .then(() => {
+    getDb();
+    createWindow();
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+      }
+    });
+  })
+  .catch((error: unknown) => {
+    console.error('Failed to start Electron app:', error);
+    app.exit(1);
   });
+
+let isQuitting = false;
+
+app.on('before-quit', (event) => {
+  if (isQuitting) {
+    return;
+  }
+
+  event.preventDefault();
+  isQuitting = true;
+
+  destroyDb()
+    .catch(() => {})
+    .finally(() => {
+      app.quit();
+    });
 });
 
 app.on('window-all-closed', () => {
