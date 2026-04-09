@@ -1,7 +1,8 @@
-import { app, BrowserWindow } from 'electron';
-import { destroyDb, getDb } from '@db';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { destroyDb, getDb, migrateToLatest } from '@db';
+import { app, BrowserWindow } from 'electron';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,8 +28,9 @@ function createWindow(): void {
 
 app
   .whenReady()
-  .then(() => {
+  .then(async () => {
     getDb();
+    await migrateToLatest();
     createWindow();
 
     app.on('activate', () => {

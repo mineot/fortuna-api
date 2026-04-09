@@ -1,9 +1,14 @@
+import type { Generated } from 'kysely';
+
 export interface Database {
-  // Add your tables here as the project evolves.
-  // Example:
-  // users: {
-  //   id: number;
-  //   name: string;
-  //   created_at: string;
-  // };
+  migrations: {
+    version: number;
+    name: string;
+    executed_at: string;
+  };
+  types: {
+    id: Generated<number>;
+    group: string;
+    value: string;
+  };
 }

@@ -1,8 +1,10 @@
-import { Kysely, SqliteDialect } from 'kysely';
 import { mkdirSync } from 'node:fs';
-import DatabaseDriver from 'better-sqlite3';
 import os from 'node:os';
 import path from 'node:path';
+
+import DatabaseDriver from 'better-sqlite3';
+import { Kysely, SqliteDialect } from 'kysely';
+
 import type { Database } from './schema';
 
 export interface DatabaseConfig {

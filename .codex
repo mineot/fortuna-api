@@ -16,6 +16,7 @@
 - Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
 - Database layer initialized with `Kysely` + `SQLite` (`better-sqlite3`).
 - Database access uses a singleton instance (`getDb`) in the Electron main process lifecycle.
+- Migration system implemented with `up/down` and numeric versions.
 
 ## 3) Licensing
 - License file created: `LICENSE`.
@@ -35,6 +36,11 @@
 - `src/database/schema.ts`: base DB schema types for Kysely.
 - `src/database/client.ts`: Kysely SQLite factory + singleton access (`getDb`) + cleanup (`destroyDb`).
 - `src/database/index.ts`: database module exports.
+- `src/database/migrations-table.ts`: ensures the base `migrations` table exists (non-versioned prerequisite).
+- `src/database/migrator.ts`: migration runner by target version (`migrateTo` / `migrateToLatest`).
+- `src/database/migrations/types.ts`: migration contract type.
+- `src/database/migrations/index.ts`: ordered migration registry.
+- `src/database/migrations/001_create_types_table.ts`: versioned migration creating `types` table.
 - `src/renderer/index.html`: basic renderer HTML used by Electron window.
 - `scripts/copy-renderer.mjs`: copies renderer HTML to `dist/` during build.
 - `LICENSE`: Apache License 2.0 text.
@@ -51,6 +57,7 @@
 - `cross-env` (`^7.0.3`)
 - `eslint` (`^10.2.0`)
 - `eslint-config-prettier` (`^10.1.8`)
+- `eslint-plugin-simple-import-sort` (`^12.1.1`)
 - `globals` (`^17.4.0`)
 - `prettier` (`^3.8.1`)
 - `tsup` (`^8.5.1`)
@@ -113,6 +120,18 @@
 - Database path resolution by `NODE_ENV`:
 - `dev`: `path.join(process.cwd(), 'dev.db')`
 - default (no `NODE_ENV=dev`): `~/.fortuna/fortuna.db` (directory is created automatically)
+- Migrations:
+- `migrations` table is always created as prerequisite (not versioned migration).
+- Tracks `version`, `name`, and `executed_at`.
+- Supports automatic `up` and `down` synchronization based on numeric version comparison between DB and migration files.
+- If DB version is lower than the latest migration file version, pending `up` migrations are applied automatically.
+- If DB version is higher than the latest migration file version, `down` is applied automatically until synchronization.
+- If a DB-applied version no longer has a migration file, its registry row is removed from `migrations` to allow auto-sync with current code state.
+- Current versioned migration:
+- `v1` (`create_types_table`) creates table `types` with:
+  - `id` generated (`integer primary key autoincrement`)
+  - `group` (`text`)
+  - `value` (`text`)
 - Database lifecycle:
 - instance is created lazily via `getDb()` and reused (single process instance)
 - app quit is intercepted in `before-quit` to await `destroyDb()` before final shutdown
@@ -124,11 +143,13 @@
 - `semi: true`
 - `printWidth: 100`
 - `tabWidth: 2`
+- Import order is enforced automatically by ESLint (`simple-import-sort`) and can be fixed with `npm run lint:fix`.
 
 ## 9) Conventions for next changes
 - Keep TypeScript sources in `src/` and build output in `dist/`.
 - Prefer modern configuration (`ESNext`) unless compatibility requires otherwise.
 - Mandatory rule: always update this file (`.codex`) whenever architecture, scripts, tooling, folder structure, or build/runtime flow changes.
+- Mandatory rule: after any code change, always run `npm run lint:fix`.
 
 ## 10) Collaboration flow (terminal)
 - Agreed flow:
