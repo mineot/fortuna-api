@@ -1,0 +1,101 @@
+# Fortuna Project - Current Context
+
+## 1) Project objective
+- Name: `fortuna`
+- Purpose: personal financial management application.
+- Current state: initial Node.js + TypeScript bootstrap.
+
+## 2) Decisions already made
+- Chosen license: Apache 2.0.
+- Primary language: TypeScript.
+- JavaScript module system: ESM (`"type": "module"`).
+- Minimum Node.js version: `>=20.0.0`.
+- Build output directory: `dist/`.
+- npm distribution as a single bundle via `tsup` in `dist/fortuna.js` (minified, no sourcemap).
+- Code quality stack: `ESLint` (modern flat config) + `Prettier`.
+
+## 3) Licensing
+- License file created: `LICENSE`.
+- `package.json` updated with `"license": "Apache-2.0"`.
+- Copyright:
+  - `Copyright 2026 Fabiano Pires (Mineot)`.
+
+## 4) Current file structure
+- `package.json`: project metadata and scripts.
+- `package-lock.json`: npm lockfile.
+- `tsconfig.json`: TypeScript compiler config.
+- `tsconfig.eslint.json`: dedicated ESLint config (type-aware lint including `tsup.config.ts`).
+- `eslint.config.mjs`: modern lint configuration with Prettier integration.
+- `.prettierrc`: formatting rules.
+- `.prettierignore`: Prettier exclusions.
+- `src/main.ts`: current entrypoint.
+- `LICENSE`: Apache License 2.0 text.
+- `.codex`: this project context.
+- `.gitignore`: ignores `dist/` and `node_modules/`.
+- Historical note: entrypoint was renamed from `src/index.ts` to `src/main.ts`.
+
+## 5) Installed dev dependencies
+- `typescript` (`^5.8.3`)
+- `tsx` (`^4.19.3`)
+- `@types/node` (`^22.15.3`)
+- `tsup` (`^8.5.1`)
+- `eslint` (`^9.x`)
+- `@typescript-eslint/parser` (`^8.x`)
+- `@typescript-eslint/eslint-plugin` (`^8.x`)
+- `eslint-config-prettier` (`^10.x`)
+- `prettier` (`^3.x`)
+- `globals` (`^16.x`)
+
+## 6) Configured npm scripts
+- `build`: `tsup`
+- `lint`: `eslint .`
+- `lint:fix`: `eslint . --fix`
+- `format`: `prettier . --write`
+- `format:check`: `prettier . --check`
+- `dev`: `tsx watch src/main.ts`
+- `start`: `node dist/fortuna.js`
+- `check`: `tsc --noEmit -p tsconfig.json`
+
+## 7) TypeScript configuration (tsconfig)
+- Modern ECMAScript target: `target: ESNext`
+- Modern library set: `lib: ["ESNext"]`
+- Node module format: `module: NodeNext`
+- Module resolution: `moduleResolution: NodeNext`
+- Strict mode enabled: `strict: true`
+- Additional safety flags:
+  - `noUncheckedIndexedAccess`
+  - `exactOptionalPropertyTypes`
+  - `isolatedModules`
+  - `verbatimModuleSyntax`
+- Artifact generation:
+  - `declaration: true`
+  - `declarationMap: true`
+  - `sourceMap: true`
+- Directories:
+  - input: `src/`
+  - output: `dist/`
+
+## 8) Known notes
+- npm distribution build:
+- Entry: `src/main.ts`
+- Single output file: `dist/fortuna.js`
+- Minification: enabled
+- Sourcemap: disabled
+- Lint and format should run before npm publish.
+- Type-aware ESLint uses `tsconfig.eslint.json` to avoid files outside `rootDir` from `tsconfig.json`.
+- Current Prettier rules:
+- `singleQuote: true`
+- `trailingComma: "all"`
+- `semi: true`
+- `printWidth: 100`
+- `tabWidth: 2`
+
+## 9) Conventions for next changes
+- Keep TypeScript sources in `src/` and build output in `dist/`.
+- Prefer modern configuration (`ESNext`) unless compatibility requires otherwise.
+- Mandatory rule: always update this file (`.codex`) whenever architecture, scripts, tooling, folder structure, or build/runtime flow changes.
+
+## 10) Collaboration flow (terminal)
+- Agreed flow:
+- The user runs only installation commands when requested (`npm install`, `npm i`, `npm install -D`, etc.).
+- The agent performs all other configuration and file changes directly in the project.
