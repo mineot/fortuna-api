@@ -1,11 +1,11 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: {
-    fortuna: "src/main.ts",
+    fortuna: 'src/main.ts',
   },
-  format: ["esm"],
-  outDir: "dist",
+  format: ['esm'],
+  outDir: 'dist',
   bundle: true,
   splitting: false,
   sourcemap: false,
