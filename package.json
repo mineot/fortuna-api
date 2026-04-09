@@ -1,0 +1,25 @@
+{
+  "name": "fortuna",
+  "version": "1.0.0",
+  "description": "Personal financial management",
+  "main": "index.js",
+  "type": "commonjs",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fabiano Pires (Mineot)",
+  "homepage": "https://github.com/mineot/fortuna#readme",
+  "bugs": {
+    "url": "https://github.com/mineot/fortuna/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mineot/fortuna.git"
+  },
+  "keywords": [
+    "personal",
+    "financial",
+    "management"
+  ]
+}
