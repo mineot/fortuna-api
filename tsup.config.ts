@@ -5,6 +5,8 @@ export default defineConfig({
     fortuna: 'src/main.ts',
   },
   format: ['esm'],
+  platform: 'node',
+  target: 'node20',
   outDir: 'dist',
   bundle: true,
   splitting: false,
@@ -12,4 +14,5 @@ export default defineConfig({
   minify: true,
   clean: true,
   treeshake: true,
+  external: ['electron'],
 });

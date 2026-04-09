@@ -6,9 +6,9 @@
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsup",
-    "dev": "tsx watch src/main.ts",
-    "start": "node dist/fortuna.js",
+    "build": "tsup && node scripts/copy-renderer.mjs",
+    "dev": "NODE_OPTIONS='--import tsx' electron --no-sandbox --disable-setuid-sandbox src/main.ts",
+    "start": "electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js",
     "check": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -46,5 +46,8 @@
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "electron": "^37.6.0"
   }
 }

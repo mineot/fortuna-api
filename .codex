@@ -3,7 +3,7 @@
 ## 1) Project objective
 - Name: `fortuna`
 - Purpose: personal financial management application.
-- Current state: initial Node.js + TypeScript bootstrap.
+- Current state: desktop application bootstrap with Electron + TypeScript.
 
 ## 2) Decisions already made
 - Chosen license: Apache 2.0.
@@ -13,6 +13,7 @@
 - Build output directory: `dist/`.
 - npm distribution as a single bundle via `tsup` in `dist/fortuna.js` (minified, no sourcemap).
 - Code quality stack: `ESLint` (modern flat config) + `Prettier`.
+- Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
 
 ## 3) Licensing
 - License file created: `LICENSE`.
@@ -29,6 +30,8 @@
 - `.prettierrc`: formatting rules.
 - `.prettierignore`: Prettier exclusions.
 - `src/main.ts`: current entrypoint.
+- `src/renderer/index.html`: basic renderer HTML used by Electron window.
+- `scripts/copy-renderer.mjs`: copies renderer HTML to `dist/` during build.
 - `LICENSE`: Apache License 2.0 text.
 - `.codex`: this project context.
 - `.gitignore`: ignores `dist/` and `node_modules/`.
@@ -39,6 +42,7 @@
 - `tsx` (`^4.19.3`)
 - `@types/node` (`^22.15.3`)
 - `tsup` (`^8.5.1`)
+- `electron` (`^37.x`)
 - `eslint` (`^9.x`)
 - `@typescript-eslint/parser` (`^8.x`)
 - `@typescript-eslint/eslint-plugin` (`^8.x`)
@@ -47,13 +51,13 @@
 - `globals` (`^16.x`)
 
 ## 6) Configured npm scripts
-- `build`: `tsup`
+- `build`: `tsup && node scripts/copy-renderer.mjs`
 - `lint`: `eslint .`
 - `lint:fix`: `eslint . --fix`
 - `format`: `prettier . --write`
 - `format:check`: `prettier . --check`
-- `dev`: `tsx watch src/main.ts`
-- `start`: `node dist/fortuna.js`
+- `dev`: `NODE_OPTIONS='--import tsx' electron --no-sandbox --disable-setuid-sandbox src/main.ts`
+- `start`: `electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js`
 - `check`: `tsc --noEmit -p tsconfig.json`
 
 ## 7) TypeScript configuration (tsconfig)
@@ -81,6 +85,11 @@
 - Single output file: `dist/fortuna.js`
 - Minification: enabled
 - Sourcemap: disabled
+- Build also copies `src/renderer/index.html` to `dist/index.html`.
+- `npm run dev` opens Electron directly from TypeScript source.
+- Dev TypeScript loading is done via `NODE_OPTIONS='--import tsx'`.
+- `npm run start` opens Electron using the built bundle in `dist/`.
+- In Linux environments without configured `chrome-sandbox` SUID, dev/start run with `--no-sandbox --disable-setuid-sandbox`.
 - Lint and format should run before npm publish.
 - Type-aware ESLint uses `tsconfig.eslint.json` to avoid files outside `rootDir` from `tsconfig.json`.
 - Current Prettier rules:
