@@ -2,13 +2,13 @@
   "name": "fortuna",
   "version": "1.0.0",
   "description": "Personal financial management",
-  "main": "dist/main.js",
+  "main": "dist/fortuna.js",
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsup",
     "dev": "tsx watch src/main.ts",
-    "start": "node dist/main.js",
+    "start": "node dist/fortuna.js",
     "check": "tsc --noEmit -p tsconfig.json"
   },
   "files": [
@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
+    "tsup": "^8.5.1",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   }
