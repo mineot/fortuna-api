@@ -51,7 +51,7 @@
             <a class="btn btn-sm btn-secondary" [routerLink]="[item.id, 'edit']">
               <i class="bi bi-pencil-fill"></i>
             </a>
-            <button class="btn btn-sm btn-danger">
+            <button class="btn btn-sm btn-danger" (click)="onDelete(item.id)">
               <i class="bi bi-trash-fill"></i>
             </button>
           </div>

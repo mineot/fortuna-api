@@ -9,11 +9,13 @@ export const en = {
     invalid_form: 'Invalid form',
     menu: 'Menu',
     name: 'Name',
+    no: 'No',
     save: 'Save',
     search: 'Search',
     success: 'Success',
     title: 'Title',
     warning: 'Warning',
+    yes: 'Yes',
   },
   home: {
     title: 'Home',

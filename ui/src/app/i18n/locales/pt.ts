@@ -11,11 +11,13 @@ export const pt = {
     invalid_form: 'Formulário inválido',
     menu: 'Menu',
     name: 'Nome',
+    no: 'Não',
     save: 'Salvar',
     search: 'Pesquisar',
     success: 'Sucesso',
     title: 'Título',
     warning: 'Aviso',
+    yes: 'Sim',
   },
   home: {
     title: 'Principal',

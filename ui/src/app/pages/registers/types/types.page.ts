@@ -2,7 +2,10 @@ import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { FooterWidgetService } from '@widgets/footer/footer.widget.service';
 import { HeaderWidgetService } from '@widgets/header/header.widget.service';
 import { LanguageService } from '@i18n/language.service';
+import { QuestionResponse, QuestionWidgetService } from '@widgets/question/question.widget.service';
 import { Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ToastWidgetService } from '@widgets/toast/toast.widget.service';
 import { TypesPageService } from './types.page.service';
 
 @Component({
@@ -12,15 +15,19 @@ import { TypesPageService } from './types.page.service';
   styleUrl: './types.page.scss',
 })
 export class TypesPage implements OnInit, OnDestroy {
+  private readonly $subscriptions: Subscription[] = [];
+
   readonly searchGroup = signal<string | null>(null);
   readonly searchName = signal<string | null>(null);
 
   constructor(
-    public readonly service: TypesPageService,
-    public readonly i18n: LanguageService,
-    public readonly header: HeaderWidgetService,
     public readonly footer: FooterWidgetService,
+    public readonly header: HeaderWidgetService,
+    public readonly i18n: LanguageService,
+    public readonly question: QuestionWidgetService,
     public readonly router: Router,
+    public readonly service: TypesPageService,
+    public readonly toast: ToastWidgetService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -36,11 +43,29 @@ export class TypesPage implements OnInit, OnDestroy {
       },
     ]);
 
+    this.$subscriptions.push(
+      this.question.response.subscribe(({ response, details }: QuestionResponse) => {
+        if (response === 'yes' && details) {
+          const id = details.find((d) => d.key === 'id')?.value;
+
+          if (id) {
+            this.service.delete(Number(id)).then(() => {
+              this.toast.show({
+                variant: 'success',
+                message: this.i18n.t('registers.types.success_delete'),
+              });
+            });
+          }
+        }
+      }),
+    );
+
     this.service.listAll();
   }
 
   ngOnDestroy(): void {
     this.footer.reset();
+    this.$subscriptions.forEach((s) => s.unsubscribe());
   }
 
   onSearch() {
@@ -54,5 +79,13 @@ export class TypesPage implements OnInit, OnDestroy {
     this.searchGroup.set(null);
     this.searchName.set(null);
     this.onSearch();
+  }
+
+  onDelete(id: number | undefined) {
+    this.question.show({
+      title: 'Voce tem certeza?',
+      message: 'Voce realmente deseja excluir esse tipo?',
+      details: [{ key: 'id', value: id }],
+    });
   }
 }

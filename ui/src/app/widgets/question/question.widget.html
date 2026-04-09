@@ -1,0 +1,36 @@
+<div
+  class="modal fade"
+  id="appModal"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="appModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="appModalLabel">
+          <span>{{ service.title() }}</span>
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="service.close()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <span>{{ service.message() }}</span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="service.confirm()">
+          <span>{{ i18n.t('common.yes') }}</span>
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="service.close()">
+          <span>{{ i18n.t('common.no') }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
