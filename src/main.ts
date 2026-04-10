@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { destroyDb, getDb, migrateToLatest } from '@db';
+import { registerIpcHandlers } from '@shared/handlers';
 import { app, BrowserWindow } from 'electron';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,6 +13,14 @@ function resolveHtmlPath(): string {
   return path.join(__dirname, 'index.html');
 }
 
+function resolvePreloadPath(): string {
+  if (isDev) {
+    return path.join(__dirname, 'preload.cjs');
+  }
+
+  return path.join(__dirname, 'preload.cjs');
+}
+
 async function createWindow(): Promise<void> {
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -19,11 +28,12 @@ async function createWindow(): Promise<void> {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload: resolvePreloadPath(),
     },
   });
 
   if (isDev) {
-    await mainWindow.loadURL('http://localhost:5173');
+    await mainWindow.loadURL('http://127.0.0.1:5173');
     return;
   }
 
@@ -33,8 +43,10 @@ async function createWindow(): Promise<void> {
 app
   .whenReady()
   .then(async () => {
-    getDb();
+    const db = getDb();
     await migrateToLatest();
+    registerIpcHandlers(db);
+
     await createWindow();
 
     app.on('activate', () => {

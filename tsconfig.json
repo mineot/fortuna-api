@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -19,7 +19,9 @@
     "rootDir": "src",
     "types": ["node"],
     "paths": {
-      "@db": ["./src/database/index.ts"]
+      "@db": ["./src/database/index.ts"],
+      "@db/schema": ["./src/database/schema/index.ts"],
+      "@shared/*": ["./src/shared/*"]
     }
   },
   "include": ["src/**/*.ts"],
