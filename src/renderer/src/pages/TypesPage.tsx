@@ -1,0 +1,63 @@
+import { useEffect, useState } from 'react';
+
+import type { Types } from '@db/schema';
+
+import { listTypes } from '../services/types.service';
+
+export function TypesPage() {
+  const [rows, setRows] = useState<Types[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    void listTypes()
+      .then((types) => {
+        if (!mounted) {
+          return;
+        }
+        setRows(types);
+      })
+      .catch((err: unknown) => {
+        if (!mounted) {
+          return;
+        }
+        setError(err instanceof Error ? err.message : 'Unknown error while loading types');
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return (
+    <section className="page">
+      <h2>Types</h2>
+      {error ? <p className="error">{error}</p> : null}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Group</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.length === 0 ? (
+            <tr>
+              <td colSpan={3}>No data yet</td>
+            </tr>
+          ) : (
+            rows.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.group}</td>
+                <td>{item.value}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </section>
+  );
+}

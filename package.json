@@ -41,9 +41,12 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.0",
     "@electron/rebuild": "^4.0.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.5.2",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@typescript-eslint/eslint-plugin": "^8.58.1",
     "@typescript-eslint/parser": "^8.58.1",
     "concurrently": "^9.2.1",
@@ -62,6 +65,9 @@
   "dependencies": {
     "better-sqlite3": "^12.8.0",
     "electron": "^41.2.0",
-    "kysely": "^0.28.15"
+    "kysely": "^0.28.15",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.4"
   }
 }

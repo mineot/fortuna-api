@@ -13,6 +13,7 @@
 - Build output directory: `dist/`.
 - npm distribution as a single bundle via `tsup` in `dist/fortuna.js` (minified, no sourcemap).
 - Code quality stack: `ESLint` (modern flat config) + `Prettier`.
+- Renderer stack: `React + TypeScript + React Router` on top of Vite.
 - Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
 - Database layer initialized with `Kysely` + `SQLite` (`better-sqlite3`).
 - Database access uses a singleton instance (`getDb`) in the Electron main process lifecycle.
@@ -48,7 +49,14 @@
 - `src/database/migrations/index.ts`: ordered migration registry.
 - `src/database/migrations/001_create_types_table.ts`: versioned migration creating `types` table.
 - `src/renderer/index.html`: Vite renderer entry HTML.
-- `src/renderer/src/main.ts`: Vite renderer bootstrap script (TypeScript).
+- `src/renderer/src/main.tsx`: Vite renderer bootstrap script (React).
+- `src/renderer/src/App.tsx`: app root with router integration.
+- `src/renderer/src/router/index.tsx`: route declarations.
+- `src/renderer/src/components/layout/AppShell.tsx`: shared layout/shell.
+- `src/renderer/src/pages/HomePage.tsx`: home page.
+- `src/renderer/src/pages/TypesPage.tsx`: types listing page.
+- `src/renderer/src/services/types.service.ts`: renderer service calling preload API.
+- `src/renderer/src/styles/global.css`: global renderer styles.
 - `src/renderer/src/vite-env.d.ts`: renderer global typing for preload API.
 - `src/renderer/vite.config.mjs`: Vite config for renderer subproject.
 - `scripts/copy-renderer.mjs`: copies full renderer build output and `src/preload.cjs` to root `dist/`.
@@ -75,11 +83,17 @@
 - `typescript` (`^6.0.2`)
 - `vite` (`^7.1.7`)
 - `wait-on` (`^8.0.5`)
+- `@vitejs/plugin-react` (`^5.1.0`)
+- `@types/react` (`^19.2.2`)
+- `@types/react-dom` (`^19.2.2`)
 
 ## 5.1) Installed runtime dependencies
 - `better-sqlite3` (`^12.8.0`)
 - `electron` (`^41.2.0`)
 - `kysely` (`^0.28.15`)
+- `react` (`^19.2.0`)
+- `react-dom` (`^19.2.0`)
+- `react-router-dom` (`^7.9.4`)
 
 ## 6) Configured npm scripts
 - `build`: `npm run build:renderer && tsup && node scripts/copy-renderer.mjs`
@@ -101,6 +115,7 @@
 - Modern library set: `lib: ["ESNext", "DOM"]`
 - Node module format: `module: ESNext`
 - Module resolution: `moduleResolution: Bundler`
+- JSX transform: `jsx: react-jsx`
 - Paths alias:
   - `@db` -> `./src/database/index.ts`
   - `@db/schema` -> `./src/database/schema/index.ts`
