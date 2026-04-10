@@ -33,7 +33,9 @@
 - `.prettierrc`: formatting rules.
 - `.prettierignore`: Prettier exclusions.
 - `src/main.ts`: current entrypoint.
-- `src/database/schema.ts`: base DB schema types for Kysely.
+- `src/database/schema/index.ts`: central Database schema and type re-exports.
+- `src/database/schema/migrations.schema.ts`: `migrations` table schema type.
+- `src/database/schema/types.schema.ts`: `types` table schema type and model aliases (`NewType`, `Types`, `TypeUpdate`).
 - `src/database/client.ts`: Kysely SQLite factory + singleton access (`getDb`) + cleanup (`destroyDb`).
 - `src/database/index.ts`: database module exports.
 - `src/database/migrations-table.ts`: ensures the base `migrations` table exists (non-versioned prerequisite).
@@ -135,6 +137,9 @@
 - Database lifecycle:
 - instance is created lazily via `getDb()` and reused (single process instance)
 - app quit is intercepted in `before-quit` to await `destroyDb()` before final shutdown
+- Schema pattern:
+- all DB schemas are split inside `src/database/schema/*` and composed in `src/database/schema/index.ts`.
+- with `verbatimModuleSyntax`, type-only re-exports must use `export type`.
 - Lint and format should run before npm publish.
 - Type-aware ESLint uses `tsconfig.eslint.json` to avoid files outside `rootDir` from `tsconfig.json`.
 - Current Prettier rules:
