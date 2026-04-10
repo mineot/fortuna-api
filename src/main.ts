@@ -6,14 +6,13 @@ import { app, BrowserWindow } from 'electron';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const isDev = process.env.NODE_ENV === 'dev';
 
 function resolveHtmlPath(): string {
-  const distHtmlPath = path.join(__dirname, 'index.html');
-  const devHtmlPath = path.join(__dirname, 'renderer', 'index.html');
-  return __dirname.endsWith(path.sep + 'dist') ? distHtmlPath : devHtmlPath;
+  return path.join(__dirname, 'index.html');
 }
 
-function createWindow(): void {
+async function createWindow(): Promise<void> {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
@@ -23,7 +22,12 @@ function createWindow(): void {
     },
   });
 
-  mainWindow.loadFile(resolveHtmlPath());
+  if (isDev) {
+    await mainWindow.loadURL('http://localhost:5173');
+    return;
+  }
+
+  await mainWindow.loadFile(resolveHtmlPath());
 }
 
 app
@@ -31,11 +35,11 @@ app
   .then(async () => {
     getDb();
     await migrateToLatest();
-    createWindow();
+    await createWindow();
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
+        void createWindow();
       }
     });
   })

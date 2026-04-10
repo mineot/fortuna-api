@@ -6,8 +6,11 @@
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsup && node scripts/copy-renderer.mjs",
-    "dev": "cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts",
+    "build": "npm run build:renderer && tsup && node scripts/copy-renderer.mjs",
+    "build:renderer": "vite build --config src/renderer/vite.config.mjs",
+    "dev": "concurrently -k -n renderer,electron -c cyan,green \"npm run dev:renderer\" \"npm run dev:electron\"",
+    "dev:renderer": "vite --config src/renderer/vite.config.mjs",
+    "dev:electron": "wait-on tcp:5173 && cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts",
     "postinstall": "npm run rebuild:electron",
     "rebuild:electron": "electron-rebuild -f -w better-sqlite3",
     "start": "electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js",
@@ -43,6 +46,7 @@
     "@types/node": "^25.5.2",
     "@typescript-eslint/eslint-plugin": "^8.58.1",
     "@typescript-eslint/parser": "^8.58.1",
+    "concurrently": "^9.2.1",
     "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-simple-import-sort": "^12.1.1",
@@ -51,7 +55,9 @@
     "cross-env": "^7.0.3",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "vite": "^7.1.7",
+    "wait-on": "^8.0.5"
   },
   "dependencies": {
     "better-sqlite3": "^12.8.0",

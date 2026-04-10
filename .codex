@@ -44,7 +44,10 @@
 - `src/database/migrations/index.ts`: ordered migration registry.
 - `src/database/migrations/001_create_types_table.ts`: versioned migration creating `types` table.
 - `src/renderer/index.html`: basic renderer HTML used by Electron window.
-- `scripts/copy-renderer.mjs`: copies renderer HTML to `dist/` during build.
+- `src/renderer/index.html`: Vite renderer entry HTML.
+- `src/renderer/src/main.js`: Vite renderer bootstrap script.
+- `src/renderer/vite.config.mjs`: Vite config for renderer subproject.
+- `scripts/copy-renderer.mjs`: copies full renderer build output (`src/renderer/dist`) to root `dist/`.
 - `LICENSE`: Apache License 2.0 text.
 - `.codex`: this project context.
 - `.gitignore`: ignores `dist/`, `node_modules/`, and `dev.*`.
@@ -57,6 +60,7 @@
 - `@typescript-eslint/eslint-plugin` (`^8.58.1`)
 - `@typescript-eslint/parser` (`^8.58.1`)
 - `cross-env` (`^7.0.3`)
+- `concurrently` (`^9.2.1`)
 - `eslint` (`^10.2.0`)
 - `eslint-config-prettier` (`^10.1.8`)
 - `eslint-plugin-simple-import-sort` (`^12.1.1`)
@@ -65,6 +69,8 @@
 - `tsup` (`^8.5.1`)
 - `tsx` (`^4.21.0`)
 - `typescript` (`^6.0.2`)
+- `vite` (`^7.1.7`)
+- `wait-on` (`^8.0.5`)
 
 ## 5.1) Installed runtime dependencies
 - `better-sqlite3` (`^12.8.0`)
@@ -72,12 +78,15 @@
 - `kysely` (`^0.28.15`)
 
 ## 6) Configured npm scripts
-- `build`: `tsup && node scripts/copy-renderer.mjs`
+- `build`: `npm run build:renderer && tsup && node scripts/copy-renderer.mjs`
+- `build:renderer`: `vite build --config src/renderer/vite.config.mjs`
+- `dev`: `concurrently -k -n renderer,electron -c cyan,green "npm run dev:renderer" "npm run dev:electron"`
+- `dev:renderer`: `vite --config src/renderer/vite.config.mjs`
+- `dev:electron`: `wait-on tcp:5173 && cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts`
 - `lint`: `eslint .`
 - `lint:fix`: `eslint . --fix`
 - `format`: `prettier . --write`
 - `format:check`: `prettier . --check`
-- `dev`: `cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts`
 - `postinstall`: `npm run rebuild:electron`
 - `start`: `electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js`
 - `rebuild:electron`: `electron-rebuild -f -w better-sqlite3`
@@ -112,9 +121,12 @@
 - Minification: enabled
 - Sourcemap: disabled
 - Build also copies `src/renderer/index.html` to `dist/index.html`.
-- `npm run dev` opens Electron directly from TypeScript source.
+- Build copies all renderer build assets from `src/renderer/dist` to root `dist`.
+- `npm run dev` starts Vite first and then Electron.
 - Dev TypeScript loading is done via `NODE_OPTIONS='--import tsx'`.
-- `npm run start` opens Electron using the built bundle in `dist/`.
+- In dev (`NODE_ENV=dev`), Electron loads `http://localhost:5173`.
+- `npm run start` opens Electron using built files in root `dist/` (`fortuna.js` + Vite output).
+- Vite renderer uses `base: './'` so built asset paths work under Electron `file://` on `npm run start`.
 - In Linux environments without configured `chrome-sandbox` SUID, dev/start run with `--no-sandbox --disable-setuid-sandbox`.
 - `better-sqlite3` must be rebuilt for Electron ABI (`npm run rebuild:electron`) after install/version changes.
 - Rebuild is automated on install via `postinstall`.
