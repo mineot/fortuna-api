@@ -12,6 +12,7 @@
 - Minimum Node.js version: `>=20.0.0`.
 - Build output directory: `dist/`.
 - npm distribution as a single bundle via `tsup` in `dist/fortuna.js` (minified, no sourcemap).
+- Main and preload are bundled/minified by `tsup` (`dist/fortuna.js` and `dist/preload.cjs`).
 - Code quality stack: `ESLint` (modern flat config) + `Prettier`.
 - Renderer stack: `React + TypeScript + React Router` on top of Vite.
 - Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
@@ -34,7 +35,8 @@
 - `.prettierrc`: formatting rules.
 - `.prettierignore`: Prettier exclusions.
 - `src/main.ts`: current entrypoint.
-- `src/preload.cjs`: secure preload bridge exposing renderer API.
+- `src/preload.ts`: typed preload source bundled by `tsup` for production.
+- `src/preload.cjs`: preload file used directly in development runtime.
 - `src/shared/ipc.ts`: shared IPC channels and renderer API contracts (type-safe across main/renderer).
 - `src/shared/handlers/types.handler.ts`: IPC handlers related to `types` table.
 - `src/shared/handlers/index.ts`: central IPC handler registration (`registerIpcHandlers`).
@@ -59,7 +61,7 @@
 - `src/renderer/src/styles/global.css`: global renderer styles.
 - `src/renderer/src/vite-env.d.ts`: renderer global typing for preload API.
 - `src/renderer/vite.config.mjs`: Vite config for renderer subproject.
-- `scripts/copy-renderer.mjs`: copies full renderer build output and `src/preload.cjs` to root `dist/`.
+- `scripts/copy-renderer.mjs`: copies full renderer build output (`src/renderer/dist`) to root `dist/`.
 - `LICENSE`: Apache License 2.0 text.
 - `.codex`: this project context.
 - `.gitignore`: ignores `dist/`, `node_modules/`, and `dev.*`.
@@ -144,7 +146,6 @@
 - Build copies all renderer build assets from `src/renderer/dist` to root `dist`.
 - `npm run dev` starts Vite first and then Electron.
 - Dev TypeScript loading is done via `NODE_OPTIONS='--import tsx'`.
-- In dev (`NODE_ENV=dev`), Electron loads `http://localhost:5173`.
 - In dev (`NODE_ENV=dev`), Electron loads `http://127.0.0.1:5173`.
 - `npm run start` opens Electron using built files in root `dist/` (`fortuna.js` + Vite output).
 - Vite renderer uses `base: './'` so built asset paths work under Electron `file://` on `npm run start`.
@@ -156,7 +157,8 @@
 - main process registers handlers by module via `registerIpcHandlers(db)`.
 - `types:list` is handled inside `src/shared/handlers/types.handler.ts`.
 - preload exposes `window.fortuna.listTypes()`.
-- preload is a dedicated CommonJS file (`preload.cjs`) for reliable Electron loading in both `dev` and `start`.
+- Development uses `src/preload.cjs` directly for Electron preload reliability.
+- Production uses bundled/minified `dist/preload.cjs` generated from `src/preload.ts`.
 - renderer consumes typed payload (`Types[]`) without direct DB access.
 - renderer shows explicit fallback message if preload API is unavailable, avoiding silent blank screen.
 - In Linux environments without configured `chrome-sandbox` SUID, dev/start run with `--no-sandbox --disable-setuid-sandbox`.

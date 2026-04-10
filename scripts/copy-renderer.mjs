@@ -8,9 +8,6 @@ const projectRoot = path.resolve(__dirname, '..');
 
 const sourceDir = path.join(projectRoot, 'src', 'renderer', 'dist');
 const distDir = path.join(projectRoot, 'dist');
-const sourcePreload = path.join(projectRoot, 'src', 'preload.cjs');
-const targetPreload = path.join(distDir, 'preload.cjs');
 
 await mkdir(distDir, { recursive: true });
 await cp(sourceDir, distDir, { recursive: true, force: true });
-await cp(sourcePreload, targetPreload, { force: true });
