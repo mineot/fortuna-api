@@ -20,6 +20,7 @@
 - Database layer initialized with `Kysely` + `SQLite` (`better-sqlite3`).
 - Database access uses a singleton instance (`getDb`) in the Electron main process lifecycle.
 - Migration system implemented with `up/down` and numeric versions.
+- Internationalization uses `i18next` + `react-i18next`.
 
 ## 3) Licensing
 - License file created: `LICENSE`.
@@ -33,12 +34,15 @@
 - `tsconfig.json`: TypeScript compiler config.
 - `tsconfig.eslint.json`: dedicated ESLint config (type-aware lint including `tsup.config.ts`).
 - `eslint.config.mjs`: modern lint configuration with Prettier integration.
+- `tailwind.config.cjs`: Tailwind configuration.
+- `postcss.config.cjs`: PostCSS pipeline (`tailwindcss` + `autoprefixer`).
 - `.prettierrc`: formatting rules.
 - `.prettierignore`: Prettier exclusions.
 - `src/main.ts`: current entrypoint.
 - `src/preload.ts`: typed preload source bundled by `tsup` for production.
 - `src/preload.cjs`: preload file used directly in development runtime.
 - `src/shared/ipc.ts`: shared IPC channels and renderer API contracts (type-safe across main/renderer).
+- `src/shared/handlers/app.handler.ts`: IPC handler for app-level operations (e.g., system locale).
 - `src/shared/handlers/types.handler.ts`: IPC handlers related to `types` table.
 - `src/shared/handlers/index.ts`: central IPC handler registration (`registerIpcHandlers`).
 - `src/database/schema/index.ts`: central Database schema and type re-exports.
@@ -59,6 +63,11 @@
 - `src/renderer/src/pages/HomePage.tsx`: home page.
 - `src/renderer/src/pages/TypesPage.tsx`: types listing page.
 - `src/renderer/src/services/types.service.ts`: renderer service calling preload API.
+- `src/renderer/src/i18n/index.ts`: i18n initialization and language switching.
+- `src/renderer/src/i18n/types.ts`: language types/config (`en-US`, `pt-BR`, fallback).
+- `src/renderer/src/i18n/resources/en-US.ts`: English translations.
+- `src/renderer/src/i18n/resources/pt-BR.ts`: Portuguese (Brazil) translations.
+- `src/renderer/src/components/layout/LanguageSwitcher.tsx`: language selector component.
 - `src/renderer/src/styles/global.css`: global renderer styles.
 - `src/renderer/src/vite-env.d.ts`: renderer global typing for preload API.
 - `src/renderer/vite.config.mjs`: Vite config for renderer subproject.
@@ -100,6 +109,8 @@
 - `react` (`^19.2.0`)
 - `react-dom` (`^19.2.0`)
 - `react-router-dom` (`^7.9.4`)
+- `i18next` (`^25.6.0`)
+- `react-i18next` (`^16.2.4`)
 
 ## 6) Configured npm scripts
 - `build`: `npm run build:renderer && tsup && node scripts/copy-renderer.mjs`
@@ -163,11 +174,18 @@
 - `server.fs.allow` includes `src/` parent so renderer can import shared/database type modules.
 - Renderer data flow is prepared via IPC:
 - main process registers handlers by module via `registerIpcHandlers(db)`.
+- app locale is exposed via IPC channel `app:get-locale`.
 - `types:list` is handled inside `src/shared/handlers/types.handler.ts`.
-- preload exposes `window.fortuna.listTypes()`.
+- preload exposes `window.fortuna.listTypes()` and `window.fortuna.getLocale()`.
 - Development uses `src/preload.cjs` directly for Electron preload reliability.
 - Production uses bundled/minified `dist/preload.cjs` generated from `src/preload.ts`.
 - renderer consumes typed payload (`Types[]`) without direct DB access.
+- i18n behavior:
+- supported languages: `en-US` and `pt-BR`
+- default/fallback: `en-US`
+- initial language priority: `localStorage` -> system locale via IPC -> `en-US`
+- user language selection is persisted in `localStorage` (`fortuna.language`)
+- `changeLanguage` in renderer i18n maps `i18next.changeLanguage(...)` to `Promise<void>` via `.then(() => undefined)` to keep app API typing consistent.
 - Tailwind usage rule:
 - no utility classes directly in TSX/HTML markup.
 - semantic class names are defined in `global.css` using `@apply`.
@@ -214,6 +232,7 @@
 - Mandatory rule: always update this file (`.codex`) whenever architecture, scripts, tooling, folder structure, or build/runtime flow changes.
 - Mandatory rule: after any code change, always run `npm run lint:fix`.
 - Mandatory rule: renderer implementation must use TypeScript files (`.ts` / `.tsx`), not `.js` / `.jsx`.
+- Mandatory rule: functions that return `Promise` must be declared with `async`.
 
 ## 10) Collaboration flow (terminal)
 - Agreed flow:
