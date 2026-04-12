@@ -32,20 +32,22 @@ export function TypesPage() {
 
   return (
     <section className="page">
-      <h2>Types</h2>
+      <h2 className="page-title">Types</h2>
       {error ? <p className="error">{error}</p> : null}
-      <table>
-        <thead>
+      <table className="data-table">
+        <thead className="data-table-head">
           <tr>
             <th>ID</th>
             <th>Group</th>
             <th>Value</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="data-table-body">
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={3}>No data yet</td>
+              <td className="data-table-empty" colSpan={3}>
+                No data yet
+              </td>
             </tr>
           ) : (
             rows.map((item) => (

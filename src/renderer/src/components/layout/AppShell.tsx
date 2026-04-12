@@ -5,12 +5,18 @@ export function AppShell({ children }: PropsWithChildren) {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <h1>Fortuna</h1>
-        <nav>
-          <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+        <h1 className="sidebar-title">Fortuna</h1>
+        <nav className="sidebar-nav">
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? 'nav-link nav-link-active' : 'nav-link')}
+          >
             Home
           </NavLink>
-          <NavLink to="/types" className={({ isActive }) => (isActive ? 'active' : '')}>
+          <NavLink
+            to="/types"
+            className={({ isActive }) => (isActive ? 'nav-link nav-link-active' : 'nav-link')}
+          >
             Types
           </NavLink>
         </nav>

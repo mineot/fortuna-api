@@ -1,82 +1,85 @@
-:root {
-  font-family: Arial, sans-serif;
-  color: #1f2937;
-  background: #f4f5f7;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    @apply bg-slate-100 font-sans text-slate-800;
+  }
+
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply m-0 min-h-screen;
+  }
+
+  #app {
+    @apply min-h-screen;
+  }
 }
 
-* {
-  box-sizing: border-box;
-}
+@layer components {
+  .app-shell {
+    @apply grid min-h-screen grid-cols-[220px_1fr];
+  }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-}
+  .sidebar {
+    @apply bg-slate-900 p-4 text-slate-50;
+  }
 
-#app {
-  min-height: 100vh;
-}
+  .sidebar-title {
+    @apply mb-4 mt-0 text-xl;
+  }
 
-.app-shell {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 220px 1fr;
-}
+  .sidebar-nav {
+    @apply grid gap-2;
+  }
 
-.sidebar {
-  padding: 1rem;
-  background: #111827;
-  color: #f9fafb;
-}
+  .nav-link {
+    @apply rounded-md p-2 no-underline text-slate-300;
+  }
 
-.sidebar h1 {
-  margin: 0 0 1rem;
-  font-size: 1.25rem;
-}
+  .nav-link:hover,
+  .nav-link-active {
+    @apply bg-slate-800 text-white;
+  }
 
-.sidebar nav {
-  display: grid;
-  gap: 0.5rem;
-}
+  .content {
+    @apply p-6;
+  }
 
-.sidebar a {
-  color: #cbd5e1;
-  text-decoration: none;
-  padding: 0.5rem;
-  border-radius: 6px;
-}
+  .page {
+    @apply rounded-lg bg-white p-4 shadow;
+  }
 
-.sidebar a.active,
-.sidebar a:hover {
-  background: #1f2937;
-  color: #ffffff;
-}
+  .page-title {
+    @apply m-0 mb-4 text-2xl;
+  }
 
-.content {
-  padding: 1.5rem;
-}
+  .page-description {
+    @apply m-0 text-slate-600;
+  }
 
-.page h2 {
-  margin: 0 0 1rem;
-}
+  .data-table {
+    @apply w-full border-collapse bg-white;
+  }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #ffffff;
-}
+  .data-table th,
+  .data-table td {
+    @apply border border-slate-200 p-2 text-left;
+  }
 
-th,
- td {
-  border: 1px solid #e5e7eb;
-  padding: 0.5rem;
-  text-align: left;
-}
+  .data-table-head {
+    @apply bg-slate-50;
+  }
 
-th {
-  background: #f9fafb;
-}
+  .data-table-empty {
+    @apply text-center text-slate-500;
+  }
 
-.error {
-  color: #b91c1c;
+  .error {
+    @apply text-red-700;
+  }
 }
