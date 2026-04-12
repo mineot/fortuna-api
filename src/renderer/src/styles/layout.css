@@ -1,0 +1,30 @@
+@layer components {
+  .app-shell {
+    @apply grid min-h-screen grid-cols-[220px_1fr];
+  }
+
+  .sidebar {
+    @apply bg-slate-900 p-4 text-slate-50;
+  }
+
+  .sidebar-title {
+    @apply mb-4 mt-0 text-xl;
+  }
+
+  .sidebar-nav {
+    @apply grid gap-2;
+  }
+
+  .nav-link {
+    @apply rounded-md p-2 no-underline text-slate-300;
+  }
+
+  .nav-link:hover,
+  .nav-link-active {
+    @apply bg-slate-800 text-white;
+  }
+
+  .content {
+    @apply p-6;
+  }
+}

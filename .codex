@@ -185,10 +185,15 @@
 - default/fallback: `en-US`
 - initial language priority: `localStorage` -> system locale via IPC -> `en-US`
 - user language selection is persisted in `localStorage` (`fortuna.language`)
-- `changeLanguage` in renderer i18n maps `i18next.changeLanguage(...)` to `Promise<void>` via `.then(() => undefined)` to keep app API typing consistent.
+- `changeLanguage` in renderer i18n is `async` and awaits `i18next.changeLanguage(...)`.
 - Tailwind usage rule:
 - no utility classes directly in TSX/HTML markup.
 - semantic class names are defined in `global.css` using `@apply`.
+- renderer styles are modularized by domain under `src/renderer/src/styles/`:
+  - `global.css` keeps only Tailwind directives, imports, and `@layer base`
+  - `layout.css` for shell/navigation/layout classes
+  - `components/*.css` for shared UI components (e.g., language switcher, table, page)
+  - `shared.css` for cross-cutting semantic helpers (e.g., `.error`)
 - renderer code should remain TypeScript-only (`.ts`/`.tsx`).
 - renderer shows explicit fallback message if preload API is unavailable, avoiding silent blank screen.
 - In Linux environments without configured `chrome-sandbox` SUID, dev/start run with `--no-sandbox --disable-setuid-sandbox`.
