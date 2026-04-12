@@ -15,7 +15,7 @@
 - Main and preload are bundled/minified by `tsup` (`dist/fortuna.js` and `dist/preload.cjs`).
 - Code quality stack: `ESLint` (modern flat config) + `Prettier`.
 - Renderer stack: `React + TypeScript + React Router` on top of Vite.
-- Renderer styling stack: `Tailwind CSS` via semantic classes defined in CSS with `@apply`.
+- Renderer styling stack: `Tailwind CSS v4` via semantic classes defined in CSS with `@apply` and color utilities via `@utility`.
 - Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
 - Database layer initialized with `Kysely` + `SQLite` (`better-sqlite3`).
 - Database access uses a singleton instance (`getDb`) in the Electron main process lifecycle.
@@ -34,8 +34,7 @@
 - `tsconfig.json`: TypeScript compiler config.
 - `tsconfig.eslint.json`: dedicated ESLint config (type-aware lint including `tsup.config.ts`).
 - `eslint.config.mjs`: modern lint configuration with Prettier integration.
-- `tailwind.config.cjs`: Tailwind configuration.
-- `postcss.config.cjs`: PostCSS pipeline (`tailwindcss` + `autoprefixer`).
+- `postcss.config.cjs`: PostCSS pipeline (`@tailwindcss/postcss`) for Tailwind v4.
 - `.prettierrc`: formatting rules.
 - `.prettierignore`: Prettier exclusions.
 - `src/main.ts`: current entrypoint.
@@ -98,7 +97,8 @@
 - `@vitejs/plugin-react` (`^5.1.0`)
 - `@types/react` (`^19.2.2`)
 - `@types/react-dom` (`^19.2.2`)
-- `tailwindcss` (`^3.4.17`)
+- `tailwindcss` (`^4.1.14`)
+- `@tailwindcss/postcss` (`^4.1.14`)
 - `postcss` (`^8.5.6`)
 - `autoprefixer` (`^10.4.21`)
 
@@ -190,7 +190,8 @@
 - no utility classes directly in TSX/HTML markup.
 - semantic class names are defined in `global.css` using `@apply`.
 - renderer styles are modularized by domain under `src/renderer/src/styles/`:
-  - `global.css` keeps only Tailwind directives, imports, and `@layer base`
+  - `global.css` uses `@import 'tailwindcss';`, imports style modules, and keeps `@layer base`
+  - `theme.css` centralizes app color tokens as custom Tailwind utilities via `@utility`
   - `layout.css` for shell/navigation/layout classes
   - `components/*.css` for shared UI components (e.g., language switcher, table, page)
   - `shared.css` for cross-cutting semantic helpers (e.g., `.error`)

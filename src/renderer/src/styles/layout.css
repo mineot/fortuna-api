@@ -4,7 +4,7 @@
   }
 
   .sidebar {
-    @apply bg-slate-900 p-4 text-slate-50;
+    @apply theme-bg-sidebar p-4 theme-text-sidebar;
   }
 
   .sidebar-title {
@@ -16,12 +16,12 @@
   }
 
   .nav-link {
-    @apply rounded-md p-2 no-underline text-slate-300;
+    @apply rounded-md p-2 no-underline theme-text-nav;
   }
 
   .nav-link:hover,
   .nav-link-active {
-    @apply bg-slate-800 text-white;
+    @apply theme-bg-nav-active theme-text-nav-active;
   }
 
   .content {

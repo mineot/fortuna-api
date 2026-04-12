@@ -1,18 +1,18 @@
 @layer components {
   .data-table {
-    @apply w-full border-collapse bg-white;
+    @apply w-full border-collapse theme-bg-surface;
   }
 
   .data-table th,
   .data-table td {
-    @apply border border-slate-200 p-2 text-left;
+    @apply border theme-border-soft p-2 text-left;
   }
 
   .data-table-head {
-    @apply bg-slate-50;
+    @apply theme-bg-table-head;
   }
 
   .data-table-empty {
-    @apply text-center text-slate-500;
+    @apply text-center theme-text-subtle;
   }
 }

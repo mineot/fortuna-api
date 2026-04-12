@@ -1,0 +1,83 @@
+@utility theme-bg-app {
+  @apply bg-slate-100;
+}
+
+@utility theme-text-app {
+  @apply text-slate-800;
+}
+
+@utility theme-bg-sidebar {
+  @apply bg-slate-900;
+}
+
+@utility theme-text-sidebar {
+  @apply text-slate-50;
+}
+
+@utility theme-text-nav {
+  @apply text-slate-300;
+}
+
+@utility theme-bg-nav-active {
+  @apply bg-slate-800;
+}
+
+@utility theme-text-nav-active {
+  @apply text-white;
+}
+
+@utility theme-border-panel {
+  @apply border-slate-700;
+}
+
+@utility theme-bg-panel {
+  @apply bg-slate-800/60;
+}
+
+@utility theme-text-label {
+  @apply text-slate-300;
+}
+
+@utility theme-border-button {
+  @apply border-slate-600;
+}
+
+@utility theme-text-button {
+  @apply text-slate-200;
+}
+
+@utility theme-border-button-active {
+  @apply border-slate-300;
+}
+
+@utility theme-bg-button-active {
+  @apply bg-slate-100;
+}
+
+@utility theme-text-button-active {
+  @apply text-slate-900;
+}
+
+@utility theme-bg-surface {
+  @apply bg-white;
+}
+
+@utility theme-text-muted {
+  @apply text-slate-600;
+}
+
+@utility theme-border-soft {
+  @apply border-slate-200;
+}
+
+@utility theme-bg-table-head {
+  @apply bg-slate-50;
+}
+
+@utility theme-text-subtle {
+  @apply text-slate-500;
+}
+
+@utility theme-text-error {
+  @apply text-red-700;
+}
