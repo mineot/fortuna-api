@@ -2,7 +2,7 @@ import type { Database } from '@db';
 import type {
   TypeFilters,
   TypeInsertInput,
-  TypeRemove,
+  TypeRemoveInput,
   TypeUpdateInput,
 } from '@db/schema';
 import { IPC_CHANNELS } from '@shared/ipc';
@@ -10,9 +10,17 @@ import { ipcMain } from 'electron';
 import type { Kysely } from 'kysely';
 import { sql } from 'kysely';
 
+import {
+  parseTypeFilters,
+  parseTypeInsertInput,
+  parseTypeRemoveInput,
+  parseTypeUpdateInput,
+} from './types.validation';
+
 export function registerTypesHandlers(db: Kysely<Database>): void {
   ipcMain.removeHandler(IPC_CHANNELS.typesList);
-  ipcMain.handle(IPC_CHANNELS.typesList, async (_event, filters?: TypeFilters) => {
+  ipcMain.handle(IPC_CHANNELS.typesList, async (_event, rawFilters?: TypeFilters) => {
+    const filters = parseTypeFilters(rawFilters);
     let query = db.selectFrom('types').selectAll();
 
     if (filters?.group) {
@@ -31,7 +39,8 @@ export function registerTypesHandlers(db: Kysely<Database>): void {
   });
 
   ipcMain.removeHandler(IPC_CHANNELS.typesInsert);
-  ipcMain.handle(IPC_CHANNELS.typesInsert, async (_event, input: TypeInsertInput) => {
+  ipcMain.handle(IPC_CHANNELS.typesInsert, async (_event, rawInput: TypeInsertInput) => {
+    const input = parseTypeInsertInput(rawInput);
     const created = await db
       .insertInto('types')
       .values({
@@ -45,7 +54,8 @@ export function registerTypesHandlers(db: Kysely<Database>): void {
   });
 
   ipcMain.removeHandler(IPC_CHANNELS.typesUpdate);
-  ipcMain.handle(IPC_CHANNELS.typesUpdate, async (_event, input: TypeUpdateInput) => {
+  ipcMain.handle(IPC_CHANNELS.typesUpdate, async (_event, rawInput: TypeUpdateInput) => {
+    const input = parseTypeUpdateInput(rawInput);
     const patch: Partial<Pick<Database['types'], 'group' | 'value'>> = {};
 
     if (input.group !== undefined) {
@@ -54,10 +64,6 @@ export function registerTypesHandlers(db: Kysely<Database>): void {
 
     if (input.value !== undefined) {
       patch.value = input.value;
-    }
-
-    if (Object.keys(patch).length === 0) {
-      return db.selectFrom('types').selectAll().where('id', '=', input.id).executeTakeFirst();
     }
 
     return db
@@ -69,7 +75,8 @@ export function registerTypesHandlers(db: Kysely<Database>): void {
   });
 
   ipcMain.removeHandler(IPC_CHANNELS.typesRemove);
-  ipcMain.handle(IPC_CHANNELS.typesRemove, async (_event, input: TypeRemove) => {
+  ipcMain.handle(IPC_CHANNELS.typesRemove, async (_event, rawInput: TypeRemoveInput) => {
+    const input = parseTypeRemoveInput(rawInput);
     const result = await db.deleteFrom('types').where('id', '=', input.id).executeTakeFirst();
     return Number(result.numDeletedRows) > 0;
   });

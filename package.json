@@ -15,6 +15,7 @@
     "rebuild:electron": "electron-rebuild -f -w better-sqlite3",
     "start": "electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js",
     "check": "tsc --noEmit -p tsconfig.json",
+    "test": "node --import=tsx --test $(find src -name \"*.test.ts\")",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
