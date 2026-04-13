@@ -1,9 +1,23 @@
 import { useTranslation } from 'react-i18next';
 
-import { changeLanguage } from '../../i18n';
-import type { AppLanguage } from '../../i18n/types';
+import { changeLanguage } from '../i18n';
+import type { AppLanguage } from '../i18n/types';
 
-const LANGUAGES: AppLanguage[] = ['en-US', 'pt-BR'];
+type LanguageItem = {
+  flag: string;
+  language: AppLanguage;
+};
+
+const LANGUAGES: LanguageItem[] = [
+  {
+    flag: '🇺🇸',
+    language: 'en-US',
+  },
+  {
+    flag: '🇧🇷',
+    language: 'pt-BR',
+  },
+];
 
 export function LanguageSwitcher() {
   const { i18n, t } = useTranslation();
@@ -12,7 +26,7 @@ export function LanguageSwitcher() {
     <div className="language-switcher">
       <span className="language-switcher-label">{t('app.language.label')}</span>
       <div className="language-switcher-actions">
-        {LANGUAGES.map((language) => (
+        {LANGUAGES.map(({ flag, language }) => (
           <button
             key={language}
             type="button"
@@ -25,7 +39,7 @@ export function LanguageSwitcher() {
               void changeLanguage(language);
             }}
           >
-            {language}
+            {flag}
           </button>
         ))}
       </div>

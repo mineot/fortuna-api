@@ -190,7 +190,7 @@
 - semantic class names are defined in `global.css` using `@apply`.
 - renderer styles are modularized by domain under `src/renderer/src/styles/`:
   - `global.css` uses `@import 'tailwindcss';`, imports style modules, and keeps `@layer base`
-  - `theme.css` centralizes app color tokens as custom Tailwind utilities via `@utility`
+  - `theme/index.css` aggregates modular theme files under `styles/theme/*` (app, sidebar, nav, panel, table, feedback), centralizing color tokens as custom Tailwind utilities via `@utility`
   - `layout.css` for shell/navigation/layout classes
   - `components/*.css` for shared UI components (e.g., language switcher, table, page)
   - `shared.css` for cross-cutting semantic helpers (e.g., `.error`)

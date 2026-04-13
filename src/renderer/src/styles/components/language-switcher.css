@@ -1,18 +1,18 @@
 @layer components {
   .language-switcher {
-    @apply mt-6 rounded-md border theme-border-panel theme-bg-panel p-3;
+    @apply flex gap-3 items-center rounded-md border theme-border-panel theme-bg-panel p-2;
   }
 
   .language-switcher-label {
-    @apply mb-2 block text-xs font-semibold uppercase tracking-wide theme-text-label;
+    @apply block text-xs font-semibold uppercase tracking-wide theme-text-label;
   }
 
   .language-switcher-actions {
-    @apply flex gap-2;
+    @apply flex flex-1 gap-1 justify-around;
   }
 
   .language-switcher-button {
-    @apply rounded-md border theme-border-button px-3 py-1 text-xs font-medium theme-text-button;
+    @apply rounded-md border theme-border-button px-3 py-1 text-xs font-medium theme-text-button cursor-pointer;
   }
 
   .language-switcher-button:hover,

@@ -1,0 +1,11 @@
+@utility theme-bg-sidebar {
+  @apply bg-slate-900;
+}
+
+@utility theme-text-sidebar {
+  @apply text-slate-50;
+}
+
+@utility theme-text-label {
+  @apply text-slate-300;
+}

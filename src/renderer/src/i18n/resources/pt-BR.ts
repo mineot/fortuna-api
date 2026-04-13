@@ -19,10 +19,17 @@ export const ptBR = {
     types: {
       title: 'Tipos',
       empty: 'Sem dados por enquanto',
+      searchPlaceholder: 'Pesquisar por grupo ou nome',
       headers: {
-        id: 'ID',
         group: 'Grupo',
         value: 'Valor',
+        actions: 'Ações',
+      },
+      actions: {
+        new: 'Novo',
+        save: 'Salvar',
+        cancel: 'Cancelar',
+        remove: 'Excluir',
       },
       errors: {
         load: 'Erro desconhecido ao carregar tipos',

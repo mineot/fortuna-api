@@ -4,11 +4,11 @@
   }
 
   .sidebar {
-    @apply theme-bg-sidebar p-4 theme-text-sidebar;
+    @apply flex flex-col gap-5 p-4 theme-bg-sidebar theme-text-sidebar;
   }
 
   .sidebar-title {
-    @apply mb-4 mt-0 text-xl;
+    @apply mt-0 text-xl font-bold;
   }
 
   .sidebar-nav {

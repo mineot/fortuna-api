@@ -19,10 +19,17 @@ export const enUS = {
     types: {
       title: 'Types',
       empty: 'No data yet',
+      searchPlaceholder: 'Search by group or name',
       headers: {
-        id: 'ID',
         group: 'Group',
         value: 'Value',
+        actions: 'Actions',
+      },
+      actions: {
+        new: 'New',
+        save: 'Save',
+        cancel: 'Cancel',
+        remove: 'Remove',
       },
       errors: {
         load: 'Unknown error while loading types',
