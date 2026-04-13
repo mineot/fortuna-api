@@ -1,9 +1,16 @@
 import type { MigrationTable } from './migrations.schema';
-import type { NewType, Types, TypeTable, TypeUpdate } from './types.schema';
+import type {
+  TypeFilters,
+  TypeInsertInput,
+  TypeRemoveInput,
+  Types,
+  TypeTable,
+  TypeUpdateInput,
+} from './types.schema';
 
 export interface Database {
   migrations: MigrationTable;
   types: TypeTable;
 }
 
-export type { NewType, Types, TypeUpdate };
+export type { TypeFilters, TypeInsertInput, TypeRemoveInput, Types, TypeUpdateInput };
