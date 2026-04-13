@@ -8,9 +8,10 @@
   "scripts": {
     "build": "npm run build:renderer && tsup && node scripts/copy-renderer.mjs",
     "build:renderer": "vite build --config src/renderer/vite.config.mjs",
-    "dev": "concurrently -k -n renderer,electron -c cyan,green \"npm run dev:renderer\" \"npm run dev:electron\"",
+    "dev": "concurrently -k -n renderer,preload,electron -c cyan,yellow,green \"npm run dev:renderer\" \"npm run dev:preload\" \"npm run dev:electron\"",
     "dev:renderer": "vite --config src/renderer/vite.config.mjs",
-    "dev:electron": "wait-on tcp:127.0.0.1:5173 && cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts",
+    "dev:preload": "tsup src/preload.ts --format cjs --platform node --target node20 --out-dir dist --watch",
+    "dev:electron": "wait-on tcp:127.0.0.1:5173 file:dist/preload.cjs && cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts",
     "postinstall": "npm run rebuild:electron",
     "rebuild:electron": "electron-rebuild -f -w better-sqlite3",
     "start": "electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js",

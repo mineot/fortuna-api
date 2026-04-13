@@ -15,7 +15,7 @@ function resolveHtmlPath(): string {
 
 function resolvePreloadPath(): string {
   if (isDev) {
-    return path.join(__dirname, 'preload.cjs');
+    return path.join(process.cwd(), 'dist', 'preload.cjs');
   }
 
   return path.join(__dirname, 'preload.cjs');
