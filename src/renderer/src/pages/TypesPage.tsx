@@ -176,9 +176,7 @@ export function TypesPage() {
                         className="table-inline-input"
                         value={editingRow.group}
                         onChange={(event) =>
-                          setEditingRow((prev) =>
-                            prev ? { ...prev, group: event.target.value } : prev,
-                          )
+                          setEditingRow((prev) => (prev ? { ...prev, group: event.target.value } : prev))
                         }
                       />
                     ) : (
@@ -191,9 +189,7 @@ export function TypesPage() {
                         className="table-inline-input"
                         value={editingRow.value}
                         onChange={(event) =>
-                          setEditingRow((prev) =>
-                            prev ? { ...prev, value: event.target.value } : prev,
-                          )
+                          setEditingRow((prev) => (prev ? { ...prev, value: event.target.value } : prev))
                         }
                       />
                     ) : (

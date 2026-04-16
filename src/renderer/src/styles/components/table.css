@@ -1,4 +1,35 @@
 @layer components {
+  .table {
+    @apply w-full border-collapse theme-bg-surface;
+  }
+
+  .table th,
+  .table td {
+    @apply border theme-border-soft p-2;
+  }
+
+  .table-head {
+    @apply theme-bg-table-head;
+  }
+
+  .table-empty {
+    @apply text-center theme-text-subtle;
+  }
+
+  .table-align-left {
+    @apply text-left;
+  }
+
+  .table-align-right {
+    @apply text-right;
+  }
+
+  .table-align-center {
+    @apply text-center;
+  }
+
+  /* LEGACY */
+
   .types-toolbar {
     @apply mb-3 flex items-center gap-2;
   }
@@ -13,7 +44,7 @@
 
   .data-table th,
   .data-table td {
-    @apply border theme-border-soft p-2 text-left;
+    @apply border theme-border-soft p-2;
   }
 
   .data-table-head {

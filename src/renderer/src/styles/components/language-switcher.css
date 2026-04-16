@@ -1,6 +1,6 @@
 @layer components {
   .language-switcher {
-    @apply flex gap-3 items-center rounded-md border theme-border-panel theme-bg-panel p-2;
+    @apply flex gap-3 justify-between items-center rounded-md border theme-border-panel theme-bg-panel p-2;
   }
 
   .language-switcher-label {
@@ -8,7 +8,7 @@
   }
 
   .language-switcher-actions {
-    @apply flex flex-1 gap-1 justify-around;
+    @apply flex  gap-2;
   }
 
   .language-switcher-button {

@@ -197,6 +197,7 @@
 - renderer code should remain TypeScript-only (`.ts`/`.tsx`).
 - renderer shows explicit fallback message if preload API is unavailable, avoiding silent blank screen.
 - In Linux environments without configured `chrome-sandbox` SUID, dev/start run with `--no-sandbox --disable-setuid-sandbox`.
+- formatter helper exists at `src/renderer/src/helpers/formatter.helper.ts` with `formatValue(type, value, options)` to return localized strings for `TEXT`, `INTEGER`, `DECIMAL`, `CURRENCY`, `TIME`, `DATE`, `DATETIME`, `BOOLEAN` (date/time formatting uses `date-fns`).
 - `better-sqlite3` must be rebuilt for Electron ABI (`npm run rebuild:electron`) after install/version changes.
 - Rebuild is automated on install via `postinstall`.
 - Electron was bumped to a secure major version line to address `npm audit` high-severity advisories.
