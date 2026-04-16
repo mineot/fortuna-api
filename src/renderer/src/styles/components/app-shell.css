@@ -16,7 +16,7 @@
   }
 
   .nav-link {
-    @apply rounded-md p-2 no-underline theme-text-nav;
+    @apply rounded-md p-2 no-underline theme-text-nav inline-flex items-center gap-2;
   }
 
   .nav-link:hover,
@@ -26,5 +26,9 @@
 
   .content {
     @apply p-6;
+  }
+
+  .nav-link-icon {
+    @apply shrink-0;
   }
 }

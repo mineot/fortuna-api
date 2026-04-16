@@ -16,6 +16,7 @@
 - Code quality stack: `ESLint` (modern flat config) + `Prettier`.
 - Renderer stack: `React + TypeScript + React Router` on top of Vite.
 - Renderer styling stack: `Tailwind CSS v4` via semantic classes defined in CSS with `@apply` and color utilities via `@utility`.
+- Renderer icon stack: `lucide-react` for open-source SVG icons in React components.
 - Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
 - Database layer initialized with `Kysely` + `SQLite` (`better-sqlite3`).
 - Database access uses a singleton instance (`getDb`) in the Electron main process lifecycle.
