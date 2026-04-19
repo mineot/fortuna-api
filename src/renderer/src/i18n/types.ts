@@ -1,5 +1,5 @@
 import type { Locale } from 'date-fns';
-import { enUS,ptBR } from 'date-fns/locale';
+import { enUS, ptBR } from 'date-fns/locale';
 
 export type AppLanguage = 'en-US' | 'pt-BR';
 export type AppCurrency = 'USD' | 'BRL';

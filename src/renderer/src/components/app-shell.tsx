@@ -1,5 +1,6 @@
 import { type PropsWithChildren } from 'react';
 import { useAppShell } from './app-shell.hooks';
+import { LanguageSwitcher } from './language-switcher';
 
 export function AppShell({ children }: PropsWithChildren) {
   const { meta } = useAppShell();
@@ -10,7 +11,7 @@ export function AppShell({ children }: PropsWithChildren) {
         <div className="sidebar-brand">
           <span className="app-title">{meta.name}</span>
           <span className="app-subtitle">{meta.version}</span>
-          <span>Language</span>
+          <LanguageSwitcher />
         </div>
         <span>Navigator</span>
       </aside>
