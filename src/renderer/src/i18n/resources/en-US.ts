@@ -1,14 +1,8 @@
 export const enUS = {
   app: {
-    title: 'Fortuna',
-    nav: {
+    navigator: {
       home: 'Home',
-      types: 'Types',
-    },
-    language: {
-      label: 'Language',
-      enUS: 'en-US',
-      ptBR: 'pt-BR',
+      registers: 'Registers',
     },
   },
   pages: {

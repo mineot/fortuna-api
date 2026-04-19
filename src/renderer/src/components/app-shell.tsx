@@ -1,6 +1,7 @@
 import { type PropsWithChildren } from 'react';
 import { useAppShell } from './app-shell.hooks';
 import { LanguageSwitcher } from './language-switcher';
+import { Navigator } from './navigator';
 
 export function AppShell({ children }: PropsWithChildren) {
   const { meta } = useAppShell();
@@ -13,7 +14,7 @@ export function AppShell({ children }: PropsWithChildren) {
           <span className="app-subtitle">{meta.version}</span>
           <LanguageSwitcher />
         </div>
-        <span>Navigator</span>
+        <Navigator />
       </aside>
       <main className="content">{children}</main>
     </section>

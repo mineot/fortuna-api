@@ -3,7 +3,7 @@
     @apply flex-1 flex overflow-hidden;
 
     > .sidebar {
-      @apply flex flex-col gap-2 p-2 overflow-x-hidden overflow-y-auto;
+      @apply flex flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto;
       @apply bg-primary text-primary-inverse;
 
       > .sidebar-brand {

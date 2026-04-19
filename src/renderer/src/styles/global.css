@@ -4,7 +4,8 @@
 @import './variables.css';
 @import './app.css';
 
+@import './utilities/tipography.css';
+
 @import './components/app-shell.css';
 @import './components/language-switcher.css';
-
-@import './utilities/tipography.css';
+@import './components/navigator.css';

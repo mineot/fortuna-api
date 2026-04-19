@@ -1,14 +1,8 @@
 export const ptBR = {
   app: {
-    title: 'Fortuna',
-    nav: {
+    navigator: {
       home: 'Início',
-      types: 'Tipos',
-    },
-    language: {
-      label: 'Idioma',
-      enUS: 'en-US',
-      ptBR: 'pt-BR',
+      registers: 'Cadastros',
     },
   },
   pages: {
