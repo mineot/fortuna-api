@@ -176,6 +176,7 @@
 - Renderer data flow is prepared via IPC:
 - main process registers handlers by module via `registerIpcHandlers(db)`.
 - app locale is exposed via IPC channel `app:get-locale`.
+- app metadata via `app:get-meta` returns fixed app name `Fortuna` and resolves version from project `package.json` (with fallback to Electron app version).
 - `types:list` is handled inside `src/shared/handlers/types.handler.ts`.
 - preload exposes `window.fortuna.listTypes()` and `window.fortuna.getLocale()`.
 - Development and production use bundled preload from `src/preload.ts` (`dist/preload.cjs`).

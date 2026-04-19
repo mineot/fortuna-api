@@ -1,13 +1,8 @@
-import type {
-  TypeFilters,
-  TypeInsertInput,
-  TypeRemoveInput,
-  Types,
-  TypeUpdateInput,
-} from '@db/schema';
+import type { TypeFilters, TypeInsertInput, TypeRemoveInput, Types, TypeUpdateInput } from '@db/schema';
+
+import type { GetLocaleResponse, GetMetaResponse } from './handlers/app.types';
 
 export const IPC_CHANNELS = {
-  appGetLocale: 'app:get-locale',
   typesList: 'types:list',
   typesInsert: 'types:insert',
   typesUpdate: 'types:update',
@@ -15,7 +10,8 @@ export const IPC_CHANNELS = {
 } as const;
 
 export interface RendererApi {
-  getLocale: () => Promise<string>;
+  appGetMeta: () => Promise<GetMetaResponse>;
+  appGetLocale: () => Promise<GetLocaleResponse>;
   listTypes: (filters?: TypeFilters) => Promise<Types[]>;
   insertType: (input: TypeInsertInput) => Promise<Types>;
   updateType: (input: TypeUpdateInput) => Promise<Types | undefined>;

@@ -1,0 +1,17 @@
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html,
+  body {
+    @apply bg-app text-app-inverse font-sans;
+    @apply w-full h-full overflow-hidden;
+    @apply flex flex-col gap-0;
+
+    > #app {
+      @apply flex-1 overflow-hidden;
+      @apply flex flex-col gap-0;
+    }
+  }
+}

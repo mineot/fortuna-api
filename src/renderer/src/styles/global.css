@@ -1,25 +1,6 @@
 @import 'tailwindcss';
-@import './theme/index.css';
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto+Serif:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import './variables.css';
+@import './app.css';
 @import './components/app-shell.css';
-@import './components/language-switcher.css';
-@import './components/page.css';
-@import './components/table.css';
-@import './shared.css';
-
-@layer base {
-  :root {
-    @apply theme-bg-app theme-text-app font-sans;
-  }
-
-  * {
-    @apply box-border;
-  }
-
-  body {
-    @apply m-0 min-h-screen;
-  }
-
-  #app {
-    @apply min-h-screen;
-  }
-}
+@import './utilities/tipography.css';

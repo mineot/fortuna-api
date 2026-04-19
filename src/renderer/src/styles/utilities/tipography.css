@@ -1,0 +1,9 @@
+@utility app-title {
+  @apply text-2xl font-bold font-mono;
+  @apply text-accent;
+}
+
+@utility app-subtitle {
+  @apply text-sm font-mono;
+  @apply text-accent;
+}

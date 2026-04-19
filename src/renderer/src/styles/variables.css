@@ -1,0 +1,27 @@
+@layer base {
+  @theme {
+    --font-sans:
+      'Roboto', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
+    --font-serif: 'Roboto Serif', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono:
+      'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+    --color-app: var(--color-slate-200);
+    --color-app-inverse: var(--color-slate-900);
+    --color-primary: var(--color-slate-900);
+    --color-primary-inverse: var(--color-slate-50);
+    --color-secondary: var(--color-zinc-600);
+    --color-secondary-inverse: var(--color-zinc-300);
+    --color-accent: var(--color-yellow-500);
+    --color-accent-inverse: var(--color-yellow-950);
+    --color-success: var(--color-green-700);
+    --color-success-inverse: var(--color-green-100);
+    --color-warning: var(--color-orange-600);
+    --color-warning-inverse: var(--color-orange-50);
+    --color-error: var(--color-red-700);
+    --color-error-inverse: var(--color-red-50);
+    --color-info: var(--color-indigo-800);
+    --color-info-inverse: var(--color-indigo-50);
+  }
+}

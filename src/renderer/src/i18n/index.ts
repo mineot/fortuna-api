@@ -38,7 +38,7 @@ async function resolveInitialLanguage(): Promise<AppLanguage> {
     return stored;
   }
 
-  const systemLocale = normalizeLanguage(await window.fortuna.getLocale());
+  const systemLocale = normalizeLanguage(await window.fortuna.appGetLocale());
   if (systemLocale) {
     return systemLocale;
   }
