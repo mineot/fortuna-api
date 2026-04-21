@@ -1,0 +1,16 @@
+@layer components {
+  button {
+    @apply flex gap-2 items-center justify-center;
+    @apply px-2 py-1 cursor-pointer;
+    @apply app-button duration-300;
+    @apply hover:app-button-hover hover:duration-300;
+    @apply active:app-button-active active:duration-300;
+
+    &.flat {
+      @apply p-0;
+      @apply app-button-flat duration-300;
+      @apply hover:app-button-flat-hover hover:duration-300;
+      @apply active:app-button-flat-active active:duration-300;
+    }
+  }
+}

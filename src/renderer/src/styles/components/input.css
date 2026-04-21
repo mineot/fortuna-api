@@ -1,0 +1,55 @@
+@layer components {
+  .input-group {
+    @apply flex flex-col;
+
+    > label {
+      order: 1;
+    }
+
+    > input {
+      order: 2;
+    }
+
+    &:has(> input:hover) > label {
+      @apply app-input-hover duration-300;
+    }
+
+    &:has(> input:focus) > label,
+    &:has(> input:focus-visible) > label {
+      @apply app-input-active duration-300;
+    }
+
+    &.linear,
+    &.checkbox,
+    &.radio {
+      @apply flex-row items-center gap-2;
+    }
+
+    &.checkbox,
+    &.radio {
+      > label {
+        order: 2;
+      }
+
+      > input {
+        order: 1;
+      }
+    }
+  }
+
+  input {
+    @apply px-1 py-1 outline-0;
+    @apply app-input app-border duration-300;
+    @apply hover:app-input-hover hover:app-border-destak hover:duration-300;
+    @apply focus:app-input-active focus:app-border-active active:duration-300;
+  }
+
+  input[type='checkbox'],
+  input[type='radio'] {
+    @apply app-input-accent-color;
+  }
+
+  input[type='radio'] {
+    @apply rounded-full;
+  }
+}

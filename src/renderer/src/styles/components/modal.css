@@ -1,0 +1,29 @@
+@layer components {
+  .modal {
+    @apply absolute top-0 left-0 right-0 bottom-0 z-50;
+    @apply hidden items-center justify-center;
+    @apply app-background-opaque;
+
+    &.open {
+      @apply flex;
+    }
+
+    > .modal-container {
+      @apply flex flex-col gap-1;
+      @apply app-border app-background opacity-100;
+
+      > .header {
+        @apply flex gap-2 px-2 py-1 items-center;
+        @apply app-modal-header;
+      }
+
+      > .footer {
+        @apply flex gap-2 px-2 items-center;
+      }
+
+      > .content {
+        @apply flex-1 overflow-hidden px-2;
+      }
+    }
+  }
+}

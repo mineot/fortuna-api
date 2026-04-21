@@ -1,0 +1,10 @@
+@layer components {
+  table {
+    @apply w-full border-collapse border-spacing-0;
+  }
+
+  table th,
+  table td {
+    @apply app-border px-2 py-1 text-left;
+  }
+}

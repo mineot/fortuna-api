@@ -1,0 +1,23 @@
+* {
+  @apply box-border;
+}
+
+html {
+  @apply p-[0.1rem] app-border;
+}
+
+body {
+  @apply p-0 app-border;
+}
+
+html,
+body {
+  @apply w-full h-full m-0 overflow-hidden;
+  @apply flex flex-col gap-0;
+  @apply app-background app-text app-font;
+
+  > #app {
+    @apply flex-1 overflow-hidden;
+    @apply flex flex-col gap-0 p-0;
+  }
+}

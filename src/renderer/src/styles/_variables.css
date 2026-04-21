@@ -1,0 +1,46 @@
+@layer base {
+  @theme {
+    --font-sans:
+      'Roboto', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+      'Noto Color Emoji';
+    --font-serif: 'Roboto Serif', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono:
+      'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+    --color-main-50: var(--color-slate-50);
+    --color-main-100: var(--color-slate-100);
+    --color-main-200: var(--color-slate-200);
+    --color-main-300: var(--color-slate-300);
+    --color-main-400: var(--color-slate-400);
+    --color-main-500: var(--color-slate-500);
+    --color-main-600: var(--color-slate-600);
+    --color-main-700: var(--color-slate-700);
+    --color-main-800: var(--color-slate-800);
+    --color-main-900: var(--color-slate-900);
+    --color-main-950: var(--color-slate-950);
+
+    --color-destak-50: var(--color-amber-50);
+    --color-destak-100: var(--color-amber-100);
+    --color-destak-200: var(--color-amber-200);
+    --color-destak-300: var(--color-amber-300);
+    --color-destak-400: var(--color-amber-400);
+    --color-destak-500: var(--color-amber-500);
+    --color-destak-600: var(--color-amber-600);
+    --color-destak-700: var(--color-amber-700);
+    --color-destak-800: var(--color-amber-800);
+    --color-destak-900: var(--color-amber-900);
+    --color-destak-950: var(--color-amber-950);
+
+    --color-active-50: var(--color-lime-50);
+    --color-active-100: var(--color-lime-100);
+    --color-active-200: var(--color-lime-200);
+    --color-active-300: var(--color-lime-300);
+    --color-active-400: var(--color-lime-400);
+    --color-active-500: var(--color-lime-500);
+    --color-active-600: var(--color-lime-600);
+    --color-active-700: var(--color-lime-700);
+    --color-active-800: var(--color-lime-800);
+    --color-active-900: var(--color-lime-900);
+    --color-active-950: var(--color-lime-950);
+  }
+}
