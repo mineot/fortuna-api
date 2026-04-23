@@ -1,0 +1,15 @@
+@utility app-input {
+  @apply text-main-300;
+}
+
+@utility app-input-hover {
+  @apply text-destak-400;
+}
+
+@utility app-input-active {
+  @apply text-active-400;
+}
+
+@utility app-input-accent-color {
+  accent-color: var(--color-active-300);
+}

@@ -1,0 +1,23 @@
+@utility app-button {
+  @apply bg-main-300 text-main-900;
+}
+
+@utility app-button-flat {
+  @apply bg-transparent text-main-300 font-bold;
+}
+
+@utility app-button-hover {
+  @apply bg-destak-400 text-destak-950;
+}
+
+@utility app-button-flat-hover {
+  @apply bg-transparent text-destak-400;
+}
+
+@utility app-button-active {
+  @apply bg-active-400 text-active-950;
+}
+
+@utility app-button-flat-active {
+  @apply bg-transparent text-active-400;
+}

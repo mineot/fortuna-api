@@ -1,6 +1,6 @@
 @layer components {
   .input-group {
-    @apply flex flex-col;
+    @apply flex flex-col items-center;
 
     > label {
       order: 1;
@@ -37,15 +37,16 @@
     }
   }
 
-  input {
-    @apply px-1 py-1 outline-0;
-    @apply app-input app-border duration-300;
-    @apply hover:app-input-hover hover:app-border-destak hover:duration-300;
-    @apply focus:app-input-active focus:app-border-active active:duration-300;
+  input[type='text'] {
+    @apply px-2 py-1 outline-0 text-sm;
+    @apply app-input app-border ring-0 duration-300;
+    @apply hover:app-input-hover hover:app-border-destak hover:ring-0 hover:duration-300;
+    @apply focus:app-input-active focus:app-border-active focus:ring-0 active:duration-300;
   }
 
   input[type='checkbox'],
   input[type='radio'] {
+    margin-bottom: 1px;
     @apply app-input-accent-color;
   }
 

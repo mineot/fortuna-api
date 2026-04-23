@@ -1,0 +1,7 @@
+@utility app-background {
+  @apply bg-main-900;
+}
+
+@utility app-background-opaque {
+  @apply bg-main-900/70;
+}

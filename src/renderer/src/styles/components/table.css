@@ -5,6 +5,7 @@
 
   table th,
   table td {
-    @apply app-border px-2 py-1 text-left;
+    @apply px-2 py-1 text-left;
+    @apply border border-slate-200;
   }
 }

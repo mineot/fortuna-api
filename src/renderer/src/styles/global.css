@@ -1,11 +1,17 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto+Serif:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 @import './_variables.css';
-@import './_utilities.css';
 @import './_essentials.css';
+
+@import './utilities/actions.css';
+@import './utilities/backgrounds.css';
+@import './utilities/borders.css';
+@import './utilities/boxes.css';
+@import './utilities/texts.css';
+@import './utilities/fields.css';
 
 @import './components/button.css';
 @import './components/input.css';
-@import './components/table.css';
 @import './components/modal.css';
+@import './components/table.css';
+@import './components/tipography.css';

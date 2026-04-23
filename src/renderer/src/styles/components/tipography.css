@@ -1,0 +1,79 @@
+@layer components {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold;
+    @apply app-text-destak;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl lg:text-3xl;
+  }
+
+  h4 {
+    @apply text-lg md:text-xl lg:text-2xl;
+  }
+
+  h5 {
+    @apply text-base md:text-lg lg:text-xl;
+  }
+
+  h6 {
+    @apply text-xs md:text-sm lg:text-base;
+  }
+
+  /* 
+    h1 a h6 — títulos e subtítulos hierárquicos
+    p — parágrafo de texto
+    span — trecho inline sem semântica própria
+    a — link para outra página/recurso
+    strong — forte importância semântica
+    b — destaque visual sem importância extra
+    em — ênfase semântica (entonação)
+    i — texto em estilo alternativo (termo, voz, etc.)
+    small — nota de rodapé ou texto secundário
+    mark — trecho marcado/destacado
+    del — conteúdo removido
+    ins — conteúdo inserido
+    sub — texto subscrito
+    sup — texto sobrescrito
+    u — anotação não textual (sublinhado semântico)
+    s — conteúdo não mais correto/relevante
+    abbr — abreviação/sigla
+    cite — título de obra referenciada
+    q — citação curta inline
+    blockquote — citação em bloco
+    code — trecho de código inline
+    pre — texto pré-formatado
+    kbd — entrada do usuário (teclas/comandos)
+    samp — saída de programa/sistema
+    var — variável ou símbolo
+    time — data/hora legível por máquina
+    dfn — termo sendo definido
+    address — informações de contato do autor/seção
+    br — quebra de linha
+    wbr — ponto opcional de quebra de linha
+    hr — separação temática entre blocos
+    ul — lista não ordenada
+    ol — lista ordenada
+    li — item de lista
+    dl — lista de definições
+    dt — termo da definição
+    dd — descrição do termo
+    figcaption — legenda de figura
+    caption — legenda de tabela
+    legend — título de fieldset
+    label — rótulo de campo de formulário
+  */
+}

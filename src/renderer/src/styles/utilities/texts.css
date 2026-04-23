@@ -1,0 +1,15 @@
+@utility app-text {
+  @apply text-main-300;
+}
+
+@utility app-text-destak {
+  @apply text-destak-400;
+}
+
+@utility app-text-active {
+  @apply text-active-400;
+}
+
+@utility app-font {
+  @apply font-sans;
+}

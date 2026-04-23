@@ -1,0 +1,3 @@
+@utility app-modal-header {
+  @apply bg-main-300 text-main-900;
+}
