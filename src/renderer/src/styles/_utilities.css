@@ -1,0 +1,83 @@
+@utility app-bg {
+  @apply bg-main-800;
+}
+
+@utility app-bg-dark {
+  @apply bg-main-950;
+}
+
+@utility app-bg-inv {
+  @apply bg-main-200;
+}
+
+@utility app-bg-destak {
+  @apply bg-destak-500;
+}
+
+@utility app-bg-active {
+  @apply bg-destak-300;
+}
+
+@utility app-text {
+  @apply text-main-200;
+}
+
+@utility app-text-inv {
+  @apply text-main-950;
+}
+
+@utility app-text-dark {
+  @apply text-main-500;
+}
+
+@utility app-text-destak {
+  @apply text-destak-500;
+}
+
+@utility app-text-active {
+  @apply text-destak-300;
+}
+
+@utility app-font {
+  @apply font-sans;
+}
+
+@utility app-border {
+  @apply border border-main-200;
+}
+
+@utility app-border-destak {
+  @apply border border-destak-500;
+}
+
+@utility app-border-active {
+  @apply border border-destak-300;
+}
+
+@utility app-ring {
+  @apply ring-1 ring-inset ring-main-200 ring-offset-2 ring-offset-main-800;
+}
+
+@utility app-ring-destak {
+  @apply ring-1 ring-inset ring-destak-500 ring-offset-2 ring-offset-main-800;
+}
+
+@utility app-ring-active {
+  @apply ring-1 ring-inset ring-destak-300 ring-offset-2 ring-offset-main-800;
+}
+
+@utility app-duration {
+  @apply duration-300;
+}
+
+@utility app-icon {
+  @apply bg-transparent app-text cursor-pointer not-italic;
+  @apply hover:app-text-destak active:app-text-active;
+}
+
+@utility app-button {
+  @apply flex gap-2 px-2 py-1 items-center justify-center cursor-pointer;
+  @apply app-border app-ring app-bg-inv app-text-inv;
+  @apply hover:app-bg-destak hover:app-border-destak hover:app-ring-destak;
+  @apply active:app-bg-active active:app-border-active active:app-ring-destak;
+}

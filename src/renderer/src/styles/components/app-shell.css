@@ -1,0 +1,36 @@
+@layer components {
+  .app-shell {
+    @apply flex-1 flex flex-col overflow-hidden;
+
+    > header,
+    > footer {
+      @apply flex gap-2 items-center justify-between overflow-hidden;
+      @apply px-2 py-1 text-base app-bg-dark;
+
+      > h1 {
+        @apply app-text-destak;
+      }
+
+      > h2 {
+        @apply app-text-dark;
+      }
+
+      > nav {
+        @apply flex gap-4 items-center;
+
+        > i,
+        > a {
+          @apply app-icon flex items-center;
+        }
+
+        > button {
+          @apply app-button text-sm;
+        }
+      }
+    }
+
+    > main {
+      @apply flex-1 p-2 overflow-auto;
+    }
+  }
+}

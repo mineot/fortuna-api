@@ -1,17 +1,8 @@
 @import 'tailwindcss';
 
 @import './_variables.css';
+@import './_utilities.css';
 @import './_essentials.css';
 
-@import './utilities/actions.css';
-@import './utilities/backgrounds.css';
-@import './utilities/borders.css';
-@import './utilities/boxes.css';
-@import './utilities/texts.css';
-@import './utilities/fields.css';
-
-@import './components/button.css';
-@import './components/input.css';
-@import './components/modal.css';
-@import './components/table.css';
-@import './components/tipography.css';
+@import './components/app-shell.css';
+@import './components/language-switcher.css';

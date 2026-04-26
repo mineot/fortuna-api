@@ -74,7 +74,7 @@
     "electron": "^41.2.0",
     "i18next": "^25.6.0",
     "kysely": "^0.28.15",
-    "lucide-react": "^0.543.0",
+    "lucide-static": "^1.11.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-i18next": "^16.2.4",

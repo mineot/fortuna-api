@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto+Serif:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-@import 'lucide-static/font/lucide.css';
 
 @layer theme {
   @theme {
@@ -22,17 +21,17 @@
     --color-main-900: var(--color-slate-900);
     --color-main-950: var(--color-slate-950);
 
-    --color-destak-50: var(--color-yellow-50);
-    --color-destak-100: var(--color-yellow-100);
-    --color-destak-200: var(--color-yellow-200);
-    --color-destak-300: var(--color-yellow-300);
-    --color-destak-400: var(--color-yellow-400);
-    --color-destak-500: var(--color-yellow-500);
-    --color-destak-600: var(--color-yellow-600);
-    --color-destak-700: var(--color-yellow-700);
-    --color-destak-800: var(--color-yellow-800);
-    --color-destak-900: var(--color-yellow-900);
-    --color-destak-950: var(--color-yellow-950);
+    --color-destak-50: var(--color-amber-50);
+    --color-destak-100: var(--color-amber-100);
+    --color-destak-200: var(--color-amber-200);
+    --color-destak-300: var(--color-amber-300);
+    --color-destak-400: var(--color-amber-400);
+    --color-destak-500: var(--color-amber-500);
+    --color-destak-600: var(--color-amber-600);
+    --color-destak-700: var(--color-amber-700);
+    --color-destak-800: var(--color-amber-800);
+    --color-destak-900: var(--color-amber-900);
+    --color-destak-950: var(--color-amber-950);
 
     --color-active-50: var(--color-lime-50);
     --color-active-100: var(--color-lime-100);

@@ -1,54 +1,39 @@
 import { type PropsWithChildren } from 'react';
 import { useAppShell } from './app-shell.hooks';
 import { LanguageSwitcher } from './language-switcher';
-import { Navigator } from './navigator';
+import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export function AppShell({ children }: PropsWithChildren) {
-  const { meta } = useAppShell();
-
-  // return (
-  //   <section className="app-shell">
-  //     <aside className="sidebar">
-  //       <div className="sidebar-brand">
-  //         <span className="app-title">{meta.name}</span>
-  //         <span className="app-subtitle">{meta.version}</span>
-  //         <LanguageSwitcher />
-  //       </div>
-  //       <Navigator />
-  //     </aside>
-  //     <main className="content">{children}</main>
-  //   </section>
-  // );
+  const { meta, pathName } = useAppShell();
+  const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col gap-2 p-2 overflow-auto">
-      <table>
-        <thead>
-          <tr>
-            <th>Column 1</th>
-            <th>Column 2</th>
-            <th>Column 3</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Cell 1</td>
-            <td>Cell 1</td>
-            <td>Cell 1</td>
-          </tr>
-        </tbody>
-      </table>
-      {/*
-      <div>
-        <button>Open Modal</button>
-        <div className="modal">
-          <div className="modal-container">
-            <div className="header">Header</div>
-            <div className="content">Content</div>
-            <div className="footer">Footer</div>
-          </div>
-        </div>
-      </div> */}
+    <div className="app-shell">
+      <header>
+        <h1 className="flex gap-1">
+          <span>{meta.name}</span>
+          <span>[{meta.version}]</span>
+        </h1>
+        <LanguageSwitcher />
+        <nav>
+          <i className="icon-settings-2"></i>
+          <i className="icon-mail"></i>
+          <NavLink to="/" title={t('app.navigator.home')}>
+            <i className="icon-house"></i>
+          </NavLink>
+          <i className="icon-menu"></i>
+        </nav>
+      </header>
+      <main>{children}</main>
+      <footer>
+        <h2>{pathName}</h2>
+        <nav>
+          <button>Btn 1</button>
+          <button>Btn 2</button>
+          <button>Btn 3</button>
+        </nav>
+      </footer>
     </div>
   );
 }
