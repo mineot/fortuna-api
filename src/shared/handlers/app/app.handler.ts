@@ -1,6 +1,6 @@
 import { app, ipcMain } from 'electron';
 
-import meta from '../../../package.json';
+import meta from '../../../../package.json';
 import { APP_CHANNELS, type GetLocaleResponse, type GetMetaResponse } from './app.types';
 
 export function registerAppHandlers(): void {

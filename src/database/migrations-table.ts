@@ -1,6 +1,6 @@
 import type { Kysely } from 'kysely';
 
-import type { Database } from './schema';
+import type { Database } from './schema/schema';
 
 export async function ensureMigrationsTable(db: Kysely<Database>): Promise<void> {
   await db.schema

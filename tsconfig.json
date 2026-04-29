@@ -21,7 +21,7 @@
     "types": ["node"],
     "paths": {
       "@db": ["./src/database/index.ts"],
-      "@db/schema": ["./src/database/schema/index.ts"],
+      "@db/schema": ["./src/database/schema.ts"],
       "@shared/*": ["./src/shared/*"]
     }
   },

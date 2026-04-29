@@ -1,0 +1,5 @@
+@import './_semantics.css';
+
+@utility app-duration {
+  @apply duration-300;
+}

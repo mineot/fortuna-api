@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { Types } from '@db/schema';
+import type { Types } from '../../../database/schema';
 
 import { insertType, listTypes, removeType, updateType } from '../services/types.service';
 

@@ -44,16 +44,14 @@
 - `src/shared/handlers/app.handler.ts`: IPC handler for app-level operations (e.g., system locale).
 - `src/shared/handlers/types.handler.ts`: IPC handlers related to `types` table.
 - `src/shared/handlers/index.ts`: central IPC handler registration (`registerIpcHandlers`).
-- `src/database/schema/index.ts`: central Database schema and type re-exports.
-- `src/database/schema/migrations.schema.ts`: `migrations` table schema type.
-- `src/database/schema/types.schema.ts`: `types` table schema type and model aliases (`NewType`, `Types`, `TypeUpdate`).
+- `src/database/schema.ts`: central Database schema, shared union types, table interfaces, and model aliases.
 - `src/database/client.ts`: Kysely SQLite factory + singleton access (`getDb`) + cleanup (`destroyDb`).
 - `src/database/index.ts`: database module exports.
 - `src/database/migrations-table.ts`: ensures the base `migrations` table exists (non-versioned prerequisite).
 - `src/database/migrator.ts`: migration runner by target version (`migrateTo` / `migrateToLatest`).
 - `src/database/migrations/types.ts`: migration contract type.
 - `src/database/migrations/index.ts`: ordered migration registry.
-- `src/database/migrations/001_create_types_table.ts`: versioned migration creating `types` table.
+- `src/database/migrations/001_init_app.ts`: versioned migration `v1` that initializes the app database schema for personal finance.
 - `src/renderer/index.html`: Vite renderer entry HTML.
 - `src/renderer/src/main.tsx`: Vite renderer bootstrap script (React).
 - `src/renderer/src/App.tsx`: app root with router integration.
@@ -136,7 +134,7 @@
 - JSX transform: `jsx: react-jsx`
 - Paths alias:
   - `@db` -> `./src/database/index.ts`
-  - `@db/schema` -> `./src/database/schema/index.ts`
+- `@db/schema` -> `./src/database/schema.ts`
   - `@shared/*` -> `./src/shared/*`
 - Strict mode enabled: `strict: true`
 - Additional safety flags:
@@ -170,7 +168,7 @@
 - `npm run start` opens Electron using built files in root `dist/` (`fortuna.js` + Vite output).
 - Vite renderer uses `base: './'` so built asset paths work under Electron `file://` on `npm run start`.
 - Vite renderer config maps aliases for renderer runtime:
-- `@db/schema` -> `src/database/schema/index.ts`
+- `@db/schema` -> `src/database/schema.ts`
 - `@shared` -> `src/shared`
 - `server.fs.allow` includes `src/` parent so renderer can import shared/database type modules.
 - Renderer data flow is prepared via IPC:
@@ -214,15 +212,65 @@
 - If DB version is higher than the latest migration file version, `down` is applied automatically until synchronization.
 - If a DB-applied version no longer has a migration file, its registry row is removed from `migrations` to allow auto-sync with current code state.
 - Current versioned migration:
-- `v1` (`create_types_table`) creates table `types` with:
-  - `id` generated (`integer primary key autoincrement`)
-  - `group` (`text`)
-  - `value` (`text`)
+- `v1` (`init_app`) creates the personal-finance database foundation with:
+  - `users`, `user_settings`
+  - `account_types`, `accounts`
+  - `category_groups`, `categories`
+  - `payees`
+  - `transactions`, `transfers`, `recurring_transactions`
+  - `credit_cards`, `credit_card_statements`, `credit_card_purchases`, `credit_card_installments`, `credit_card_statement_payments`
+  - foreign keys, unique constraints, check constraints, and recommended indexes.
+
+## 9) Latest update (2026-04-28)
+- Applied the V1 personal-finance database type model from `.planning.md` into `src/database/schema.ts`.
+- Added shared union types:
+  - `TransactionType`
+  - `TransactionStatus`
+  - `RecurrenceType`
+  - `RecurrenceFrequency`
+  - `CreditCardStatementStatus`
+- Added table interfaces and model aliases (`Selectable` / `Insertable` / `Updateable`) for:
+  - `users`
+  - `user_settings`
+  - `account_types`
+  - `accounts`
+  - `category_groups`
+  - `categories`
+  - `payees`
+  - `transactions`
+  - `transfers`
+  - `recurring_transactions`
+  - `credit_cards`
+  - `credit_card_statements`
+  - `credit_card_purchases`
+  - `credit_card_installments`
+  - `credit_card_statement_payments`
+- Expanded the central `Database` interface in `src/database/schema.ts` to include all V1 tables above plus `migrations`.
+- Updated `src/database/migrations/001_init_app.ts` to create all V1 tables in a single initial migration, including:
+  - relational foreign keys
+  - unique constraints (`users.email`, `user_settings.user_id`, `account_types.name`)
+  - check constraints for enum-like values and numeric/business rules
+  - indexes for the main query paths described in planning
+- `down` for `v1` now drops all V1 tables in reverse dependency order.
+- Implemented baseline IPC CRUD handlers for all V1 finance tables with standardized operations:
+  - `listAll`, `findOne`, `add`, `change`, `remove`
+- Added paginated `list` operation in the shared CRUD handler with metadata return:
+  - input: `page`, `pageSize`, `order`
+  - output: `items`, `page`, `pageSize`, `total`, `totalPages`, `hasNextPage`, `hasPrevPage`, `startItem`, `endItem`
+- Handler architecture now follows module pattern:
+  - `<entity>/<entity>.types.ts` with channel constants and input/output typing
+  - `<entity>/<entity>.handler.ts` with `register...Handlers(db)`
+  - shared generic registrar in `src/shared/handlers/crud/register-crud.ts`
+- `registerIpcHandlers(db)` now registers app handlers plus CRUD handlers for each V1 table.
+- `src/preload.ts` now exposes grouped CRUD APIs per entity in `window.fortuna`.
+- `src/shared/ipc.ts` updated to reflect grouped renderer API contracts for all CRUD modules.
+- Renderer service layer now includes one service module per V1 table under `src/renderer/src/services/`, following the same class-based pattern used by `app.service.ts`.
+- Added central service exports in `src/renderer/src/services/index.ts`.
 - Database lifecycle:
 - instance is created lazily via `getDb()` and reused (single process instance)
 - app quit is intercepted in `before-quit` to await `destroyDb()` before final shutdown
 - Schema pattern:
-- all DB schemas are split inside `src/database/schema/*` and composed in `src/database/schema/index.ts`.
+- DB schema typing is currently centralized in `src/database/schema.ts`.
 - with `verbatimModuleSyntax`, type-only re-exports must use `export type`.
 - Lint and format should run before npm publish.
 - Type-aware ESLint uses `tsconfig.eslint.json` to avoid files outside `rootDir` from `tsconfig.json`.

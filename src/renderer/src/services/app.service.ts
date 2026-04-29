@@ -1,4 +1,4 @@
-import type { GetLocaleResponse, GetMetaResponse } from '@shared/handlers/app.types';
+import type { GetLocaleResponse, GetMetaResponse } from '@shared/handlers/app/app.types';
 
 class AppService {
   getMeta(): Promise<GetMetaResponse> {

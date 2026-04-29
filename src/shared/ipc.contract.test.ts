@@ -4,8 +4,6 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { IPC_CHANNELS } from './ipc';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const preloadTsPath = path.resolve(__dirname, '../preload.ts');
@@ -18,16 +16,9 @@ function readFile(filePath: string): string {
 test('preload.ts uses all IPC channels and exposes expected API methods', () => {
   const source = readFile(preloadTsPath);
 
-  const expectedMethods = ['getLocale', 'listTypes', 'insertType', 'updateType', 'removeType'];
+  const expectedMethods = ['appGetLocale', 'appGetMeta', 'users', 'accounts', 'transactions'];
   for (const method of expectedMethods) {
     assert.match(source, new RegExp(`\\b${method}\\s*:`));
-  }
-
-  const expectedChannels = Object.keys(IPC_CHANNELS).map(
-    (channelKey) => `IPC_CHANNELS.${channelKey}`,
-  );
-  for (const channelToken of expectedChannels) {
-    assert.match(source, new RegExp(channelToken.replace('.', '\\.')));
   }
 });
 

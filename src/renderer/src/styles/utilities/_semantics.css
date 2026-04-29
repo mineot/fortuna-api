@@ -1,0 +1,62 @@
+@utility app {
+  @apply bg-app text-app-light font-sans;
+
+  &.destak {
+    @apply bg-app-dark text-app-destak font-serif;
+  }
+}
+
+@utility app-border {
+  @apply border border-app-light app-duration;
+
+  &.hoverable {
+    @apply hover:border-app-destak;
+  }
+
+  &.activable {
+    @apply active:border-app-action;
+  }
+
+  &.focusable {
+    @apply focus:border-app-action;
+  }
+}
+
+/* @utility app-bg {
+  background-color: var(--color-app);
+}
+
+@utility app-bg-* {
+  background-color: --value(--color-app-*);
+}
+
+@utility app-text {
+  color: var(--color-app);
+}
+
+@utility app-text-* {
+  color: --value(--color-app-*);
+}
+
+
+
+@utility app-border-* {
+  border: 1px solid --value(--color-app-*);
+}
+
+@utility app-frame {
+  border: 1px solid var(--color-app);
+  outline: 1px solid var(--color-app);
+  outline-offset: 1px;
+}
+
+@utility app-frame-* {
+  border: 1px solid --value(--color-app-*);
+  outline: 1px solid --value(--color-app-*);
+  outline-offset: 0.15em;
+}
+
+@utility app-window {
+  border: 2px inset var(--color-app);
+  background-color: var(--color-app-dark);
+} */
