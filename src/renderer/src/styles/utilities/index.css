@@ -1,5 +1,4 @@
-@import './_input.css';
-@import './_semantics.css';
+@import './input.css';
 
 @utility app-duration {
   @apply duration-300;

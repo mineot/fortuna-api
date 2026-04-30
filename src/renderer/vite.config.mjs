@@ -26,9 +26,7 @@ function copyLucideFontAssets() {
       const assetsDir = path.join(__dirname, 'dist', 'assets');
       await mkdir(assetsDir, { recursive: true });
 
-      await Promise.all(
-        files.map((file) => copyFile(path.join(lucideDir, file), path.join(assetsDir, file))),
-      );
+      await Promise.all(files.map((file) => copyFile(path.join(lucideDir, file), path.join(assetsDir, file))));
     },
   };
 }
@@ -41,7 +39,11 @@ export default defineConfig({
     alias: {
       '@db/schema': path.join(__dirname, '..', 'database', 'schema', 'index.ts'),
       '@shared': path.join(__dirname, '..', 'shared'),
-      '@widgets': path.join(__dirname, 'src', 'widgets', 'index.ts'),
+      '@components': path.join(__dirname, 'src', 'components', 'index.ts'),
+      '@i18n': path.join(__dirname, 'src', 'core', 'i18n', 'index.ts'),
+      '@router': path.join(__dirname, 'src', 'core', 'router', 'index.tsx'),
+      '@services': path.join(__dirname, 'src', 'core', 'services', 'index.ts'),
+      '@pages': path.join(__dirname, 'src', 'pages', 'index.ts'),
     },
   },
   server: {

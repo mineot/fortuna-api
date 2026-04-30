@@ -1,7 +1,0 @@
-@utility theme-bg-app {
-  @apply bg-slate-100;
-}
-
-@utility theme-text-app {
-  @apply text-slate-800;
-}

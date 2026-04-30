@@ -10,10 +10,14 @@
     --font-mono:
       'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
-    --color-app: var(--color-slate-800);
-    --color-app-light: var(--color-slate-300);
+    --color-app: var(--color-slate-900);
+    --color-app-light: var(--color-slate-200);
+    --color-app-medium: var(--color-slate-500);
     --color-app-dark: var(--color-slate-950);
     --color-app-destak: var(--color-yellow-500);
-    --color-app-action: var(--color-yellow-400);
+    --color-app-success: var(--color-green-500);
+    --color-app-warning: var(--color-orange-500);
+    --color-app-danger: var(--color-red-500);
+    --color-app-info: var(--color-sky-500);
   }
 }

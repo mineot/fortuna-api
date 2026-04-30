@@ -1,5 +1,0 @@
-@layer components {
-  .error {
-    @apply theme-text-error;
-  }
-}

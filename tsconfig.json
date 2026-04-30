@@ -23,7 +23,11 @@
       "@db": ["./src/database/index.ts"],
       "@db/schema": ["./src/database/schema.ts"],
       "@shared/*": ["./src/shared/*"],
-      "@widgets": ["./src/renderer/src/widgets/index.ts"]
+      "@components": ["./src/renderer/src/components/index.ts"],
+      "@i18n": ["./src/renderer/src/core/i18n/index.ts"],
+      "@router": ["./src/renderer/src/core/router/index.ts"],
+      "@services": ["./src/renderer/src/core/services/index.ts"],
+      "@pages": ["./src/renderer/src/pages/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
