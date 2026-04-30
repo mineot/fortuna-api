@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
 @import './_variables.css';
+@import './_essentials.css';
 @import './utilities/index.css';
+
 @import './components/index.css';
+@import './widgets/index.css';

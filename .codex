@@ -136,6 +136,7 @@
   - `@db` -> `./src/database/index.ts`
 - `@db/schema` -> `./src/database/schema.ts`
   - `@shared/*` -> `./src/shared/*`
+  - `@widgets` -> `./src/renderer/src/widgets/index.ts`
 - Strict mode enabled: `strict: true`
 - Additional safety flags:
   - `noUncheckedIndexedAccess`
@@ -168,8 +169,9 @@
 - `npm run start` opens Electron using built files in root `dist/` (`fortuna.js` + Vite output).
 - Vite renderer uses `base: './'` so built asset paths work under Electron `file://` on `npm run start`.
 - Vite renderer config maps aliases for renderer runtime:
-- `@db/schema` -> `src/database/schema.ts`
+- `@db/schema` -> `src/database/schema/index.ts`
 - `@shared` -> `src/shared`
+- `@widgets` -> `src/renderer/src/widgets/index.ts`
 - `server.fs.allow` includes `src/` parent so renderer can import shared/database type modules.
 - Renderer data flow is prepared via IPC:
 - main process registers handlers by module via `registerIpcHandlers(db)`.

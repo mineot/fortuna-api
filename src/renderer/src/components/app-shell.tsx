@@ -1,4 +1,5 @@
 import { type PropsWithChildren } from 'react';
+import { CrudTableWidget } from '@widgets';
 // import { useAppShell } from './app-shell.hooks';
 // import { LanguageSwitcher } from './language-switcher';
 // import { NavLink } from 'react-router-dom';
@@ -53,9 +54,5 @@ export function AppShell({ children }: PropsWithChildren) {
   //   // </section>
   // );
 
-  return (
-    <div className="app w-full h-full p-10">
-      <div className="app-border hoverable activable">Teste</div>
-    </div>
-  );
+  return <CrudTableWidget />;
 }

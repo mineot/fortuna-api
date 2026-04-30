@@ -41,6 +41,7 @@ export default defineConfig({
     alias: {
       '@db/schema': path.join(__dirname, '..', 'database', 'schema', 'index.ts'),
       '@shared': path.join(__dirname, '..', 'shared'),
+      '@widgets': path.join(__dirname, 'src', 'widgets', 'index.ts'),
     },
   },
   server: {

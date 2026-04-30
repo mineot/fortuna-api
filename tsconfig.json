@@ -22,7 +22,8 @@
     "paths": {
       "@db": ["./src/database/index.ts"],
       "@db/schema": ["./src/database/schema.ts"],
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@widgets": ["./src/renderer/src/widgets/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
