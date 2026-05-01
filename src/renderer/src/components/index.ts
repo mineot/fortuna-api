@@ -1,4 +1,7 @@
 import { AppShell } from './AppShell';
-import { CrudTableWidget } from './CrudTable';
+import { Button } from './Button';
+import { CrudTable } from './CrudTable';
+import { Input } from './Input';
+import { Table } from './Table';
 
-export { AppShell, CrudTableWidget };
+export { AppShell, Button, CrudTable, Input, Table };

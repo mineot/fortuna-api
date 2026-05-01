@@ -1,0 +1,47 @@
+@layer components {
+  .crud-table-widget {
+    @apply flex gap-2;
+
+    > .data {
+      @apply flex flex-col gap-2;
+
+      /* > table,
+      table th,
+      table td {
+        @apply text-left text-sm px-2 py-1;
+      }
+
+      > table tr {
+        @apply border-b-2 border-app-medium;
+      }
+
+      > table tr:has(> td) {
+        @apply hover:bg-app-medium/60 cursor-pointer;
+
+        &.active {
+          @apply bg-app-medium/60;
+        }
+      }
+
+      > table tr td i {
+        @apply hover:text-app-danger;
+      } */
+
+      > .actions {
+        @apply flex gap-1;
+      }
+    }
+
+    > .editor {
+      @apply flex flex-col gap-2;
+
+      > .action {
+        @apply flex gap-2 items-center;
+
+        > * {
+          @apply flex-1;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+@utility app-input {
+  @apply flex flex-col gap-0 px-2 py-1 text-sm app-duration hover:app-duration;
+  @apply bg-app-dark text-app-medium hover:text-app-light focus-within:text-app-light;
+
+  &.warn {
+    @apply text-app-warning;
+  }
+
+  &.err {
+    @apply text-app-danger;
+  }
+
+  &.req {
+    label::after {
+      content: '';
+      display: inline-block;
+      width: 0.375rem;
+      height: 0.375rem;
+      margin-left: 0.2rem;
+      margin-bottom: 0.285rem;
+      border-radius: 9999px;
+      vertical-align: middle;
+      @apply bg-app-danger/50;
+    }
+  }
+
+  input {
+    @apply outline-0 w-full;
+  }
+
+  .message {
+    @apply hidden text-xs;
+  }
+
+  &:is(.warn, .err) {
+    .message {
+      @apply block;
+    }
+  }
+}
