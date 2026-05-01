@@ -4,9 +4,12 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { initializeI18n } from '@i18n';
 import './styles/global.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 async function bootstrap(): Promise<void> {
   await initializeI18n();
+
+  document.documentElement.setAttribute('data-bs-theme', 'dark');
 
   const container = document.getElementById('app');
   if (!container) {
