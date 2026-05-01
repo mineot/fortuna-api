@@ -1,7 +1,3 @@
-import { AppShell } from './AppShell';
-import { Button } from './Button';
-import { CrudTable } from './CrudTable';
-import { Input } from './Input';
-import { Table } from './Table';
+import { AppShell } from './_app-shell.component';
 
-export { AppShell, Button, CrudTable, Input, Table };
+export { AppShell };

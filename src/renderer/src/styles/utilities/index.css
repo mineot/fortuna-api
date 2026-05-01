@@ -1,7 +1,0 @@
-@import './button.css';
-@import './input.css';
-@import './table.css';
-
-@utility app-duration {
-  @apply duration-300;
-}
