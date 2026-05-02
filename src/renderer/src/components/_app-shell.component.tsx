@@ -1,11 +1,11 @@
 import type { AppShellProps } from './_app-shell.types';
-import { Input } from '@widgets';
+import { Form } from '@components';
 
 export function AppShell({ children }: AppShellProps) {
   return (
     <div>
       <div>
-        <Input id="test" label="Teste" />
+        <Form />
       </div>
       <div>{children}</div>
     </div>
