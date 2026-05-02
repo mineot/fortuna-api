@@ -19,7 +19,7 @@ function Input(props: InputProps) {
         onChange={handleChange}
         required={required}
       />
-      {validationMessage && <div className="form-text text-danger">{validationMessage}</div>}
+      {validationMessage && <div className="form-text text-warning">{validationMessage}</div>}
     </div>
   );
 }

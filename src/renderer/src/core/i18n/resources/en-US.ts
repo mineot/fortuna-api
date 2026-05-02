@@ -1,1 +1,7 @@
-export const enUS = {} as const;
+export const enUS = {
+  common: {
+    cancel: 'Cancel',
+    clean: 'Clean',
+    submit: 'Submit',
+  },
+} as const;

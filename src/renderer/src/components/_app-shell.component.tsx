@@ -8,7 +8,20 @@ export function AppShell({ children }: AppShellProps) {
       <div>
         <Form
           controls={[
-            { id: 'test1', label: 'Test 1', validations: [{ rule: 'REQUIRED', message: 'Required' }] },
+            {
+              id: 'test1',
+              label: 'Test 1',
+              validations: [
+                { rule: 'REQUIRED', message: 'Required' },
+                {
+                  rule: 'CUSTOM',
+                  message: 'Deve ter no minimo 3 caracteres',
+                  customValidation: (value) => {
+                    return typeof value === 'string' && value?.length >= 3;
+                  },
+                },
+              ],
+            },
             { id: 'test2', label: 'Test 2' },
             { id: 'test3', label: 'Test 3' },
             { id: 'test4', label: 'Test 4' },
