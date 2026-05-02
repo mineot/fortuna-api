@@ -18,12 +18,10 @@ export function Form(props: FormProps) {
             {...(controlValue !== undefined ? { value: controlValue } : {})}
             {...(control.type !== undefined ? { type: control.type } : {})}
             {...(control.placehoder !== undefined ? { placehoder: control.placehoder } : {})}
-            {...(control.message !== undefined ? { message: control.message } : {})}
-            {...(control.messageType !== undefined ? { messageType: control.messageType } : {})}
             {...(control.onChange !== undefined ? { onChange: control.onChange } : {})}
             {...(control.parseFrom !== undefined ? { parseFrom: control.parseFrom } : {})}
             {...(control.parseTo !== undefined ? { parseTo: control.parseTo } : {})}
-            {...(control.required !== undefined ? { required: control.required } : {})}
+            {...(control.validations !== undefined ? { validations: control.validations } : {})}
           />
         );
       })}

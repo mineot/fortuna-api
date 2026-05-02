@@ -1,7 +1,9 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import type { ChangeEvent } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
+import { useInput } from './_input.hooks';
 import { Input } from './_input.widget';
 
 describe('Input widget', () => {
@@ -30,39 +32,45 @@ describe('Input widget', () => {
     assert.match(html, /placeholder="name@email\.com"/);
   });
 
-  it('does not render required bullet when required is false/undefined', () => {
+  it('does not render required bullet when REQUIRED validation is missing', () => {
     const html = renderToStaticMarkup(<Input id="city" label="City" />);
 
     assert.doesNotMatch(html, /&#8226;/);
   });
 
-  it('renders required bullet and required attribute when required is true', () => {
-    const html = renderToStaticMarkup(<Input id="doc" label="Document" required />);
+  it('renders required bullet and required attribute when REQUIRED validation exists', () => {
+    const html = renderToStaticMarkup(
+      <Input
+        id="doc"
+        label="Document"
+        validations={[{ rule: 'REQUIRED', message: 'Required', customValidation: (value) => Boolean(value) }]}
+      />,
+    );
 
     assert.match(html, /<span[^>]*>•<\/span>/);
     assert.match(html, /<input[^>]*required=""/);
   });
 
-  it('does not render message block when message is missing', () => {
+  it('does not render message block when there are no failing validations', () => {
     const html = renderToStaticMarkup(<Input id="zip" label="ZIP" />);
 
     assert.doesNotMatch(html, /form-text/);
   });
 
-  it('renders danger message style by default when message exists', () => {
-    const html = renderToStaticMarkup(<Input id="pwd" label="Password" message="Invalid value" />);
-
-    assert.match(html, /form-text text-danger/);
-    assert.match(html, />Invalid value</);
-  });
-
-  it('renders warning message style when messageType is warning', () => {
+  it('renders validation message when first rule fails', () => {
     const html = renderToStaticMarkup(
-      <Input id="amount" label="Amount" message="Check this value" messageType="warning" />,
+      <Input
+        id="pwd"
+        label="Password"
+        value=""
+        validations={[
+          { rule: 'REQUIRED', message: 'Required field', customValidation: (value) => String(value ?? '').length > 0 },
+        ]}
+      />,
     );
 
-    assert.match(html, /form-text text-warning/);
-    assert.match(html, />Check this value</);
+    assert.match(html, /form-text text-danger/);
+    assert.match(html, />Required field</);
   });
 
   it('renders string value directly', () => {
@@ -96,5 +104,73 @@ describe('Input widget', () => {
     );
 
     assert.match(html, /value="R\$ 1234"/);
+  });
+});
+
+describe('useInput hook', () => {
+  it('uses parseFrom for input value when provided', () => {
+    const model = useInput({ id: 'currency', label: 'Currency', value: 10, parseFrom: (value) => `R$ ${value}` });
+    assert.equal(model.inputValue, 'R$ 10');
+  });
+
+  it('uses empty string when value is undefined', () => {
+    const model = useInput({ id: 'empty', label: 'Empty' });
+    assert.equal(model.inputValue, '');
+  });
+
+  it('returns first failing validation message', () => {
+    const model = useInput({
+      id: 'name',
+      label: 'Name',
+      value: '',
+      validations: [
+        { rule: 'REQUIRED', message: 'Required', customValidation: (value) => String(value ?? '').length > 0 },
+        { rule: 'CUSTOM', message: 'Too short', customValidation: (value) => String(value).length >= 3 },
+      ],
+    });
+
+    assert.equal(model.validationMessage, 'Required');
+  });
+
+  it('applies parseTo and parseFrom in handleChange before onChange', () => {
+    let receivedValue = '';
+    const model = useInput({
+      id: 'amount',
+      label: 'Amount',
+      parseTo: (value) => Number(value.replace(/[^\d]/g, '')),
+      parseFrom: (value) => `R$ ${value}`,
+      onChange: (event) => {
+        receivedValue = event.target.value;
+      },
+    });
+
+    const event = {
+      target: { value: '12x' },
+      currentTarget: { value: '12x' },
+    } as unknown as ChangeEvent<HTMLInputElement>;
+
+    model.handleChange(event);
+
+    assert.equal(event.target.value, 'R$ 12');
+    assert.equal(event.currentTarget.value, 'R$ 12');
+    assert.equal(receivedValue, 'R$ 12');
+  });
+
+  it('keeps original event value when parseTo is absent', () => {
+    let receivedValue = '';
+    const model = useInput({
+      id: 'plain',
+      label: 'Plain',
+      onChange: (event) => {
+        receivedValue = event.target.value;
+      },
+    });
+    const event = {
+      target: { value: 'abc' },
+      currentTarget: { value: 'abc' },
+    } as unknown as ChangeEvent<HTMLInputElement>;
+
+    model.handleChange(event);
+    assert.equal(receivedValue, 'abc');
   });
 });
