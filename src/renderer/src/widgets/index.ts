@@ -1,3 +1,3 @@
-import { Input, type InputProps, type InputValue } from './_input.widget';
+import { Input, type InputProps, type InputValue, type Validation } from './_input.widget';
 
-export { Input, type InputProps, type InputValue };
+export { Input, type InputProps, type InputValue, type Validation };

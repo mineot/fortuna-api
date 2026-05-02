@@ -7,7 +7,7 @@ export type InputValue = string | number | Date;
 export type Validation = {
   rule: 'REQUIRED' | 'CUSTOM';
   message: string;
-  customValidation(value: InputValue | undefined): boolean;
+  customValidation?: (value: InputValue | undefined) => boolean;
 };
 
 export type InputProps = {

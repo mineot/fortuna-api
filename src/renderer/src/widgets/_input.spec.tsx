@@ -40,11 +40,7 @@ describe('Input widget', () => {
 
   it('renders required bullet and required attribute when REQUIRED validation exists', () => {
     const html = renderToStaticMarkup(
-      <Input
-        id="doc"
-        label="Document"
-        validations={[{ rule: 'REQUIRED', message: 'Required', customValidation: (value) => Boolean(value) }]}
-      />,
+      <Input id="doc" label="Document" validations={[{ rule: 'REQUIRED', message: 'Required' }]} />,
     );
 
     assert.match(html, /<span[^>]*>•<\/span>/);
@@ -63,9 +59,7 @@ describe('Input widget', () => {
         id="pwd"
         label="Password"
         value=""
-        validations={[
-          { rule: 'REQUIRED', message: 'Required field', customValidation: (value) => String(value ?? '').length > 0 },
-        ]}
+        validations={[{ rule: 'REQUIRED', message: 'Required field' }]}
       />,
     );
 
@@ -124,12 +118,34 @@ describe('useInput hook', () => {
       label: 'Name',
       value: '',
       validations: [
-        { rule: 'REQUIRED', message: 'Required', customValidation: (value) => String(value ?? '').length > 0 },
+        { rule: 'REQUIRED', message: 'Required' },
         { rule: 'CUSTOM', message: 'Too short', customValidation: (value) => String(value).length >= 3 },
       ],
     });
 
     assert.equal(model.validationMessage, 'Required');
+  });
+
+  it('treats blank spaces as invalid for REQUIRED rule', () => {
+    const model = useInput({
+      id: 'name',
+      label: 'Name',
+      value: '   ',
+      validations: [{ rule: 'REQUIRED', message: 'Required' }],
+    });
+
+    assert.equal(model.validationMessage, 'Required');
+  });
+
+  it('ignores CUSTOM validation when customValidation is missing', () => {
+    const model = useInput({
+      id: 'name',
+      label: 'Name',
+      value: 'ok',
+      validations: [{ rule: 'CUSTOM', message: 'Custom error' }],
+    });
+
+    assert.equal(model.validationMessage, undefined);
   });
 
   it('applies parseTo and parseFrom in handleChange before onChange', () => {

@@ -9,9 +9,21 @@ export function useInput(props: InputProps) {
     return String(value);
   };
 
+  const isFilled = (value: InputValue | undefined): boolean => {
+    if (value === undefined) {
+      return false;
+    }
+
+    if (typeof value === 'string') return value.trim().length > 0;
+    return true;
+  };
+
   const resolveValidationMessage = (validations: Validation[], value: InputValue | undefined): string | undefined => {
     for (const validation of validations) {
-      if (!validation.customValidation(value)) return validation.message;
+      if (validation.rule === 'REQUIRED' && !isFilled(value)) return validation.message;
+      if (validation.rule === 'CUSTOM' && validation.customValidation && !validation.customValidation(value)) {
+        return validation.message;
+      }
     }
 
     return undefined;
