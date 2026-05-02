@@ -16,6 +16,7 @@ export default defineConfig({
       '@db/schema': path.join(__dirname, '..', 'database', 'schema', 'index.ts'),
       '@shared': path.join(__dirname, '..', 'shared'),
       '@components': path.join(__dirname, 'src', 'components', 'index.ts'),
+      '@widgets': path.join(__dirname, 'src', 'widgets', 'index.ts'),
       '@i18n': path.join(__dirname, 'src', 'core', 'i18n', 'index.ts'),
       '@router': path.join(__dirname, 'src', 'core', 'router', 'index.tsx'),
       '@services': path.join(__dirname, 'src', 'core', 'services', 'index.ts'),

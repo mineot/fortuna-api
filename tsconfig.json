@@ -24,6 +24,7 @@
       "@db/schema": ["./src/database/schema.ts"],
       "@shared/*": ["./src/shared/*"],
       "@components": ["./src/renderer/src/components/index.ts"],
+      "@widgets": ["./src/renderer/src/widgets/index.ts"],
       "@i18n": ["./src/renderer/src/core/i18n/index.ts"],
       "@router": ["./src/renderer/src/core/router/index.ts"],
       "@services": ["./src/renderer/src/core/services/index.ts"],

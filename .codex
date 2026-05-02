@@ -15,8 +15,8 @@
 - Main and preload are bundled/minified by `tsup` (`dist/fortuna.js` and `dist/preload.cjs`).
 - Code quality stack: `ESLint` (modern flat config) + `Prettier`.
 - Renderer stack: `React + TypeScript + React Router` on top of Vite.
-- Renderer styling stack: `Tailwind CSS v4` via semantic classes defined in CSS with `@apply` and color utilities via `@utility`.
-- Renderer icon stack: `lucide-react` for open-source SVG icons in React components.
+- Renderer styling stack: `Bootstrap` (`bootstrap@5`) loaded globally via CSS import.
+- Renderer icon stack: `Bootstrap Icons` (`bootstrap-icons`) loaded globally via CSS import.
 - Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
 - Database layer initialized with `Kysely` + `SQLite` (`better-sqlite3`).
 - Database access uses a singleton instance (`getDb`) in the Electron main process lifecycle.
@@ -35,7 +35,7 @@
 - `tsconfig.json`: TypeScript compiler config.
 - `tsconfig.eslint.json`: dedicated ESLint config (type-aware lint including `tsup.config.ts`).
 - `eslint.config.mjs`: modern lint configuration with Prettier integration.
-- `postcss.config.cjs`: PostCSS pipeline (`@tailwindcss/postcss`) for Tailwind v4.
+- `postcss.config.cjs`: PostCSS config (kept for renderer build pipeline support).
 - `.prettierrc`: formatting rules.
 - `.prettierignore`: Prettier exclusions.
 - `src/main.ts`: current entrypoint.
@@ -65,7 +65,7 @@
 - `src/renderer/src/i18n/resources/en-US.ts`: English translations.
 - `src/renderer/src/i18n/resources/pt-BR.ts`: Portuguese (Brazil) translations.
 - `src/renderer/src/components/layout/LanguageSwitcher.tsx`: language selector component.
-- `src/renderer/src/styles/global.css`: global renderer styles.
+- `src/renderer/src/styles/global.css`: global renderer styles and global imports for Bootstrap and Bootstrap Icons.
 - `src/renderer/src/vite-env.d.ts`: renderer global typing for preload API.
 - `src/renderer/vite.config.mjs`: Vite config for renderer subproject.
 - `scripts/copy-renderer.mjs`: copies full renderer build output (`src/renderer/dist`) to root `dist/`.
@@ -95,8 +95,6 @@
 - `@vitejs/plugin-react` (`^5.1.0`)
 - `@types/react` (`^19.2.2`)
 - `@types/react-dom` (`^19.2.2`)
-- `tailwindcss` (`^4.1.14`)
-- `@tailwindcss/postcss` (`^4.1.14`)
 - `postcss` (`^8.5.6`)
 - `autoprefixer` (`^10.4.21`)
 
@@ -109,6 +107,8 @@
 - `react-router-dom` (`^7.9.4`)
 - `i18next` (`^25.6.0`)
 - `react-i18next` (`^16.2.4`)
+- `bootstrap` (`^5.3.8`)
+- `bootstrap-icons` (`^1.13.1`)
 
 ## 6) Configured npm scripts
 - `build`: `npm run build:renderer && tsup && node scripts/copy-renderer.mjs`
@@ -187,15 +187,11 @@
 - initial language priority: `localStorage` -> system locale via IPC -> `en-US`
 - user language selection is persisted in `localStorage` (`fortuna.language`)
 - `changeLanguage` in renderer i18n is `async` and awaits `i18next.changeLanguage(...)`.
-- Tailwind usage rule:
-- no utility classes directly in TSX/HTML markup.
-- semantic class names are defined in `global.css` using `@apply`.
-- renderer styles are modularized by domain under `src/renderer/src/styles/`:
-  - `global.css` uses `@import 'tailwindcss';`, imports style modules, and keeps `@layer base`
-  - `theme/index.css` aggregates modular theme files under `styles/theme/*` (app, sidebar, nav, panel, table, feedback), centralizing color tokens as custom Tailwind utilities via `@utility`
-  - `layout.css` for shell/navigation/layout classes
-  - `components/*.css` for shared UI components (e.g., language switcher, table, page)
-  - `shared.css` for cross-cutting semantic helpers (e.g., `.error`)
+- Bootstrap usage rule:
+- global Bootstrap CSS is imported in `src/renderer/src/styles/global.css` via `@import 'bootstrap/dist/css/bootstrap.min.css';`
+- global Bootstrap Icons CSS is imported in `src/renderer/src/styles/global.css` via `@import 'bootstrap-icons/font/bootstrap-icons.css';`
+- Bootstrap JavaScript bundle is imported in `src/renderer/src/main.tsx` via `import 'bootstrap/dist/js/bootstrap.bundle.min.js';`
+- default theme is dark and applied at app bootstrap through `document.documentElement.setAttribute('data-bs-theme', 'dark')`
 - renderer code should remain TypeScript-only (`.ts`/`.tsx`).
 - renderer shows explicit fallback message if preload API is unavailable, avoiding silent blank screen.
 - In Linux environments without configured `chrome-sandbox` SUID, dev/start run with `--no-sandbox --disable-setuid-sandbox`.
@@ -223,7 +219,15 @@
   - `credit_cards`, `credit_card_statements`, `credit_card_purchases`, `credit_card_installments`, `credit_card_statement_payments`
   - foreign keys, unique constraints, check constraints, and recommended indexes.
 
-## 9) Latest update (2026-04-28)
+## 9) Latest update (2026-05-01)
+- Migrated renderer styling/icon stack from Tailwind/Lucide references to Bootstrap + Bootstrap Icons.
+- Installed runtime dependencies:
+  - `bootstrap@5.3.8`
+  - `bootstrap-icons@1.13.1`
+- Updated `src/renderer/src/styles/global.css` to import Bootstrap and Bootstrap Icons globally.
+- Updated `src/renderer/src/main.tsx` to import Bootstrap JavaScript bundle and set global dark theme via `data-bs-theme="dark"`.
+
+## 9.1) Previous update (2026-04-28)
 - Applied the V1 personal-finance database type model from `.planning.md` into `src/database/schema.ts`.
 - Added shared union types:
   - `TransactionType`
