@@ -1,6 +1,6 @@
 import { type ChangeEvent } from 'react';
 import { type FormProps } from './_form.types';
-import { Input, type Validation } from '@widgets';
+import { Button, Input, type Validation } from '@widgets';
 import { useForm } from './_form.hook';
 import { useTranslation } from 'react-i18next';
 
@@ -29,17 +29,9 @@ export function Form(props: FormProps) {
         );
       })}
       <div className="d-flex gap-2">
-        <button type="submit" className="btn btn-sm btn-primary">
-          {t('common.submit')}
-        </button>
-        <button type="reset" className="btn btn-sm btn-secondary">
-          {t('common.clean')}
-        </button>
-        {props.onCancel && (
-          <button type="button" className="btn btn-sm btn-secondary" onClick={props.onCancel}>
-            {t('common.cancel')}
-          </button>
-        )}
+        <Button type="submit" variant="primary" label={t('common.submit')} />
+        <Button type="reset" variant="secondary" label={t('common.clean')} />
+        {props.onCancel && <Button variant="secondary" label={t('common.cancel')} onClick={props.onCancel} />}
       </div>
     </form>
   );
