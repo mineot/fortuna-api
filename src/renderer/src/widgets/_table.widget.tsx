@@ -1,6 +1,7 @@
 import { Button } from '@widgets';
+import type { TableProps } from './_table.types';
 
-export function Table() {
+export function Table(props: TableProps) {
   return (
     <div className="d-flex flex-column gap-2">
       <table className="table table-sm table-hover m-0">

@@ -14,10 +14,20 @@ export type TableData = {
   value: TableValue;
 };
 
-export type TablePaginate = {};
+export type TablePaginate = {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  startItem: number;
+  endItem: number;
+};
 
 export type TableProps = {
   id?: string;
   columns: TableColumn[];
   rows: TableData[][];
+  paginate: TablePaginate;
 };
