@@ -1,5 +1,17 @@
-import { Button } from './_button.widget';
+import { Button, type ButtonProps, type ButtonVariant } from './_button.widget';
 import { Input, type InputProps, type InputValidation, type InputValue } from './_input.widget';
+import { Paginator, type PaginatorProps } from './_paginator.widget';
 import { Table } from './_table.widget';
 
-export { Button, Input, type InputProps, type InputValidation, type InputValue, Table };
+export {
+  Button,
+  type ButtonProps,
+  type ButtonVariant,
+  Input,
+  type InputProps,
+  type InputValidation,
+  type InputValue,
+  Paginator,
+  type PaginatorProps,
+  Table,
+};

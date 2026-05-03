@@ -1,7 +1,9 @@
+export type ButtonVariant = 'primary' | 'secondary' | 'danger';
+
 export type ButtonProps = {
   id?: string;
   type?: 'button' | 'submit' | 'reset';
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: ButtonVariant;
   label?: string;
   icon?: string;
   onClick?: () => void;

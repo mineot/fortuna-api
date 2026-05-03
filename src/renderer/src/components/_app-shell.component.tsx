@@ -5,7 +5,7 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <div>
       <div>
-        <Table />
+        <Table columns={[]} rows={[]} />
       </div>
       <div>{children}</div>
     </div>
