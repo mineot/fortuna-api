@@ -2,8 +2,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { useTable } from './_table.hook';
-import { Table } from './_table.widget';
+import { useTable } from './table.hook';
+import { Table } from './table.widget';
 
 describe('useTable hook', () => {
   const props: React.ComponentProps<typeof Table> = {

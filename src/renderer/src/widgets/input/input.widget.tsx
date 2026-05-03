@@ -1,5 +1,5 @@
-import { useInput } from './_input.hooks';
-import type { InputProps, InputValue, InputValidation } from './_input.types';
+import { useInput } from './input.hooks';
+import type { InputProps, InputValue, InputValidation } from './input.types';
 
 function Input(props: InputProps) {
   const { required, inputValue, validationMessage, handleChange } = useInput(props);

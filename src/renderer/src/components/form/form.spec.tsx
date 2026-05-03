@@ -2,8 +2,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { Form } from './_form.component';
-import { resolveInitialData, resolveNextValue, resolveSubmitResult, validateControls } from './_form.hook';
+import { Form } from './form.component';
+import { resolveInitialData, resolveNextValue, resolveSubmitResult, validateControls } from './form.hook';
 
 describe('Form component', () => {
   it('renders controls and default action buttons', () => {

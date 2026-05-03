@@ -1,7 +1,7 @@
 import type { InputProps, InputValue, Validation } from '@widgets';
 import { type ChangeEvent, type SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { FormProps } from './_form.types';
+import type { FormProps } from './form.types';
 
 export function useForm(props: FormProps) {
   const controls = props.controls ?? [];

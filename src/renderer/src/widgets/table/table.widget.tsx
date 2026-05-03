@@ -1,8 +1,8 @@
 import { Button } from '@widgets';
-import { type TableProps } from './_table.types';
+import { type TableProps } from './table.types';
 import { Paginator } from '@widgets';
 import { useTranslation } from 'react-i18next';
-import { useTable } from './_table.hook';
+import { useTable } from './table.hook';
 
 export function Table(props: TableProps) {
   const { t } = useTranslation();

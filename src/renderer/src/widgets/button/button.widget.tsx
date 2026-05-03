@@ -1,4 +1,4 @@
-import type { ButtonProps, ButtonVariant } from './_button.types';
+import type { ButtonProps, ButtonVariant } from './button.types';
 
 function Button(props: ButtonProps) {
   const classes = ['d-flex', 'align-items-center', 'gap-2', 'btn', 'btn-sm', `btn-${props.variant ?? 'primary'}`].join(

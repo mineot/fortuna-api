@@ -1,5 +1,5 @@
-import type { ButtonVariant } from './_button.types';
-import type { PaginatorProps } from './_paginator.types';
+import type { ButtonVariant } from '../button/button.types';
+import type { PaginatorProps } from '../paginator/paginator.types';
 
 export type TableAlign = 'start' | 'center' | 'end';
 

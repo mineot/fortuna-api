@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import type { ChangeEvent } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { useInput } from './_input.hooks';
-import { Input } from './_input.widget';
+import { useInput } from './input.hooks';
+import { Input } from './input.widget';
 
 describe('Input widget', () => {
   it('renders label and id binding', () => {
@@ -55,12 +55,7 @@ describe('Input widget', () => {
 
   it('renders validation message when first rule fails', () => {
     const html = renderToStaticMarkup(
-      <Input
-        id="pwd"
-        label="Password"
-        value=""
-        validations={[{ rule: 'REQUIRED', message: 'Required field' }]}
-      />,
+      <Input id="pwd" label="Password" value="" validations={[{ rule: 'REQUIRED', message: 'Required field' }]} />,
     );
 
     assert.match(html, /form-text text-warning/);

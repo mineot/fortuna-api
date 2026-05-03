@@ -2,8 +2,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { usePaginator } from './_paginator.hook';
-import { Paginator } from './_paginator.widget';
+import { usePaginator } from './paginator.hook';
+import { Paginator } from './paginator.widget';
 
 describe('usePaginator hook', () => {
   const baseProps = {

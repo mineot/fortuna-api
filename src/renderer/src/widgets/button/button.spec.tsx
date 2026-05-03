@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { Button } from './_button.widget';
+import { Button } from './button.widget';
 
 describe('Button widget', () => {
   it('renders label', () => {

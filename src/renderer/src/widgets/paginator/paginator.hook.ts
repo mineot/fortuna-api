@@ -1,4 +1,4 @@
-import { type PaginatorProps, WINDOW_SIZE } from './_paginator.types';
+import { type PaginatorProps, WINDOW_SIZE } from './paginator.types';
 
 export function usePaginator(props: PaginatorProps) {
   const safeTotalPages = Math.max(props.totalPages, 1);

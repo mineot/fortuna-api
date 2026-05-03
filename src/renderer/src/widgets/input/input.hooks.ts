@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 
-import type { InputProps, InputValue, InputValidation } from './_input.types';
+import type { InputProps, InputValidation, InputValue } from './input.types';
 
 export function useInput(props: InputProps) {
   const toInputString = (value: InputValue | undefined): string => {

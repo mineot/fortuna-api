@@ -4,7 +4,7 @@ import {
   type TableDetails,
   type TableFormatting,
   type TableProps,
-} from './_table.types';
+} from './table.types';
 
 export function useTable(props: TableProps) {
   const getAlign = (align?: TableAlign): string => {

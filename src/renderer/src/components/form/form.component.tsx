@@ -1,7 +1,7 @@
 import { type ChangeEvent } from 'react';
-import { type FormProps } from './_form.types';
-import { Button, Input, type Validation } from '@widgets';
-import { useForm } from './_form.hook';
+import { type FormProps } from './form.types';
+import { Button, Input, type InputValidation } from '@widgets';
+import { useForm } from './form.hook';
 import { useTranslation } from 'react-i18next';
 
 export function Form(props: FormProps) {
@@ -12,7 +12,7 @@ export function Form(props: FormProps) {
     <form className="d-flex flex-column gap-2" onSubmit={onFormSubmit} onReset={onFormClean}>
       {controls.map((control) => {
         const controlValue = formData[control.id] ?? control.value;
-        const validations: Validation[] = getValidations(control.id, control.validations);
+        const validations: InputValidation[] = getValidations(control.id, control.validations);
 
         return (
           <Input

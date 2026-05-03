@@ -1,5 +1,5 @@
-import { usePaginator } from './_paginator.hook';
-import { type PaginatorProps } from './_paginator.types';
+import { usePaginator } from './paginator.hook';
+import { type PaginatorProps } from './paginator.types';
 import { useTranslation } from 'react-i18next';
 
 function Paginator(props: PaginatorProps) {
@@ -31,7 +31,12 @@ function Paginator(props: PaginatorProps) {
         {makeItem(!canGoPrev, makeButton('<', !canGoPrev, safePage - 1, t('common.previousPage')))}
         {pages.map((pageNumber) => (
           <li className={`page-item ${pageNumber === safePage ? 'active' : ''}`} key={pageNumber}>
-            {makeButton(pageNumber.toString(), pageNumber === safePage, pageNumber, t('common.pageX', { page: pageNumber }))}
+            {makeButton(
+              pageNumber.toString(),
+              pageNumber === safePage,
+              pageNumber,
+              t('common.pageX', { page: pageNumber }),
+            )}
           </li>
         ))}
         {makeItem(!canGoNext, makeButton('>', !canGoNext, safePage + 1, t('common.nextPage')))}
