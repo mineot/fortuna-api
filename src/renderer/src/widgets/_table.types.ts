@@ -21,18 +21,23 @@ export type TableData = {
   value: TableValue;
 };
 
+export type TableRow = {
+  rowId: string;
+  data: TableData[];
+};
+
 export type TableAction = {
   key: string;
   variant: ButtonVariant;
   icon: string;
   details?: TableDetails;
-  onClick: (key: string, details?: TableDetails) => void;
+  onClick: (key: string, rowDetails: TableDetails, actionDetails?: TableDetails) => void;
 };
 
 export type TableProps = {
   id?: string;
   columns: TableColumn[];
-  rows: TableData[][];
+  rows: TableRow[];
   paginate?: PaginatorProps;
   actions?: TableAction[];
 };
