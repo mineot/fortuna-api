@@ -1,5 +1,5 @@
 import type { InputProps, InputValue, Validation } from '@widgets';
-import { type ChangeEvent, type SyntheticEvent, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { FormProps } from './_form.types';
 
@@ -16,31 +16,33 @@ export function useForm(props: FormProps) {
     setValidationErrors({});
   }, [initialData]);
 
-  const validate = (data: Record<string, InputValue>) => validateControls(controls, data);
+  const onFormSubmit = useCallback(
+    (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+      event.preventDefault();
+      const submitResult = resolveSubmitResult(controls, formData);
+      setValidationErrors(submitResult.errors);
+      if (!submitResult.canSubmit) return;
+      props.onSubmit(formData);
+    },
+    [controls, formData, props],
+  );
 
-  const onFormSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
-    event.preventDefault();
-    const nextErrors = validate(formData);
-    setValidationErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) return;
-
-    props.onSubmit(formData);
-  };
-
-  const onFormClean = () => {
+  const onFormClean = useCallback(() => {
     setFormData(initialData);
     setValidationErrors({});
-  };
+  }, [initialData]);
 
-  const getValidations = (id: string, validations: Validation[] | undefined): Validation[] => {
-    const validationMessage = validationErrors[id];
-    return validationMessage
-      ? [{ rule: 'CUSTOM', message: validationMessage, customValidation: () => false }, ...(validations ?? [])]
-      : (validations ?? []);
-  };
+  const getValidations = useCallback(
+    (id: string, validations: Validation[] | undefined): Validation[] => {
+      const validationMessage = validationErrors[id];
+      return validationMessage
+        ? [{ rule: 'CUSTOM', message: validationMessage, customValidation: () => false }, ...(validations ?? [])]
+        : (validations ?? []);
+    },
+    [validationErrors],
+  );
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>, control: InputProps) => {
+  const onChange = useCallback((event: ChangeEvent<HTMLInputElement>, control: InputProps) => {
     const nextValue = resolveNextValue(control, event.currentTarget.value);
 
     setFormData((currentData) => ({ ...currentData, [control.id]: nextValue }));
@@ -54,7 +56,7 @@ export function useForm(props: FormProps) {
     });
 
     control.onChange?.(event);
-  };
+  }, []);
 
   return {
     onFormSubmit,
@@ -105,6 +107,11 @@ export function validateControls(controls: InputProps[], data: Record<string, In
 
 export function resolveNextValue(control: InputProps, rawValue: string): InputValue {
   return control.parseTo ? control.parseTo(rawValue) : rawValue;
+}
+
+export function resolveSubmitResult(controls: InputProps[], data: Record<string, InputValue>) {
+  const errors = validateControls(controls, data);
+  return { errors, canSubmit: Object.keys(errors).length === 0 };
 }
 
 function isFilled(value: InputValue | undefined): boolean {

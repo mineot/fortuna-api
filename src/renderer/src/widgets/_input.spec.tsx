@@ -63,7 +63,7 @@ describe('Input widget', () => {
       />,
     );
 
-    assert.match(html, /form-text text-danger/);
+    assert.match(html, /form-text text-warning/);
     assert.match(html, />Required field</);
   });
 

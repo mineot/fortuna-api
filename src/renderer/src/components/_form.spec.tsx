@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Form } from './_form.component';
-import { resolveInitialData, resolveNextValue, validateControls } from './_form.hook';
+import { resolveInitialData, resolveNextValue, resolveSubmitResult, validateControls } from './_form.hook';
 
 describe('Form component', () => {
   it('renders controls and default action buttons', () => {
@@ -21,13 +21,13 @@ describe('Form component', () => {
     assert.match(html, /for="amount"/);
     assert.match(html, /type="number"/);
     assert.match(html, /placeholder="0\.00"/);
-    assert.match(html, />Clean</);
-    assert.match(html, />Submit</);
+    assert.match(html, />common\.clean</);
+    assert.match(html, />common\.submit</);
   });
 
   it('renders cancel button only when enabled', () => {
     const html = renderToStaticMarkup(<Form onSubmit={() => {}} enableCancel onCancel={() => {}} />);
-    assert.match(html, />Cancel</);
+    assert.match(html, />common\.cancel</);
   });
 
   it('uses provided data over control default value', () => {
@@ -63,7 +63,7 @@ describe('Form hook helpers', () => {
           id: 'name',
           label: 'Name',
           validations: [
-            { rule: 'REQUIRED', message: 'Required', customValidation: (value) => String(value ?? '').length > 0 },
+            { rule: 'REQUIRED', message: 'Required' },
             { rule: 'CUSTOM', message: 'Min 3', customValidation: (value) => String(value).length >= 3 },
           ],
         },
@@ -80,7 +80,7 @@ describe('Form hook helpers', () => {
         {
           id: 'name',
           label: 'Name',
-          validations: [{ rule: 'REQUIRED', message: 'Required', customValidation: (value) => Boolean(value) }],
+          validations: [{ rule: 'REQUIRED', message: 'Required' }],
         },
       ],
       { name: 'ok' },
@@ -100,5 +100,25 @@ describe('Form hook helpers', () => {
   it('resolveNextValue keeps raw value when parseTo is missing', () => {
     const nextValue = resolveNextValue({ id: 'plain', label: 'Plain' }, 'abc');
     assert.equal(nextValue, 'abc');
+  });
+
+  it('resolveSubmitResult blocks submit when there are validation errors', () => {
+    const result = resolveSubmitResult(
+      [{ id: 'name', label: 'Name', validations: [{ rule: 'REQUIRED', message: 'Required' }] }],
+      { name: '' },
+    );
+
+    assert.equal(result.canSubmit, false);
+    assert.deepEqual(result.errors, { name: 'Required' });
+  });
+
+  it('resolveSubmitResult allows submit when all validations pass', () => {
+    const result = resolveSubmitResult(
+      [{ id: 'name', label: 'Name', validations: [{ rule: 'REQUIRED', message: 'Required' }] }],
+      { name: 'Ana' },
+    );
+
+    assert.equal(result.canSubmit, true);
+    assert.deepEqual(result.errors, {});
   });
 });
