@@ -31,19 +31,10 @@ import type {
   UserSettings,
 } from '../database/schema';
 import type { GetLocaleResponse, GetMetaResponse } from './handlers/app/app.types';
+import type { ListInput, PaginatedResult } from './handlers/crud/register.types';
 
 export interface CrudApi<Row, AddInput, ChangeInput> {
-  list: (input?: { page?: number; pageSize?: number; order?: 'asc' | 'desc' }) => Promise<{
-    items: Row[];
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
-    startItem: number;
-    endItem: number;
-  }>;
+  list: (input?: ListInput) => Promise<PaginatedResult<Row>>;
   findOne: (id: number) => Promise<Row | undefined>;
   add: (input: AddInput) => Promise<Row>;
   change: (input: { id: number; changes: ChangeInput }) => Promise<Row | undefined>;

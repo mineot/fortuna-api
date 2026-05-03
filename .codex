@@ -2,301 +2,100 @@
 
 ## 1) Project objective
 - Name: `fortuna`
-- Purpose: personal financial management application.
-- Current state: desktop application bootstrap with Electron + TypeScript.
+- Purpose: personal financial management desktop application.
+- Current state: Electron + React + TypeScript app with typed IPC, generic CRUD handlers, SQLite schema/migrations, and renderer service layer.
 
-## 2) Decisions already made
-- Chosen license: Apache 2.0.
-- Primary language: TypeScript.
-- JavaScript module system: ESM (`"type": "module"`).
-- Minimum Node.js version: `>=20.0.0`.
-- Build output directory: `dist/`.
-- npm distribution as a single bundle via `tsup` in `dist/fortuna.js` (minified, no sourcemap).
-- Main and preload are bundled/minified by `tsup` (`dist/fortuna.js` and `dist/preload.cjs`).
-- Code quality stack: `ESLint` (modern flat config) + `Prettier`.
-- Renderer stack: `React + TypeScript + React Router` on top of Vite.
-- Renderer styling stack: `Bootstrap` (`bootstrap@5`) loaded globally via CSS import.
-- Renderer icon stack: `Bootstrap Icons` (`bootstrap-icons`) loaded globally via CSS import.
-- Electron is used as desktop runtime across operating systems, without generating per-OS binaries.
-- Database layer initialized with `Kysely` + `SQLite` (`better-sqlite3`).
-- Database access uses a singleton instance (`getDb`) in the Electron main process lifecycle.
-- Migration system implemented with `up/down` and numeric versions.
-- Internationalization uses `i18next` + `react-i18next`.
+## 2) Core architecture
+- Runtime: Electron (`main` + `preload` + `renderer`).
+- Main process:
+  - boots app window and lifecycle (`src/main.ts`)
+  - initializes database (`getDb`)
+  - runs migrations (`migrateToLatest`)
+  - registers IPC handlers (`registerIpcHandlers(db)`).
+- Preload:
+  - exposes `window.fortuna` via `contextBridge`
+  - bridges renderer calls to `ipcRenderer.invoke(...)`
+  - CRUD `list` now uses shared `ListInput` (`page`, `pageSize`, `orders`, `filters`).
+- Renderer:
+  - React + React Router
+  - service layer on top of `window.fortuna` (`CrudService` + domain services)
+  - i18n with `i18next`/`react-i18next`
+  - Bootstrap + Bootstrap Icons.
 
-## 3) Licensing
-- License file created: `LICENSE`.
-- `package.json` updated with `"license": "Apache-2.0"`.
-- Copyright:
-  - `Copyright 2026 Fabiano Pires (Mineot)`.
-
-## 4) Current file structure
-- `package.json`: project metadata and scripts.
-- `package-lock.json`: npm lockfile.
-- `tsconfig.json`: TypeScript compiler config.
-- `tsconfig.eslint.json`: dedicated ESLint config (type-aware lint including `tsup.config.ts`).
-- `eslint.config.mjs`: modern lint configuration with Prettier integration.
-- `postcss.config.cjs`: PostCSS config (kept for renderer build pipeline support).
-- `.prettierrc`: formatting rules.
-- `.prettierignore`: Prettier exclusions.
-- `src/main.ts`: current entrypoint.
-- `src/preload.ts`: typed preload source bundled by `tsup` to `dist/preload.cjs`.
-- `src/shared/ipc.ts`: shared IPC channels and renderer API contracts (type-safe across main/renderer).
-- `src/shared/handlers/app.handler.ts`: IPC handler for app-level operations (e.g., system locale).
-- `src/shared/handlers/types.handler.ts`: IPC handlers related to `types` table.
-- `src/shared/handlers/index.ts`: central IPC handler registration (`registerIpcHandlers`).
-- `src/database/schema.ts`: central Database schema, shared union types, table interfaces, and model aliases.
-- `src/database/client.ts`: Kysely SQLite factory + singleton access (`getDb`) + cleanup (`destroyDb`).
-- `src/database/index.ts`: database module exports.
-- `src/database/migrations-table.ts`: ensures the base `migrations` table exists (non-versioned prerequisite).
-- `src/database/migrator.ts`: migration runner by target version (`migrateTo` / `migrateToLatest`).
-- `src/database/migrations/types.ts`: migration contract type.
-- `src/database/migrations/index.ts`: ordered migration registry.
-- `src/database/migrations/001_init_app.ts`: versioned migration `v1` that initializes the app database schema for personal finance.
-- `src/renderer/index.html`: Vite renderer entry HTML.
-- `src/renderer/src/main.tsx`: Vite renderer bootstrap script (React).
-- `src/renderer/src/App.tsx`: app root with router integration.
-- `src/renderer/src/router/index.tsx`: route declarations.
-- `src/renderer/src/components/layout/AppShell.tsx`: shared layout/shell.
-- `src/renderer/src/pages/HomePage.tsx`: home page.
-- `src/renderer/src/pages/TypesPage.tsx`: types listing page.
-- `src/renderer/src/services/types.service.ts`: renderer service calling preload API.
-- `src/renderer/src/i18n/index.ts`: i18n initialization and language switching.
-- `src/renderer/src/i18n/types.ts`: language types/config (`en-US`, `pt-BR`, fallback).
-- `src/renderer/src/i18n/resources/en-US.ts`: English translations.
-- `src/renderer/src/i18n/resources/pt-BR.ts`: Portuguese (Brazil) translations.
-- `src/renderer/src/components/layout/LanguageSwitcher.tsx`: language selector component.
-- `src/renderer/src/styles/global.css`: global renderer styles and global imports for Bootstrap and Bootstrap Icons.
-- `src/renderer/src/vite-env.d.ts`: renderer global typing for preload API.
-- `src/renderer/vite.config.mjs`: Vite config for renderer subproject.
-- `scripts/copy-renderer.mjs`: copies full renderer build output (`src/renderer/dist`) to root `dist/`.
-- `LICENSE`: Apache License 2.0 text.
-- `.codex`: this project context.
-- `.gitignore`: ignores `dist/`, `node_modules/`, and `dev.*`.
-- Historical note: entrypoint was renamed from `src/index.ts` to `src/main.ts`.
-
-## 5) Installed dev dependencies
-- `@types/better-sqlite3` (`^7.6.13`)
-- `@electron/rebuild` (`^4.0.1`)
-- `@types/node` (`^25.5.2`)
-- `@typescript-eslint/eslint-plugin` (`^8.58.1`)
-- `@typescript-eslint/parser` (`^8.58.1`)
-- `cross-env` (`^7.0.3`)
-- `concurrently` (`^9.2.1`)
-- `eslint` (`^10.2.0`)
-- `eslint-config-prettier` (`^10.1.8`)
-- `eslint-plugin-simple-import-sort` (`^12.1.1`)
-- `globals` (`^17.4.0`)
-- `prettier` (`^3.8.1`)
-- `tsup` (`^8.5.1`)
-- `tsx` (`^4.21.0`)
-- `typescript` (`^6.0.2`)
-- `vite` (`^7.1.7`)
-- `wait-on` (`^8.0.5`)
-- `@vitejs/plugin-react` (`^5.1.0`)
-- `@types/react` (`^19.2.2`)
-- `@types/react-dom` (`^19.2.2`)
-- `postcss` (`^8.5.6`)
-- `autoprefixer` (`^10.4.21`)
-
-## 5.1) Installed runtime dependencies
-- `better-sqlite3` (`^12.8.0`)
-- `electron` (`^41.2.0`)
-- `kysely` (`^0.28.15`)
-- `react` (`^19.2.0`)
-- `react-dom` (`^19.2.0`)
-- `react-router-dom` (`^7.9.4`)
-- `i18next` (`^25.6.0`)
-- `react-i18next` (`^16.2.4`)
-- `bootstrap` (`^5.3.8`)
-- `bootstrap-icons` (`^1.13.1`)
-
-## 6) Configured npm scripts
-- `build`: `npm run build:renderer && tsup && node scripts/copy-renderer.mjs`
-- `build:renderer`: `vite build --config src/renderer/vite.config.mjs`
-- `dev`: `concurrently -k -n renderer,preload,electron -c cyan,yellow,green "npm run dev:renderer" "npm run dev:preload" "npm run dev:electron"`
-- `dev:renderer`: `vite --config src/renderer/vite.config.mjs`
-- `dev:preload`: `cross-env TSUP_ONLY=preload tsup --watch --config tsup.config.ts`
-- `dev:electron`: `wait-on tcp:127.0.0.1:5173 file:dist/preload.cjs && cross-env NODE_ENV=dev NODE_OPTIONS=--import=tsx electron --no-sandbox --disable-setuid-sandbox src/main.ts`
-- `lint`: `eslint .`
-- `lint:fix`: `eslint . --fix`
-- `format`: `prettier . --write`
-- `format:check`: `prettier . --check`
-- `postinstall`: `npm run rebuild:electron`
-- `start`: `electron --no-sandbox --disable-setuid-sandbox dist/fortuna.js`
-- `rebuild:electron`: `electron-rebuild -f -w better-sqlite3`
-- `check`: `tsc --noEmit -p tsconfig.json`
-
-## 7) TypeScript configuration (tsconfig)
-- Modern ECMAScript target: `target: ESNext`
-- Modern library set: `lib: ["ESNext", "DOM"]`
-- Node module format: `module: ESNext`
-- Module resolution: `moduleResolution: Bundler`
-- JSX transform: `jsx: react-jsx`
-- Paths alias:
-  - `@db` -> `./src/database/index.ts`
-- `@db/schema` -> `./src/database/schema.ts`
-  - `@shared/*` -> `./src/shared/*`
-  - `@widgets` -> `./src/renderer/src/widgets/index.ts`
-- Strict mode enabled: `strict: true`
-- Additional safety flags:
-  - `noUncheckedIndexedAccess`
-  - `exactOptionalPropertyTypes`
-  - `isolatedModules`
-  - `verbatimModuleSyntax`
-- Local TypeScript imports are written without `.js` extension (e.g., `./database`, `./client`, `./schema`).
-- Artifact generation:
-  - `declaration: true`
-  - `declarationMap: true`
-  - `sourceMap: true`
-- Directories:
-  - input: `src/`
-  - output: `dist/`
-- TypeScript project includes renderer files:
-  - `src/**/*.ts`
-  - `src/**/*.tsx`
-  - `src/**/*.d.ts`
-
-## 8) Known notes
-- npm distribution build:
-- Entry: `src/main.ts`
-- Single output file: `dist/fortuna.js`
-- Minification: enabled
-- Sourcemap: disabled
-- Build copies all renderer build assets from `src/renderer/dist` to root `dist`.
-- `npm run dev` starts Vite first and then Electron.
-- Dev TypeScript loading is done via `NODE_OPTIONS='--import tsx'`.
-- In dev (`NODE_ENV=dev`), Electron loads `http://127.0.0.1:5173`.
-- `npm run start` opens Electron using built files in root `dist/` (`fortuna.js` + Vite output).
-- Vite renderer uses `base: './'` so built asset paths work under Electron `file://` on `npm run start`.
-- Vite renderer config maps aliases for renderer runtime:
-- `@db/schema` -> `src/database/schema/index.ts`
-- `@shared` -> `src/shared`
-- `@widgets` -> `src/renderer/src/widgets/index.ts`
-- `server.fs.allow` includes `src/` parent so renderer can import shared/database type modules.
-- Renderer data flow is prepared via IPC:
-- main process registers handlers by module via `registerIpcHandlers(db)`.
-- app locale is exposed via IPC channel `app:get-locale`.
-- app metadata via `app:get-meta` returns fixed app name `Fortuna` and resolves version from project `package.json` (with fallback to Electron app version).
-- `types:list` is handled inside `src/shared/handlers/types.handler.ts`.
-- preload exposes `window.fortuna.listTypes()` and `window.fortuna.getLocale()`.
-- Development and production use bundled preload from `src/preload.ts` (`dist/preload.cjs`).
-- renderer consumes typed payload (`Types[]`) without direct DB access.
-- i18n behavior:
-- supported languages: `en-US` and `pt-BR`
-- default/fallback: `en-US`
-- initial language priority: `localStorage` -> system locale via IPC -> `en-US`
-- user language selection is persisted in `localStorage` (`fortuna.language`)
-- `changeLanguage` in renderer i18n is `async` and awaits `i18next.changeLanguage(...)`.
-- Bootstrap usage rule:
-- global Bootstrap CSS is imported in `src/renderer/src/styles/global.css` via `@import 'bootstrap/dist/css/bootstrap.min.css';`
-- global Bootstrap Icons CSS is imported in `src/renderer/src/styles/global.css` via `@import 'bootstrap-icons/font/bootstrap-icons.css';`
-- Bootstrap JavaScript bundle is imported in `src/renderer/src/main.tsx` via `import 'bootstrap/dist/js/bootstrap.bundle.min.js';`
-- default theme is dark and applied at app bootstrap through `document.documentElement.setAttribute('data-bs-theme', 'dark')`
-- renderer code should remain TypeScript-only (`.ts`/`.tsx`).
-- renderer shows explicit fallback message if preload API is unavailable, avoiding silent blank screen.
-- In Linux environments without configured `chrome-sandbox` SUID, dev/start run with `--no-sandbox --disable-setuid-sandbox`.
-- formatter helper exists at `src/renderer/src/helpers/formatter.helper.ts` with `formatValue(type, value, options)` to return localized strings for `TEXT`, `INTEGER`, `DECIMAL`, `CURRENCY`, `TIME`, `DATE`, `DATETIME`, `BOOLEAN` (date/time formatting uses `date-fns`).
-- `better-sqlite3` must be rebuilt for Electron ABI (`npm run rebuild:electron`) after install/version changes.
-- Rebuild is automated on install via `postinstall`.
-- Electron was bumped to a secure major version line to address `npm audit` high-severity advisories.
-- Database path resolution by `NODE_ENV`:
-- `dev`: `path.join(process.cwd(), 'dev.db')`
-- default (no `NODE_ENV=dev`): `~/.fortuna/fortuna.db` (directory is created automatically)
-- Migrations:
-- `migrations` table is always created as prerequisite (not versioned migration).
-- Tracks `version`, `name`, and `executed_at`.
-- Supports automatic `up` and `down` synchronization based on numeric version comparison between DB and migration files.
-- If DB version is lower than the latest migration file version, pending `up` migrations are applied automatically.
-- If DB version is higher than the latest migration file version, `down` is applied automatically until synchronization.
-- If a DB-applied version no longer has a migration file, its registry row is removed from `migrations` to allow auto-sync with current code state.
-- Current versioned migration:
-- `v1` (`init_app`) creates the personal-finance database foundation with:
+## 3) Data layer
+- DB: SQLite through `better-sqlite3` + Kysely.
+- Central schema: `src/database/schema.ts`.
+- Migration system:
+  - registry table (`migrations`) ensured before versioned runs
+  - `migrateTo` / `migrateToLatest` in `src/database/migrator.ts`
+  - supports up/down sync by numeric versions
+  - current versioned migration: `001_init_app.ts`.
+- Covered domains/tables:
   - `users`, `user_settings`
   - `account_types`, `accounts`
   - `category_groups`, `categories`
   - `payees`
   - `transactions`, `transfers`, `recurring_transactions`
-  - `credit_cards`, `credit_card_statements`, `credit_card_purchases`, `credit_card_installments`, `credit_card_statement_payments`
-  - foreign keys, unique constraints, check constraints, and recommended indexes.
+  - `credit_cards`, `credit_card_statements`, `credit_card_purchases`, `credit_card_installments`, `credit_card_statement_payments`.
 
-## 9) Latest update (2026-05-01)
-- Migrated renderer styling/icon stack from Tailwind/Lucide references to Bootstrap + Bootstrap Icons.
-- Installed runtime dependencies:
-  - `bootstrap@5.3.8`
-  - `bootstrap-icons@1.13.1`
-- Updated `src/renderer/src/styles/global.css` to import Bootstrap and Bootstrap Icons globally.
-- Updated `src/renderer/src/main.tsx` to import Bootstrap JavaScript bundle and set global dark theme via `data-bs-theme="dark"`.
+## 4) IPC and CRUD pattern
+- Shared contract: `src/shared/ipc.ts` (`RendererApi`, `CrudApi`).
+- Generic CRUD registration: `src/shared/handlers/crud/register.crud.ts`.
+- CRUD input/output shared types:
+  - `ListInput` with `orders[]` and `filters[]`
+  - `PaginatedResult<T>`.
+- Domain handlers are split per module under `src/shared/handlers/*` and registered centrally in `src/shared/handlers/index.ts`.
+- App-level non-CRUD handlers:
+  - metadata (`app:get-meta`)
+  - locale (`app:get-locale`).
 
-## 9.1) Previous update (2026-04-28)
-- Applied the V1 personal-finance database type model from `.planning.md` into `src/database/schema.ts`.
-- Added shared union types:
-  - `TransactionType`
-  - `TransactionStatus`
-  - `RecurrenceType`
-  - `RecurrenceFrequency`
-  - `CreditCardStatementStatus`
-- Added table interfaces and model aliases (`Selectable` / `Insertable` / `Updateable`) for:
-  - `users`
-  - `user_settings`
-  - `account_types`
-  - `accounts`
-  - `category_groups`
-  - `categories`
-  - `payees`
-  - `transactions`
-  - `transfers`
-  - `recurring_transactions`
-  - `credit_cards`
-  - `credit_card_statements`
-  - `credit_card_purchases`
-  - `credit_card_installments`
-  - `credit_card_statement_payments`
-- Expanded the central `Database` interface in `src/database/schema.ts` to include all V1 tables above plus `migrations`.
-- Updated `src/database/migrations/001_init_app.ts` to create all V1 tables in a single initial migration, including:
-  - relational foreign keys
-  - unique constraints (`users.email`, `user_settings.user_id`, `account_types.name`)
-  - check constraints for enum-like values and numeric/business rules
-  - indexes for the main query paths described in planning
-- `down` for `v1` now drops all V1 tables in reverse dependency order.
-- Implemented baseline IPC CRUD handlers for all V1 finance tables with standardized operations:
-  - `listAll`, `findOne`, `add`, `change`, `remove`
-- Added paginated `list` operation in the shared CRUD handler with metadata return:
-  - input: `page`, `pageSize`, `order`
-  - output: `items`, `page`, `pageSize`, `total`, `totalPages`, `hasNextPage`, `hasPrevPage`, `startItem`, `endItem`
-- Handler architecture now follows module pattern:
-  - `<entity>/<entity>.types.ts` with channel constants and input/output typing
-  - `<entity>/<entity>.handler.ts` with `register...Handlers(db)`
-  - shared generic registrar in `src/shared/handlers/crud/register-crud.ts`
-- `registerIpcHandlers(db)` now registers app handlers plus CRUD handlers for each V1 table.
-- `src/preload.ts` now exposes grouped CRUD APIs per entity in `window.fortuna`.
-- `src/shared/ipc.ts` updated to reflect grouped renderer API contracts for all CRUD modules.
-- Renderer service layer now includes one service module per V1 table under `src/renderer/src/services/`, following the same class-based pattern used by `app.service.ts`.
-- Added central service exports in `src/renderer/src/services/index.ts`.
-- Database lifecycle:
-- instance is created lazily via `getDb()` and reused (single process instance)
-- app quit is intercepted in `before-quit` to await `destroyDb()` before final shutdown
-- Schema pattern:
-- DB schema typing is currently centralized in `src/database/schema.ts`.
-- with `verbatimModuleSyntax`, type-only re-exports must use `export type`.
-- Lint and format should run before npm publish.
-- Type-aware ESLint uses `tsconfig.eslint.json` to avoid files outside `rootDir` from `tsconfig.json`.
-- Current Prettier rules:
-- `singleQuote: true`
-- `trailingComma: "all"`
-- `semi: true`
-- `printWidth: 100`
-- `tabWidth: 2`
-- Import order is enforced automatically by ESLint (`simple-import-sort`) and can be fixed with `npm run lint:fix`.
+## 5) Renderer layer (current structure)
+- Root: `src/renderer/src/App.tsx`
+- Router: `src/renderer/src/core/router/index.tsx`
+- Services: `src/renderer/src/core/services/*`
+  - generic base: `crud.service.ts`
+  - domain services: accounts, account-types, categories, transactions, etc.
+- i18n:
+  - setup: `src/renderer/src/core/i18n/index.ts`
+  - resources: `src/renderer/src/core/i18n/resources/en-US.ts`, `pt-BR.ts`.
 
-## 9) Conventions for next changes
-- Keep TypeScript sources in `src/` and build output in `dist/`.
-- Prefer modern configuration (`ESNext`) unless compatibility requires otherwise.
-- Mandatory rule: always update this file (`.codex`) whenever architecture, scripts, tooling, folder structure, or build/runtime flow changes.
-- Mandatory rule: after any code change, always run `npm run lint:fix`.
-- Mandatory rule: renderer implementation must use TypeScript files (`.ts` / `.tsx`), not `.js` / `.jsx`.
-- Mandatory rule: functions that return `Promise` must be declared with `async`.
+## 6) Build/dev toolchain
+- Language/module: TypeScript + ESM (`"type": "module"`).
+- Bundling:
+  - main/preload with `tsup`
+  - renderer with `vite`
+  - renderer artifacts copied to root `dist/` via `scripts/copy-renderer.mjs`.
+- Key scripts:
+  - `dev`: renderer + preload watch + electron
+  - `build`: renderer build + tsup + copy renderer
+  - `start`: electron with built output
+  - `check`: `tsc --noEmit`
+  - `test`: node test runner (`tsx` import)
+  - `lint` / `format`.
 
-## 10) Collaboration flow (terminal)
-- Agreed flow:
-- The user runs only installation commands when requested (`npm install`, `npm i`, `npm install -D`, etc.).
-- The agent performs all other configuration and file changes directly in the project.
+## 7) TypeScript and aliases
+- Strict TS enabled with modern options (`strict`, `isolatedModules`, `verbatimModuleSyntax`, etc.).
+- Important aliases:
+  - `@db` -> `src/database/index.ts`
+  - `@db/schema` -> `src/database/schema.ts`
+  - `@shared/*` -> `src/shared/*`
+  - `@widgets` -> `src/renderer/src/widgets/index.ts`.
+
+## 8) Current dependencies (high level)
+- Runtime: `electron`, `react`, `react-dom`, `react-router-dom`, `kysely`, `better-sqlite3`, `i18next`, `react-i18next`, `bootstrap`, `bootstrap-icons`, `date-fns`.
+- Dev: `typescript`, `tsup`, `vite`, `eslint`, `prettier`, `tsx`, `concurrently`, `cross-env`, `wait-on`, `@electron/rebuild`.
+
+## 9) Notes and caveats
+- `better-sqlite3` requires Electron ABI rebuild (`npm run rebuild:electron`), also triggered by `postinstall`.
+- Linux scripts include `--no-sandbox --disable-setuid-sandbox`.
+- DB path behavior by env:
+  - dev: `./dev.db`
+  - production: `~/.fortuna/fortuna.db`.
+- Generic CRUD currently uses some `any` casts internally to simplify Kysely query composition.
+
+## 10) Latest updates
+- 2026-05-03:
+  - fixed IPC/preload CRUD `list` contract mismatch
+  - standardized on shared `ListInput`/`PaginatedResult` in `src/preload.ts` and `src/shared/ipc.ts`.
+- 2026-05-01:
+  - renderer global styling/icon stack consolidated on Bootstrap + Bootstrap Icons.

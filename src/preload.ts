@@ -8,6 +8,7 @@ import { CREDIT_CARD_PURCHASES_CHANNELS } from '@shared/handlers/credit-card-pur
 import { CREDIT_CARD_STATEMENT_PAYMENTS_CHANNELS } from '@shared/handlers/credit-card-statement-payments/credit-card-statement-payments.types';
 import { CREDIT_CARD_STATEMENTS_CHANNELS } from '@shared/handlers/credit-card-statements/credit-card-statements.types';
 import { CREDIT_CARDS_CHANNELS } from '@shared/handlers/credit-cards/credit-cards.types';
+import type { ListInput } from '@shared/handlers/crud/register.types';
 import { PAYEES_CHANNELS } from '@shared/handlers/payees/payees.types';
 import { RECURRING_TRANSACTIONS_CHANNELS } from '@shared/handlers/recurring-transactions/recurring-transactions.types';
 import { TRANSACTIONS_CHANNELS } from '@shared/handlers/transactions/transactions.types';
@@ -19,8 +20,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import type { RendererApi } from './shared/ipc';
 
 const bindCrud = (channels: { list: string; findOne: string; add: string; change: string; remove: string }) => ({
-  list: (input?: { page?: number; pageSize?: number; order?: 'asc' | 'desc' }) =>
-    ipcRenderer.invoke(channels.list, input),
+  list: (input?: ListInput) => ipcRenderer.invoke(channels.list, input),
   findOne: (id: number) => ipcRenderer.invoke(channels.findOne, id),
   add: (input: unknown) => ipcRenderer.invoke(channels.add, input),
   change: (input: unknown) => ipcRenderer.invoke(channels.change, input),
