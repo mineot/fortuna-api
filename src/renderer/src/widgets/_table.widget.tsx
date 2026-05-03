@@ -1,37 +1,12 @@
 import { Button } from '@widgets';
-import {
-  DEFAULT_TABLE_FORMATTING,
-  type TableAlign,
-  type TableDetails,
-  type TableFormatting,
-  type TableProps,
-} from './_table.types';
+import { type TableProps } from './_table.types';
 import { Paginator } from '@widgets';
 import { useTranslation } from 'react-i18next';
+import { useTable } from './_table.hook';
 
 export function Table(props: TableProps) {
   const { t } = useTranslation();
-
-  const getAlign = (align?: TableAlign): string => {
-    return align ? `text-${align}` : 'text-start';
-  };
-
-  const findAlignByKey = (key: string): string => {
-    const column = props.columns.find((column) => column.key === key);
-    return getAlign(column?.align);
-  };
-
-  const findFormattingByKey = (key: string): TableFormatting => {
-    const column = props.columns.find((column) => column.key === key);
-    return column?.formatting ?? DEFAULT_TABLE_FORMATTING;
-  };
-
-  const rowToDetails = (rowData: TableProps['rows'][number]['data']): TableDetails => {
-    return rowData.reduce<TableDetails>((details, data) => {
-      details[data.key] = data.value;
-      return details;
-    }, {});
-  };
+  const { findAlignByKey, findFormattingByKey, getAlign, rowToDetails } = useTable(props);
 
   return (
     <div className="d-flex flex-column gap-2">
