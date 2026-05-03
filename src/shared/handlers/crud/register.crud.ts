@@ -2,15 +2,34 @@ import type { Database } from '@db';
 import { ipcMain } from 'electron';
 import { type Kysely, sql } from 'kysely';
 
-import type {
-  CrudChannels,
-  CrudInsert,
-  CrudRow,
-  CrudTableName,
-  CrudUpdate,
-  ListInput,
-  PaginatedResult,
+import {
+  ALLOWED_OPERATORS,
+  type CrudChannels,
+  type CrudInsert,
+  type CrudRow,
+  type CrudTableName,
+  type CrudUpdate,
+  type Filter,
+  type ListInput,
+  type Order,
+  type PaginatedResult,
 } from './register.types';
+
+function applyOrder(orders: Order[], selectQuery: any) {
+  orders.forEach((order) => {
+    if (typeof order.column === 'string' && order.column.length > 0) {
+      selectQuery.orderBy(order.column, order.order);
+    }
+  });
+}
+
+function applyFilter(filters: Filter[], selectQuery: any) {
+  filters.forEach((filter) => {
+    if (typeof filter.column !== 'string' || filter.column.length === 0) return;
+    if (!ALLOWED_OPERATORS.has(filter.operator.toLowerCase())) return;
+    selectQuery.where(filter.column, filter.operator as any, filter.value);
+  });
+}
 
 export function registerCrudHandlers<TTable extends CrudTableName>(
   db: Kysely<Database>,
@@ -26,11 +45,12 @@ export function registerCrudHandlers<TTable extends CrudTableName>(
     const offset = (page - 1) * pageSize;
 
     const selectQuery = db.selectFrom(table).selectAll() as any;
-    orders.forEach((order) => selectQuery.orderBy(order.column, order.order));
-    filters.forEach((filter) => selectQuery.where(filter.column, filter.operator, filter.value));
+    applyOrder(orders, selectQuery);
+    applyFilter(filters, selectQuery);
     const items = await selectQuery.limit(pageSize).offset(offset).execute();
 
-    const totalQuery = db.selectFrom(table).select(db.fn.countAll<number>().as('count'));
+    const totalQuery = db.selectFrom(table).select(db.fn.countAll<number>().as('count')) as any;
+    applyFilter(filters, totalQuery);
     const totalRow = await totalQuery.executeTakeFirstOrThrow();
     const total = Number(totalRow.count ?? 0);
     const totalPages = Math.max(1, Math.ceil(total / pageSize));

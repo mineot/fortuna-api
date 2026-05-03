@@ -12,7 +12,7 @@ export type CrudChannels = {
 export type Filter = {
   column: string;
   operator: string;
-  value: string;
+  value: unknown;
 };
 
 export type Order = {
@@ -48,3 +48,22 @@ export type CrudTableName = {
 export type CrudRow<TTable extends CrudTableName> = Selectable<Database[TTable]>;
 export type CrudInsert<TTable extends CrudTableName> = Insertable<Database[TTable]>;
 export type CrudUpdate<TTable extends CrudTableName> = Updateable<Database[TTable]>;
+
+export const ALLOWED_OPERATORS = new Set([
+  '=',
+  '!=',
+  '>',
+  '>=',
+  '<',
+  '<=',
+  'like',
+  'not like',
+  'ilike',
+  'not ilike',
+  'in',
+  'not in',
+  'is',
+  'is not',
+  'is distinct from',
+  'is not distinct from',
+]);
