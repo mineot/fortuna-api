@@ -18,17 +18,9 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 import type { RendererApi } from './shared/ipc';
 
-const bindCrud = (channels: {
-  list: string;
-  listAll: string;
-  findOne: string;
-  add: string;
-  change: string;
-  remove: string;
-}) => ({
+const bindCrud = (channels: { list: string; findOne: string; add: string; change: string; remove: string }) => ({
   list: (input?: { page?: number; pageSize?: number; order?: 'asc' | 'desc' }) =>
     ipcRenderer.invoke(channels.list, input),
-  listAll: () => ipcRenderer.invoke(channels.listAll),
   findOne: (id: number) => ipcRenderer.invoke(channels.findOne, id),
   add: (input: unknown) => ipcRenderer.invoke(channels.add, input),
   change: (input: unknown) => ipcRenderer.invoke(channels.change, input),

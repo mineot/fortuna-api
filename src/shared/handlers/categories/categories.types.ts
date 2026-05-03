@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const CATEGORIES_CHANNELS = {
   list: 'categories:list',
-  listAll: 'categories:list-all',
   findOne: 'categories:find-one',
   add: 'categories:add',
   change: 'categories:change',

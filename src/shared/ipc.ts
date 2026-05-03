@@ -44,7 +44,6 @@ export interface CrudApi<Row, AddInput, ChangeInput> {
     startItem: number;
     endItem: number;
   }>;
-  listAll: () => Promise<Row[]>;
   findOne: (id: number) => Promise<Row | undefined>;
   add: (input: AddInput) => Promise<Row>;
   change: (input: { id: number; changes: ChangeInput }) => Promise<Row | undefined>;

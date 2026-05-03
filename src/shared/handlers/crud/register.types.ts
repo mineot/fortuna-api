@@ -66,4 +66,6 @@ export const ALLOWED_OPERATORS = new Set([
   'is not',
   'is distinct from',
   'is not distinct from',
-]);
+] as const);
+
+export type AllowedOperator = (typeof ALLOWED_OPERATORS extends Set<infer T> ? T : never) & string;

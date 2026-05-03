@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const TRANSFERS_CHANNELS = {
   list: 'transfers:list',
-  listAll: 'transfers:list-all',
   findOne: 'transfers:find-one',
   add: 'transfers:add',
   change: 'transfers:change',

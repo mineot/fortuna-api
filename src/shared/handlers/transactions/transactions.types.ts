@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const TRANSACTIONS_CHANNELS = {
   list: 'transactions:list',
-  listAll: 'transactions:list-all',
   findOne: 'transactions:find-one',
   add: 'transactions:add',
   change: 'transactions:change',

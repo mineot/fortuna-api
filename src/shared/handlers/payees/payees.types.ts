@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const PAYEES_CHANNELS = {
   list: 'payees:list',
-  listAll: 'payees:list-all',
   findOne: 'payees:find-one',
   add: 'payees:add',
   change: 'payees:change',

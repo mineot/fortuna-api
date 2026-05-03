@@ -1,28 +1,10 @@
-import type { NewTransfer, Transfer,TransferUpdate } from '@db/schema';
+import type { NewTransfer, Transfer, TransferUpdate } from '@db/schema';
 
-class TransfersService {
-  list(input?: { page?: number; pageSize?: number; order?: 'asc' | 'desc' }) {
-    return window.fortuna.transfers.list(input);
-  }
+import { CrudService } from './crud.service';
 
-  listAll(): Promise<Transfer[]> {
-    return window.fortuna.transfers.listAll() as Promise<Transfer[]>;
-  }
-
-  findOne(id: number): Promise<Transfer | undefined> {
-    return window.fortuna.transfers.findOne(id) as Promise<Transfer | undefined>;
-  }
-
-  add(input: NewTransfer): Promise<Transfer> {
-    return window.fortuna.transfers.add(input) as Promise<Transfer>;
-  }
-
-  change(input: { id: number; changes: Partial<TransferUpdate> }): Promise<Transfer | undefined> {
-    return window.fortuna.transfers.change(input) as Promise<Transfer | undefined>;
-  }
-
-  remove(id: number): Promise<boolean> {
-    return window.fortuna.transfers.remove(id) as Promise<boolean>;
+class TransfersService extends CrudService<Transfer, NewTransfer, TransferUpdate> {
+  constructor() {
+    super(window.fortuna.transfers);
   }
 }
 

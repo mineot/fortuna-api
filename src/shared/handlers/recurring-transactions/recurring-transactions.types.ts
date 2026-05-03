@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const RECURRING_TRANSACTIONS_CHANNELS = {
   list: 'recurring-transactions:list',
-  listAll: 'recurring-transactions:list-all',
   findOne: 'recurring-transactions:find-one',
   add: 'recurring-transactions:add',
   change: 'recurring-transactions:change',

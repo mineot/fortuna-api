@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const CREDIT_CARD_STATEMENTS_CHANNELS = {
   list: 'credit-card-statements:list',
-  listAll: 'credit-card-statements:list-all',
   findOne: 'credit-card-statements:find-one',
   add: 'credit-card-statements:add',
   change: 'credit-card-statements:change',

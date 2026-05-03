@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const ACCOUNT_TYPES_CHANNELS = {
   list: 'account-types:list',
-  listAll: 'account-types:list-all',
   findOne: 'account-types:find-one',
   add: 'account-types:add',
   change: 'account-types:change',

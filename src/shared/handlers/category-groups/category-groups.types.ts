@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const CATEGORY_GROUPS_CHANNELS = {
   list: 'category-groups:list',
-  listAll: 'category-groups:list-all',
   findOne: 'category-groups:find-one',
   add: 'category-groups:add',
   change: 'category-groups:change',

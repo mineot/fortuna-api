@@ -3,7 +3,6 @@ import type { Insertable, Selectable, Updateable } from 'kysely';
 
 export const USERS_CHANNELS = {
   list: 'users:list',
-  listAll: 'users:list-all',
   findOne: 'users:find-one',
   add: 'users:add',
   change: 'users:change',
