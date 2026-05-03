@@ -1,7 +1,7 @@
 import type { Database } from '@db';
 import type { Kysely } from 'kysely';
 
-import { registerCrudHandlers } from '../crud/register-crud';
+import { registerCrudHandlers } from '../crud/register.crud';
 import { CATEGORY_GROUPS_CHANNELS } from './category-groups.types';
 
 export function registerCategoryGroupsHandlers(db: Kysely<Database>): void {

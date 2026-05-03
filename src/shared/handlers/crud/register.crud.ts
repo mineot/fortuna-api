@@ -1,40 +1,16 @@
 import type { Database } from '@db';
 import { ipcMain } from 'electron';
-import { type Insertable, type Kysely, type Selectable, sql, type Updateable } from 'kysely';
+import { type Kysely, sql } from 'kysely';
 
-type CrudChannels = {
-  list: string;
-  listAll: string;
-  findOne: string;
-  add: string;
-  change: string;
-  remove: string;
-};
-type ListInput = {
-  page?: number;
-  pageSize?: number;
-  order?: 'asc' | 'desc';
-};
-type PaginatedResult<T> = {
-  items: T[];
-  page: number;
-  pageSize: number;
-  total: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-  startItem: number;
-  endItem: number;
-};
-
-type TableWithId = { id: unknown };
-type CrudTableName = {
-  [K in keyof Database]: Database[K] extends TableWithId ? K : never;
-}[keyof Database];
-
-type CrudRow<TTable extends CrudTableName> = Selectable<Database[TTable]>;
-type CrudInsert<TTable extends CrudTableName> = Insertable<Database[TTable]>;
-type CrudUpdate<TTable extends CrudTableName> = Updateable<Database[TTable]>;
+import type {
+  CrudChannels,
+  CrudInsert,
+  CrudRow,
+  CrudTableName,
+  CrudUpdate,
+  ListInput,
+  PaginatedResult,
+} from './register.types';
 
 export function registerCrudHandlers<TTable extends CrudTableName>(
   db: Kysely<Database>,
@@ -45,13 +21,16 @@ export function registerCrudHandlers<TTable extends CrudTableName>(
   ipcMain.handle(channels.list, async (_event, input?: ListInput): Promise<PaginatedResult<CrudRow<TTable>>> => {
     const page = Math.max(1, input?.page ?? 1);
     const pageSize = Math.min(100, Math.max(1, input?.pageSize ?? 20));
-    const order = input?.order === 'asc' ? 'asc' : 'desc';
+    const orders = input?.orders ?? [];
+    const filters = input?.filters ?? [];
     const offset = (page - 1) * pageSize;
 
     const selectQuery = db.selectFrom(table).selectAll() as any;
-    const items = await selectQuery.orderBy('id', order).limit(pageSize).offset(offset).execute();
+    orders.forEach((order) => selectQuery.orderBy(order.column, order.order));
+    filters.forEach((filter) => selectQuery.where(filter.column, filter.operator, filter.value));
+    const items = await selectQuery.limit(pageSize).offset(offset).execute();
 
-    const totalQuery = db.selectFrom(table).select(sql<number>`count(*)`.as('count')) as any;
+    const totalQuery = db.selectFrom(table).select(db.fn.countAll<number>().as('count'));
     const totalRow = await totalQuery.executeTakeFirstOrThrow();
     const total = Number(totalRow.count ?? 0);
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -73,12 +52,6 @@ export function registerCrudHandlers<TTable extends CrudTableName>(
     };
   });
 
-  ipcMain.removeHandler(channels.listAll);
-  ipcMain.handle(channels.listAll, async (): Promise<CrudRow<TTable>[]> => {
-    const rows = await db.selectFrom(table).selectAll().execute();
-    return rows as CrudRow<TTable>[];
-  });
-
   ipcMain.removeHandler(channels.findOne);
   ipcMain.handle(channels.findOne, async (_event, id: number): Promise<CrudRow<TTable> | undefined> => {
     const query = db.selectFrom(table).selectAll() as any;
@@ -96,7 +69,10 @@ export function registerCrudHandlers<TTable extends CrudTableName>(
     channels.change,
     async (_event, input: { id: number; changes: CrudUpdate<TTable> }): Promise<CrudRow<TTable> | undefined> => {
       const query = db.updateTable(table).set(input.changes as any) as any;
-      return query.where(sql`id = ${input.id}`).returningAll().executeTakeFirst();
+      return query
+        .where(sql`id = ${input.id}`)
+        .returningAll()
+        .executeTakeFirst();
     },
   );
 
