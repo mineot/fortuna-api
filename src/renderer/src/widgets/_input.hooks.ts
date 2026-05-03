@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 
-import type { InputProps, InputValue, Validation } from './_input.types';
+import type { InputProps, InputValue, InputValidation } from './_input.types';
 
 export function useInput(props: InputProps) {
   const toInputString = (value: InputValue | undefined): string => {
@@ -18,7 +18,10 @@ export function useInput(props: InputProps) {
     return true;
   };
 
-  const resolveValidationMessage = (validations: Validation[], value: InputValue | undefined): string | undefined => {
+  const resolveValidationMessage = (
+    validations: InputValidation[],
+    value: InputValue | undefined,
+  ): string | undefined => {
     for (const validation of validations) {
       if (validation.rule === 'REQUIRED' && !isFilled(value)) return validation.message;
       if (validation.rule === 'CUSTOM' && validation.customValidation && !validation.customValidation(value)) {

@@ -1,5 +1,5 @@
 import { useInput } from './_input.hooks';
-import type { InputProps, InputValue, Validation } from './_input.types';
+import type { InputProps, InputValue, InputValidation } from './_input.types';
 
 function Input(props: InputProps) {
   const { required, inputValue, validationMessage, handleChange } = useInput(props);
@@ -24,4 +24,4 @@ function Input(props: InputProps) {
   );
 }
 
-export { Input, type InputProps, type InputValue, type Validation };
+export { Input, type InputProps, type InputValue, type InputValidation };
