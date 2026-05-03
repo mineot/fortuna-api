@@ -9,3 +9,5 @@ export type PaginatorProps = {
   endItem: number;
   onPageChange: (page: number) => void;
 };
+
+export const WINDOW_SIZE = 5;

@@ -1,57 +1,41 @@
+import { usePaginator } from './_paginator.hook';
 import { type PaginatorProps } from './_paginator.types';
 import { useTranslation } from 'react-i18next';
 
 function Paginator(props: PaginatorProps) {
   const { t } = useTranslation();
-  const WINDOW_SIZE = 5;
-  const safeTotalPages = Math.max(props.totalPages, 1);
-  const safePage = Math.min(Math.max(props.page, 1), safeTotalPages);
-  const visibleSize = Math.min(WINDOW_SIZE, safeTotalPages);
-  const middleOffset = Math.floor(visibleSize / 2);
-  const canGoPrev = safePage > 1;
-  const canGoNext = safePage < safeTotalPages;
+  const { canGoNext, canGoPrev, changePage, pages, safePage, safeTotalPages } = usePaginator(props);
 
-  let startPage = Math.max(1, safePage - middleOffset);
-  const maxStart = Math.max(1, safeTotalPages - visibleSize + 1);
-  startPage = Math.min(startPage, maxStart);
-  const pages = Array.from({ length: visibleSize }, (_, index) => startPage + index);
+  const makeButton = (label: string, disabled: boolean, pageNumber: number, ariaLabel?: string) => {
+    return (
+      <button
+        className="page-link"
+        onClick={() => changePage(pageNumber)}
+        disabled={disabled}
+        aria-label={ariaLabel}
+        title={ariaLabel}
+      >
+        <span>{label}</span>
+      </button>
+    );
+  };
 
-  const changePage = (page: number): void => {
-    const nextPage = Math.min(Math.max(page, 1), safeTotalPages);
-    if (nextPage === safePage) return;
-    props.onPageChange(nextPage);
+  const makeItem = (disabled: boolean, children: React.ReactNode) => {
+    return <li className={`page-item ${disabled ? 'disabled' : ''}`}>{children}</li>;
   };
 
   return (
     <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
       <ul className="pagination pagination-sm m-0">
-        <li className={`page-item ${!canGoPrev ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => changePage(1)} disabled={!canGoPrev}>
-            {'<<'}
-          </button>
-        </li>
-        <li className={`page-item ${!canGoPrev ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => changePage(safePage - 1)} disabled={!canGoPrev}>
-            {'<'}
-          </button>
-        </li>
+        {makeItem(!canGoPrev, makeButton('<<', !canGoPrev, 1, t('common.firstPage')))}
+        {makeItem(!canGoPrev, makeButton('<', !canGoPrev, safePage - 1, t('common.previousPage')))}
         {pages.map((pageNumber) => (
           <li className={`page-item ${pageNumber === safePage ? 'active' : ''}`} key={pageNumber}>
-            <button className="page-link" onClick={() => changePage(pageNumber)} disabled={pageNumber === safePage}>
-              {pageNumber}
-            </button>
+            {makeButton(pageNumber.toString(), pageNumber === safePage, pageNumber, t('common.pageX', { page: pageNumber }))}
           </li>
         ))}
-        <li className={`page-item ${!canGoNext ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => changePage(safePage + 1)} disabled={!canGoNext}>
-            {'>'}
-          </button>
-        </li>
-        <li className={`page-item ${!canGoNext ? 'disabled' : ''}`}>
-          <button className="page-link" onClick={() => changePage(safeTotalPages)} disabled={!canGoNext}>
-            {'>>'}
-          </button>
-        </li>
+        {makeItem(!canGoNext, makeButton('>', !canGoNext, safePage + 1, t('common.nextPage')))}
+        {makeItem(!canGoNext, makeButton('>>', !canGoNext, safeTotalPages, t('common.lastPage')))}
       </ul>
       <div className="small text-muted d-flex align-items-center gap-3 flex-wrap">
         <span>
@@ -60,7 +44,7 @@ function Paginator(props: PaginatorProps) {
         <span>
           {safePage}/{safeTotalPages}
         </span>
-        <span>{t('common.perPage', { count: props.pageSize, defaultValue: '{{count}} por página' })}</span>
+        <span>{t('common.perPage', { count: props.pageSize })}</span>
       </div>
     </div>
   );
