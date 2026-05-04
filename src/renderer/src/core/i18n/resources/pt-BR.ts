@@ -11,4 +11,12 @@ export const ptBR = {
     previousPage: 'Página anterior',
     submit: 'Enviar',
   },
+  pages: {
+    home: {
+      title: 'Principal',
+    },
+    registers: {
+      title: 'Cadastros',
+    },
+  },
 } as const;

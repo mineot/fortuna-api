@@ -11,4 +11,12 @@ export const enUS = {
     previousPage: 'Previous page',
     submit: 'Submit',
   },
+  pages: {
+    home: {
+      title:'Home'
+    },
+    registers : {
+      title:'Registers'
+    }
+  }
 } as const;
