@@ -1,6 +1,6 @@
 import type { AppShellProps } from './app-shell.types';
 import { useAppShell } from './app-shell.hooks';
-import { Menu } from '@widgets';
+import { Menu, Language } from '@widgets';
 
 export function AppShell({ children }: AppShellProps) {
   const { meta, menus } = useAppShell();
@@ -11,6 +11,7 @@ export function AppShell({ children }: AppShellProps) {
         <div>
           <h3 className="m-0">{meta.name}</h3>
           <small className="text-white-50">{meta.version}</small>
+          <Language />
         </div>
         <Menu items={menus} />
       </aside>

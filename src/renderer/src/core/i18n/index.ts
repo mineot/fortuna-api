@@ -46,7 +46,7 @@ async function resolveInitialLanguage(): Promise<AppLanguage> {
   return DEFAULT_LANGUAGE;
 }
 
-export async function initializeI18n(): Promise<void> {
+async function initializeI18n(): Promise<void> {
   const initialLanguage = await resolveInitialLanguage();
 
   await i18n.use(initReactI18next).init({
@@ -69,17 +69,17 @@ export async function initializeI18n(): Promise<void> {
   localStorage.setItem(LANGUAGE_STORAGE_KEY, initialLanguage);
 }
 
-export async function changeLanguage(language: AppLanguage): Promise<void> {
+async function changeLanguage(language: AppLanguage): Promise<void> {
   localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
   await i18n.changeLanguage(language);
 }
 
-export function getCurrencySymbol(): AppCurrency {
+function getCurrencySymbol(): AppCurrency {
   return SUPPORTED_LOCALES.find((locale) => locale.language === i18n.language)?.currency ?? 'USD';
 }
 
-export function getDateLocale(): Locale {
+function getDateLocale(): Locale {
   return SUPPORTED_LOCALES.find((locale) => locale.language === i18n.language)?.date ?? enUSLocale;
 }
 
-export { i18n };
+export { type AppLanguage, changeLanguage, getCurrencySymbol, getDateLocale, i18n, initializeI18n };

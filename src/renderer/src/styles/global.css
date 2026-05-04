@@ -22,3 +22,7 @@ body {
     overflow: hidden;
   }
 }
+
+.img-gray {
+  filter: grayscale(100%);
+}
