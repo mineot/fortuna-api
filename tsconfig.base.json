@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@repo/shared": ["packages/shared/src/index.ts"],
+      "@repo/domain": ["packages/domain/src/index.ts"],
+      "@repo/database": ["packages/database/src/index.ts"],
+      "@repo/api": ["packages/api/src/index.ts"],
+      "@repo/web": ["packages/web/src/index.ts"],
+      "@repo/cli": ["packages/cli/src/index.ts"]
+    }
+  }
+}
