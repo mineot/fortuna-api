@@ -363,7 +363,30 @@ Each package may have its own implementation per module:
 1. `pnpm install`
 2. `pnpm build`
 
-## 16) File Usage Protocol
+## 16) Current Status (Implemented So Far)
+### Completed
+- Phase 1 scaffold completed:
+- root workspace configuration files created (`package.json`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `.gitignore`, `.editorconfig`, `.prettierrc`, `README.md`).
+- package folders created: `shared`, `domain`, `database`, `api`, `web`, `cli`.
+- internal base folders created for each package according to this guide.
+- minimal `package.json`, `tsconfig.json`, and `src/index.ts` created for each package.
+
+- Phase 2 started (`@repo/shared`, API-shaped contracts):
+- `zod` added to `@repo/shared` dependencies.
+- shared financial union types created (transaction types/status, recurrence, statement status).
+- shared constants created as `as const` arrays.
+- common schemas created (id, money, date, boolean int, pagination).
+- finance schemas created (users, settings, accounts, categories, transactions, transfers, recurring, credit cards and related entities).
+- base DTOs created for key flows.
+- base contracts created (paginated response, validation/domain error payloads, list query, typed responses).
+- barrel exports consolidated in `packages/shared/src/index.ts`.
+
+### Pending
+- run/install validation in local environment (`pnpm install`, `pnpm build`, `pnpm --filter @repo/shared typecheck`).
+- refine schema constraints and DTO coverage based on first API use cases.
+- begin Phase 3 (`@repo/database`) after shared contract stabilization.
+
+## 17) File Usage Protocol
 Before any task:
 1. Read this file.
 2. Identify which package the change belongs to.

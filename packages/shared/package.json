@@ -12,5 +12,9 @@
     "lint": "echo \"No lint configured for @repo/shared yet\"",
     "test": "echo \"No tests configured for @repo/shared yet\"",
     "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "kysely": "^0.28.8",
+    "zod": "^4.4.3"
   }
 }

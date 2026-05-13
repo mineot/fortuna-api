@@ -20,17 +20,35 @@ importers:
 
   packages/domain: {}
 
-  packages/shared: {}
+  packages/shared:
+    dependencies:
+      kysely:
+        specifier: ^0.28.8
+        version: 0.28.17
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/web: {}
 
 packages:
+
+  kysely@0.28.17:
+    resolution: {integrity: sha512-nbD8lB9EB3wNdMhOCdx5Li8DxnLbvKByylRLcJ1h+4SkrowVeECAyZlyiKMThF7xFdRz0jSQ2MoJr+wXux2y0Q==}
+    engines: {node: '>=20.0.0'}
 
   typescript@6.0.3:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+
 snapshots:
 
+  kysely@0.28.17: {}
+
   typescript@6.0.3: {}
+
+  zod@4.4.3: {}
