@@ -355,7 +355,15 @@ Each package may have its own implementation per module:
 - By default, do not implement changes. Provide guidance and show how to implement them. Only implement when the user explicitly asks for implementation.
 - If a requirement is missing from this file, or conflicts with this file, do not decide autonomously. Ask the user what should be done before proceeding.
 
-## 15) File Usage Protocol
+## 15) Bootstrap Notes (Applied Adjustments)
+- Root dev dependency: `typescript` is required in workspace root `package.json`.
+- In pnpm workspaces, adding root dependencies must be explicit: use `pnpm add -Dw <pkg>`.
+- TypeScript 6 deprecation handling: keep `baseUrl` for current alias strategy, and set `"ignoreDeprecations": "6.0"` in `tsconfig.base.json`.
+- Initial setup sequence after cloning:
+1. `pnpm install`
+2. `pnpm build`
+
+## 16) File Usage Protocol
 Before any task:
 1. Read this file.
 2. Identify which package the change belongs to.

@@ -10,5 +10,8 @@
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
     "clean": "pnpm -r run clean"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
   }
 }
