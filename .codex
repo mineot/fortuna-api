@@ -1,81 +1,49 @@
-# Projeto Fortuna — Planejamento Arquitetural Completo
+# Project Fortuna — Operational Architecture Guide
 
-## Objetivo
+This file is the mandatory reference before any action in the repository.
+Goal: reduce ambiguity, preserve architectural consistency, and avoid conflicting decisions.
 
-Construir uma plataforma modular baseada em monorepo, utilizando TypeScript em todos os projetos, com separação clara entre:
+## 1) Project Goal
+Build a modular monorepo platform with end-to-end TypeScript, clearly separating:
+- persistence
+- domain
+- API
+- frontend
+- CLI automation
+- shared contracts
 
-* persistência
-* domínio
-* API
-* frontend
-* automação CLI
-* contratos compartilhados
+The architecture should start simple and scale without drastic restructuring.
 
-A arquitetura deve ser simples inicialmente, mas preparada para crescer futuramente sem reestruturações drásticas.
+## 2) Architectural Principles
+- Separation of concerns
+- Low coupling
+- Business-rule reuse
+- Shared contracts
+- Application independence
+- Modular organization
+- Future scalability
+- End-to-end type safety
 
----
+## 3) Official Stack
+- Workspace: `pnpm workspace`
+- Language: `TypeScript`
+- HTTP backend: `Hono`
+- Database layer: `Kysely`
+- Initial database: `SQLite`
+- Frontend: `Angular`
+- CLI: `Node.js`
+- Validation/contracts: `Zod`
 
-# Objetivos Arquiteturais
-
-## Princípios
-
-* Separação de responsabilidades
-* Baixo acoplamento
-* Compartilhamento de contratos
-* Reutilização de regras de negócio
-* Independência entre aplicações
-* Escalabilidade futura
-* Organização modular
-* Monorepo arquitetural
-* Type safety end-to-end
-
----
-
-# Stack Principal
-
-## Workspace
-
-* pnpm workspace
-
-## Linguagem
-
-* TypeScript
-
-## Backend HTTP
-
-* Hono
-
-## Database Layer
-
-* Kysely
-
-## Frontend
-
-* Angular
-
-## CLI
-
-* Node.js CLI
-
-## Validação
-
-* Zod
-
----
-
-# Estrutura do Monorepo
-
+## 4) Monorepo Structure
 ```txt
 root/
 ├── packages/
-│
 │   ├── shared/
 │   ├── domain/
 │   ├── database/
 │   ├── api/
 │   ├── web/
 │   └── cli/
-│
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── tsconfig.base.json
@@ -85,10 +53,7 @@ root/
 └── README.md
 ```
 
----
-
-# Fluxo Arquitetural
-
+## 5) Dependency Flow (High Level)
 ```txt
 shared
    ↑
@@ -101,300 +66,115 @@ api
 web
 
 cli -> shared
-cli -> domain
-cli -> database
-cli -> api
+a) cli -> domain
+b) cli -> database
+c) cli -> api
 ```
 
----
+## 6) Rules by Package
+
+### 6.1 `shared`
+Must contain only:
+- DTOs
+- types
+- interfaces
+- enums
+- constants
+- contracts
+- validations
+- Zod schemas
+
+Must not depend on:
+- `database`
+- `api`
+- `angular`
+- `hono`
+- filesystem
+- environment variables
+
+### 6.2 `domain`
+Contains:
+- entities
+- business rules
+- use cases
+- pure services
+- value objects
+
+Must not know about:
+- database
+- HTTP
+- Angular
+- CLI
+- filesystem
+
+### 6.3 `database`
+Responsible for:
+- persistence
+- migrations
+- seeds
+- repositories
+- database adapters
+
+Initial technology:
+- Kysely + SQLite
+
+Planned evolution:
+- PostgreSQL
+- MySQL
+- LibSQL/Turso
+- DuckDB
+
+Must not know about:
+- API
+- Angular
+
+### 6.4 `api`
+Responsible for:
+- HTTP
+- authentication
+- middlewares
+- validations
+- orchestration
+
+Can use:
+- `domain`
+- `database`
+- `shared`
+
+Must not:
+- write SQL directly
+- contain heavy business rules
+
+### 6.5 `web`
+Responsible for:
+- UI
+- state
+- frontend authentication
+- HTTP calls
+
+Critical rule:
+- frontend must never access the database directly
+
+### 6.6 `cli`
+Operational tool with two modes:
+- local: `cli -> database`
+- remote: `cli -> api`
+
+Can use:
+- `shared`
+- `domain`
+- `database`
+- `api`
+
+Future goals:
+- automations
+- report generation
+- maintenance
+- operational scripts
+
+## 7) Dependency Contract
 
-# Regras Arquiteturais
-
-## shared
-
-Nunca deve depender de:
-
-* database
-* api
-* angular
-* hono
-* filesystem
-* variáveis de ambiente
-
-O `shared` deve conter apenas:
-
-* DTOs
-* types
-* interfaces
-* enums
-* constantes
-* contratos
-* validações
-* schemas zod
-
----
-
-## domain
-
-O `domain` concentra:
-
-* entidades
-* regras de negócio
-* casos de uso
-* serviços puros
-* value objects
-
-O domínio NÃO deve conhecer:
-
-* banco de dados
-* HTTP
-* Angular
-* CLI
-* filesystem
-
----
-
-## database
-
-Responsável por:
-
-* persistência
-* migrations
-* seeds
-* repositories
-* adapters de banco
-
-Tecnologias:
-
-* Kysely
-* SQLite inicialmente
-
-Futuramente:
-
-* PostgreSQL
-* MySQL
-* LibSQL/Turso
-* DuckDB
-
-O `database` não deve conhecer:
-
-* API
-* Angular
-
----
-
-## api
-
-Responsável apenas por:
-
-* HTTP
-* autenticação
-* middlewares
-* validações
-* orquestração
-
-A API NÃO deve:
-
-* escrever SQL
-* conter regra de negócio pesada
-
-A API utiliza:
-
-* domain
-* database
-* shared
-
----
-
-## web
-
-Frontend Angular desacoplado.
-
-Responsável por:
-
-* UI
-* estado
-* autenticação frontend
-* chamadas HTTP
-
-O frontend nunca acessa banco diretamente.
-
----
-
-## cli
-
-Ferramenta operacional.
-
-Pode operar de duas formas:
-
-## modo local
-
-```txt
-cli -> database
-```
-
-## modo remoto
-
-```txt
-cli -> api
-```
-
-Objetivos futuros:
-
-* automações
-* geração de relatórios
-* manutenção
-* scripts operacionais
-
----
-
-# Estrutura Inicial dos Packages
-
-## shared
-
-```txt
-shared/
-├── src/
-│   ├── dto/
-│   ├── contracts/
-│   ├── schemas/
-│   ├── types/
-│   ├── constants/
-│   ├── enums/
-│   └── index.ts
-```
-
----
-
-## domain
-
-```txt
-domain/
-├── src/
-│   ├── entities/
-│   ├── usecases/
-│   ├── services/
-│   ├── value-objects/
-│   ├── events/
-│   └── index.ts
-```
-
----
-
-## database
-
-```txt
-database/
-├── src/
-│   ├── client/
-│   ├── adapters/
-│   │   └── sqlite/
-│   ├── repositories/
-│   ├── migrations/
-│   ├── seeds/
-│   ├── schema/
-│   └── index.ts
-```
-
----
-
-## api
-
-```txt
-api/
-├── src/
-│   ├── routes/
-│   ├── modules/
-│   ├── middlewares/
-│   ├── validators/
-│   ├── services/
-│   ├── lib/
-│   └── server.ts
-```
-
----
-
-## web
-
-```txt
-web/
-├── src/
-│   ├── app/
-│   │   ├── core/
-│   │   ├── shared/
-│   │   ├── modules/
-│   │   └── layouts/
-```
-
----
-
-## cli
-
-```txt
-cli/
-├── src/
-│   ├── commands/
-│   ├── services/
-│   ├── adapters/
-│   └── index.ts
-```
-
----
-
-# Organização Modular
-
-A arquitetura deve ser orientada por módulos de negócio.
-
-Exemplo:
-
-```txt
-modules/
-├── auth/
-├── users/
-├── tasks/
-├── reports/
-```
-
-Cada package pode possuir sua implementação do módulo.
-
-Exemplo:
-
-```txt
-api/modules/tasks
-web/modules/tasks
-database/modules/tasks
-domain/modules/tasks
-```
-
----
-
-# Configuração do Workspace
-
-## package manager
-
-* pnpm workspace
-
-## tsconfig compartilhado
-
-* tsconfig.base.json na raiz
-
-## aliases
-
-```txt
-@repo/shared
-@repo/domain
-@repo/database
-@repo/api
-@repo/web
-@repo/cli
-```
-
----
-
-# Regras de Dependência
-
-## Permitido
-
+### 7.1 Allowed
 ```txt
 api -> domain
 api -> database
@@ -411,12 +191,9 @@ cli -> domain
 cli -> shared
 ```
 
----
-
-## Proibido
-
+### 7.2 Forbidden
 ```txt
-shared -> qualquer coisa
+shared -> anything
 
 domain -> api
 domain -> database
@@ -428,127 +205,162 @@ web -> database
 web -> domain
 ```
 
----
+## 8) Initial Internal Structure by Package
 
-# Objetivos de Evolução
+### `shared`
+```txt
+shared/
+├── src/
+│   ├── dto/
+│   ├── contracts/
+│   ├── schemas/
+│   ├── types/
+│   ├── constants/
+│   ├── enums/
+│   └── index.ts
+```
 
-## Futuramente adicionar
+### `domain`
+```txt
+domain/
+├── src/
+│   ├── entities/
+│   ├── usecases/
+│   ├── services/
+│   ├── value-objects/
+│   ├── events/
+│   └── index.ts
+```
 
-* PostgreSQL
-* MySQL
-* LibSQL
-* DuckDB
-* autenticação JWT
-* OpenAPI
-* websocket
-* eventos
-* filas
-* plugins
-* Electron
-* React Native
-* Tauri
-* workers
-* microservices
+### `database`
+```txt
+database/
+├── src/
+│   ├── client/
+│   ├── adapters/
+│   │   └── sqlite/
+│   ├── repositories/
+│   ├── migrations/
+│   ├── seeds/
+│   ├── schema/
+│   └── index.ts
+```
 
----
+### `api`
+```txt
+api/
+├── src/
+│   ├── routes/
+│   ├── modules/
+│   ├── middlewares/
+│   ├── validators/
+│   ├── services/
+│   ├── lib/
+│   └── server.ts
+```
 
-# Filosofia Arquitetural
+### `web`
+```txt
+web/
+├── src/
+│   ├── app/
+│   │   ├── core/
+│   │   ├── shared/
+│   │   ├── modules/
+│   │   └── layouts/
+```
 
-## API é orquestração
+### `cli`
+```txt
+cli/
+├── src/
+│   ├── commands/
+│   ├── services/
+│   ├── adapters/
+│   └── index.ts
+```
 
-## Domain é regra de negócio
+## 9) Business Module Organization
+The architecture is business-module oriented, for example:
+```txt
+modules/
+├── auth/
+├── users/
+├── tasks/
+└── reports/
+```
 
-## Database é persistência
+Each package may have its own implementation per module:
+- `api/modules/tasks`
+- `web/modules/tasks`
+- `database/modules/tasks`
+- `domain/modules/tasks`
 
-## Shared é contrato
+## 10) Workspace Configuration
+- Package manager: `pnpm workspace`
+- Shared TS config: root `tsconfig.base.json`
+- Aliases:
+```txt
+@repo/shared
+@repo/domain
+@repo/database
+@repo/api
+@repo/web
+@repo/cli
+```
 
-## Web é interface
+## 11) Operational Philosophy
+- API = orchestration
+- Domain = business rules
+- Database = persistence
+- Shared = contract
+- Web = interface
+- CLI = automation
 
-## CLI é automação
+## 12) Implementation Roadmap
 
----
+### Phase 1
+- monorepo
+- pnpm workspace
+- shared TypeScript setup
+- aliases
+- empty packages
+- base scripts
 
-# Objetivo Inicial do Desenvolvimento
+### Phase 2
+- `shared`: DTOs, Zod schemas, contracts, shared types
 
-## Fase 1
+### Phase 3
+- `database`: Kysely, SQLite, migrations, repositories, adapters
 
-Criar:
+### Phase 4
+- `api`: Hono, routes, services, middlewares
 
-* monorepo
-* workspace pnpm
-* TypeScript compartilhado
-* aliases
-* packages vazios
-* scripts base
+### Phase 5
+- `web`: Angular, modules, HTTP integration
 
----
+### Phase 6
+- `cli`: commands, local/remote integration, automations
 
-## Fase 2
+## 13) Critical Rules (Quick Checklist)
+- Everything in TypeScript
+- No SQL in API
+- No heavy business rules outside `domain`
+- `shared` must not know infrastructure
+- Frontend never accesses database
+- Repositories isolated in `database`
+- Modular organization from day one
 
-Implementar `shared`:
+## 14) Guidelines
+- By default, do not implement changes. Provide guidance and show how to implement them. Only implement when the user explicitly asks for implementation.
+- If a requirement is missing from this file, or conflicts with this file, do not decide autonomously. Ask the user what should be done before proceeding.
 
-* DTOs
-* Zod schemas
-* contratos
-* tipos compartilhados
+## 15) File Usage Protocol
+Before any task:
+1. Read this file.
+2. Identify which package the change belongs to.
+3. Verify dependency direction is allowed.
+4. Ensure business rules stay in `domain`.
+5. Ensure shared contracts stay in `shared`.
 
----
-
-## Fase 3
-
-Implementar `database`:
-
-* Kysely
-* SQLite
-* migrations
-* repositories
-* adapters
-
----
-
-## Fase 4
-
-Implementar `api`:
-
-* Hono
-* rotas
-* services
-* middlewares
-
----
-
-## Fase 5
-
-Implementar `web`:
-
-* Angular
-* módulos
-* integração HTTP
-
----
-
-## Fase 6
-
-Implementar `cli`:
-
-* comandos
-* integração local/remota
-* automações
-
----
-
-# Padrões Importantes
-
-## Tudo em TypeScript
-
-## Nada de SQL na API
-
-## Nada de regra pesada fora do domain
-
-## Shared não conhece infraestrutura
-
-## Frontend nunca acessa banco
-
-## Repositories isolados no database
-
-## Organização modular desde o início
+If speed conflicts with architecture, prioritize architecture.
