@@ -1,0 +1,554 @@
+# Projeto Fortuna — Planejamento Arquitetural Completo
+
+## Objetivo
+
+Construir uma plataforma modular baseada em monorepo, utilizando TypeScript em todos os projetos, com separação clara entre:
+
+* persistência
+* domínio
+* API
+* frontend
+* automação CLI
+* contratos compartilhados
+
+A arquitetura deve ser simples inicialmente, mas preparada para crescer futuramente sem reestruturações drásticas.
+
+---
+
+# Objetivos Arquiteturais
+
+## Princípios
+
+* Separação de responsabilidades
+* Baixo acoplamento
+* Compartilhamento de contratos
+* Reutilização de regras de negócio
+* Independência entre aplicações
+* Escalabilidade futura
+* Organização modular
+* Monorepo arquitetural
+* Type safety end-to-end
+
+---
+
+# Stack Principal
+
+## Workspace
+
+* pnpm workspace
+
+## Linguagem
+
+* TypeScript
+
+## Backend HTTP
+
+* Hono
+
+## Database Layer
+
+* Kysely
+
+## Frontend
+
+* Angular
+
+## CLI
+
+* Node.js CLI
+
+## Validação
+
+* Zod
+
+---
+
+# Estrutura do Monorepo
+
+```txt
+root/
+├── packages/
+│
+│   ├── shared/
+│   ├── domain/
+│   ├── database/
+│   ├── api/
+│   ├── web/
+│   └── cli/
+│
+├── package.json
+├── pnpm-workspace.yaml
+├── tsconfig.base.json
+├── .gitignore
+├── .editorconfig
+├── .prettierrc
+└── README.md
+```
+
+---
+
+# Fluxo Arquitetural
+
+```txt
+shared
+   ↑
+domain
+   ↑
+database
+   ↑
+api
+   ↑
+web
+
+cli -> shared
+cli -> domain
+cli -> database
+cli -> api
+```
+
+---
+
+# Regras Arquiteturais
+
+## shared
+
+Nunca deve depender de:
+
+* database
+* api
+* angular
+* hono
+* filesystem
+* variáveis de ambiente
+
+O `shared` deve conter apenas:
+
+* DTOs
+* types
+* interfaces
+* enums
+* constantes
+* contratos
+* validações
+* schemas zod
+
+---
+
+## domain
+
+O `domain` concentra:
+
+* entidades
+* regras de negócio
+* casos de uso
+* serviços puros
+* value objects
+
+O domínio NÃO deve conhecer:
+
+* banco de dados
+* HTTP
+* Angular
+* CLI
+* filesystem
+
+---
+
+## database
+
+Responsável por:
+
+* persistência
+* migrations
+* seeds
+* repositories
+* adapters de banco
+
+Tecnologias:
+
+* Kysely
+* SQLite inicialmente
+
+Futuramente:
+
+* PostgreSQL
+* MySQL
+* LibSQL/Turso
+* DuckDB
+
+O `database` não deve conhecer:
+
+* API
+* Angular
+
+---
+
+## api
+
+Responsável apenas por:
+
+* HTTP
+* autenticação
+* middlewares
+* validações
+* orquestração
+
+A API NÃO deve:
+
+* escrever SQL
+* conter regra de negócio pesada
+
+A API utiliza:
+
+* domain
+* database
+* shared
+
+---
+
+## web
+
+Frontend Angular desacoplado.
+
+Responsável por:
+
+* UI
+* estado
+* autenticação frontend
+* chamadas HTTP
+
+O frontend nunca acessa banco diretamente.
+
+---
+
+## cli
+
+Ferramenta operacional.
+
+Pode operar de duas formas:
+
+## modo local
+
+```txt
+cli -> database
+```
+
+## modo remoto
+
+```txt
+cli -> api
+```
+
+Objetivos futuros:
+
+* automações
+* geração de relatórios
+* manutenção
+* scripts operacionais
+
+---
+
+# Estrutura Inicial dos Packages
+
+## shared
+
+```txt
+shared/
+├── src/
+│   ├── dto/
+│   ├── contracts/
+│   ├── schemas/
+│   ├── types/
+│   ├── constants/
+│   ├── enums/
+│   └── index.ts
+```
+
+---
+
+## domain
+
+```txt
+domain/
+├── src/
+│   ├── entities/
+│   ├── usecases/
+│   ├── services/
+│   ├── value-objects/
+│   ├── events/
+│   └── index.ts
+```
+
+---
+
+## database
+
+```txt
+database/
+├── src/
+│   ├── client/
+│   ├── adapters/
+│   │   └── sqlite/
+│   ├── repositories/
+│   ├── migrations/
+│   ├── seeds/
+│   ├── schema/
+│   └── index.ts
+```
+
+---
+
+## api
+
+```txt
+api/
+├── src/
+│   ├── routes/
+│   ├── modules/
+│   ├── middlewares/
+│   ├── validators/
+│   ├── services/
+│   ├── lib/
+│   └── server.ts
+```
+
+---
+
+## web
+
+```txt
+web/
+├── src/
+│   ├── app/
+│   │   ├── core/
+│   │   ├── shared/
+│   │   ├── modules/
+│   │   └── layouts/
+```
+
+---
+
+## cli
+
+```txt
+cli/
+├── src/
+│   ├── commands/
+│   ├── services/
+│   ├── adapters/
+│   └── index.ts
+```
+
+---
+
+# Organização Modular
+
+A arquitetura deve ser orientada por módulos de negócio.
+
+Exemplo:
+
+```txt
+modules/
+├── auth/
+├── users/
+├── tasks/
+├── reports/
+```
+
+Cada package pode possuir sua implementação do módulo.
+
+Exemplo:
+
+```txt
+api/modules/tasks
+web/modules/tasks
+database/modules/tasks
+domain/modules/tasks
+```
+
+---
+
+# Configuração do Workspace
+
+## package manager
+
+* pnpm workspace
+
+## tsconfig compartilhado
+
+* tsconfig.base.json na raiz
+
+## aliases
+
+```txt
+@repo/shared
+@repo/domain
+@repo/database
+@repo/api
+@repo/web
+@repo/cli
+```
+
+---
+
+# Regras de Dependência
+
+## Permitido
+
+```txt
+api -> domain
+api -> database
+api -> shared
+
+database -> domain
+database -> shared
+
+web -> shared
+
+cli -> api
+cli -> database
+cli -> domain
+cli -> shared
+```
+
+---
+
+## Proibido
+
+```txt
+shared -> qualquer coisa
+
+domain -> api
+domain -> database
+domain -> web
+
+database -> api
+
+web -> database
+web -> domain
+```
+
+---
+
+# Objetivos de Evolução
+
+## Futuramente adicionar
+
+* PostgreSQL
+* MySQL
+* LibSQL
+* DuckDB
+* autenticação JWT
+* OpenAPI
+* websocket
+* eventos
+* filas
+* plugins
+* Electron
+* React Native
+* Tauri
+* workers
+* microservices
+
+---
+
+# Filosofia Arquitetural
+
+## API é orquestração
+
+## Domain é regra de negócio
+
+## Database é persistência
+
+## Shared é contrato
+
+## Web é interface
+
+## CLI é automação
+
+---
+
+# Objetivo Inicial do Desenvolvimento
+
+## Fase 1
+
+Criar:
+
+* monorepo
+* workspace pnpm
+* TypeScript compartilhado
+* aliases
+* packages vazios
+* scripts base
+
+---
+
+## Fase 2
+
+Implementar `shared`:
+
+* DTOs
+* Zod schemas
+* contratos
+* tipos compartilhados
+
+---
+
+## Fase 3
+
+Implementar `database`:
+
+* Kysely
+* SQLite
+* migrations
+* repositories
+* adapters
+
+---
+
+## Fase 4
+
+Implementar `api`:
+
+* Hono
+* rotas
+* services
+* middlewares
+
+---
+
+## Fase 5
+
+Implementar `web`:
+
+* Angular
+* módulos
+* integração HTTP
+
+---
+
+## Fase 6
+
+Implementar `cli`:
+
+* comandos
+* integração local/remota
+* automações
+
+---
+
+# Padrões Importantes
+
+## Tudo em TypeScript
+
+## Nada de SQL na API
+
+## Nada de regra pesada fora do domain
+
+## Shared não conhece infraestrutura
+
+## Frontend nunca acessa banco
+
+## Repositories isolados no database
+
+## Organização modular desde o início
