@@ -359,6 +359,7 @@ Each package may have its own implementation per module:
 - Root dev dependency: `typescript` is required in workspace root `package.json`.
 - In pnpm workspaces, adding root dependencies must be explicit: use `pnpm add -Dw <pkg>`.
 - TypeScript 6 deprecation handling: keep `baseUrl` for current alias strategy, and set `"ignoreDeprecations": "6.0"` in `tsconfig.base.json`.
+- Non-interactive environments with `nvm` may not load `pnpm`/`node` automatically; if needed, prepend this path to `PATH` before running workspace commands: `/home/mineot/.nvm/versions/node/v24.15.0/bin` (example: `export PATH=/home/mineot/.nvm/versions/node/v24.15.0/bin:$PATH`).
 - Initial setup sequence after cloning:
 1. `pnpm install`
 2. `pnpm build`
@@ -382,7 +383,7 @@ Each package may have its own implementation per module:
 - barrel exports consolidated in `packages/shared/src/index.ts`.
 
 ### Pending
-- run/install validation in local environment (`pnpm install`, `pnpm build`, `pnpm --filter @repo/shared typecheck`).
+- local validation executed successfully (`pnpm install`, `pnpm build`, `pnpm --filter @repo/shared typecheck`) on 2026-05-13.
 - refine schema constraints and DTO coverage based on first API use cases.
 - begin Phase 3 (`@repo/database`) after shared contract stabilization.
 

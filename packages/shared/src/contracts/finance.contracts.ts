@@ -23,7 +23,6 @@ export interface PaginatedResponse<T> {
   data: T[];
   page: number;
   page_size: number;
-  pageSize?: number;
   total: number;
 }
 

@@ -9,4 +9,3 @@ coverage
 .env
 .env.*
 !.env.example
-.codex.tmp

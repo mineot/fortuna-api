@@ -48,23 +48,7 @@ export const booleanIntSchema = z.union([z.literal(0), z.literal(1)]);
 
 const pageSizeSchema = z.int().positive().max(100);
 
-export const paginationSchema = z
-  .object({
-    page: z.int().positive().default(1),
-    page_size: pageSizeSchema.optional(),
-    pageSize: pageSizeSchema.optional(),
-  })
-  .refine(
-    (value) =>
-      value.page_size === undefined ||
-      value.pageSize === undefined ||
-      value.page_size === value.pageSize,
-    {
-      message: 'page_size and pageSize must match when both are provided',
-      path: ['page_size'],
-    },
-  )
-  .transform(({ page, page_size, pageSize }) => ({
-    page,
-    page_size: page_size ?? pageSize ?? 20,
-  }));
+export const paginationSchema = z.object({
+  page: z.int().positive().default(1),
+  page_size: pageSizeSchema.default(20),
+}).strict();

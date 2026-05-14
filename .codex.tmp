@@ -1,0 +1,1749 @@
+Kysely é um query builder SQL type-safe para TypeScript, não um ORM, então faz sentido descrever o banco como interfaces/tabelas e deixar as migrations criarem a estrutura real. ([Kysely][1])
+
+````md
+# Personal Finance Database Model — Kysely Implementation Specification
+
+## Goal
+
+Create a simple and practical personal finance database for day-to-day financial control.
+
+The first version should focus on:
+
+- users
+- user settings
+- accounts
+- account types
+- category groups
+- categories
+- payees
+- transactions
+- transfers
+- recurring transactions
+- credit cards
+- credit card statements
+- credit card purchases
+- credit card installments
+- credit card statement payments
+
+This is not intended to be a complex accounting system.  
+The goal is to support simple personal finance operations with a clean and extensible database model.
+
+---
+
+# General Implementation Notes
+
+## Database
+
+Target database:
+
+```txt
+SQLite
+````
+
+## Query Builder
+
+Target implementation:
+
+```txt
+Kysely + TypeScript
+```
+
+Kysely should be used as a type-safe SQL query builder.
+
+---
+
+# Naming Convention
+
+Use English table and column names.
+
+Use snake_case for database tables and columns.
+
+Examples:
+
+```txt
+users
+account_types
+credit_card_statements
+created_at
+```
+
+---
+
+# General Type Rules
+
+## IDs
+
+All primary keys should be auto-generated integer IDs.
+
+Recommended Kysely type:
+
+```ts
+Generated<number>
+```
+
+## Dates
+
+Use ISO strings stored as text.
+
+Recommended TypeScript type:
+
+```ts
+string
+```
+
+Examples:
+
+```txt
+2026-01-31
+2026-01-31T10:30:00.000Z
+```
+
+For simple financial dates, `YYYY-MM-DD` is enough.
+
+## Money
+
+Use integer cents to avoid floating point problems.
+
+Recommended TypeScript type:
+
+```ts
+number
+```
+
+Examples:
+
+```txt
+R$ 10.00  -> 1000
+R$ 39.90  -> 3990
+R$ 1,200.50 -> 120050
+```
+
+Do not store monetary values as floating point decimals.
+
+## Booleans
+
+SQLite does not have a native boolean type.
+
+Store booleans as integer:
+
+```txt
+0 = false
+1 = true
+```
+
+Recommended TypeScript type:
+
+```ts
+0 | 1
+```
+
+---
+
+# Recommended Shared Types
+
+Use these TypeScript union types:
+
+```ts
+export type TransactionType = 'income' | 'expense';
+
+export type TransactionStatus = 'pending' | 'confirmed' | 'cancelled';
+
+export type RecurrenceType =
+  | 'subscription'
+  | 'fixed_bill'
+  | 'fixed_income'
+  | 'monthly_fee'
+  | 'other';
+
+export type RecurrenceFrequency =
+  | 'monthly'
+  | 'yearly'
+  | 'weekly'
+  | 'biweekly'
+  | 'custom';
+
+export type CreditCardStatementStatus =
+  | 'open'
+  | 'closed'
+  | 'paid'
+  | 'cancelled';
+```
+
+---
+
+# Recommended Shared Interfaces
+
+Use a simple base pattern if useful:
+
+```ts
+import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
+
+export interface BaseTable {
+  id: Generated<number>;
+}
+```
+
+Timestamps are intentionally not included in this first version unless the project already uses them globally.
+
+---
+
+# 1. Users
+
+## Table: `users`
+
+### Description
+
+Stores the system users.
+
+This first version should be simple.
+
+### Columns
+
+```txt
+users
+- id
+- name
+- email
+- password
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface UsersTable {
+  id: Generated<number>;
+  name: string;
+  email: string;
+  password: string;
+}
+
+export type User = Selectable<UsersTable>;
+export type NewUser = Insertable<UsersTable>;
+export type UserUpdate = Updateable<UsersTable>;
+```
+
+### Rules
+
+* `email` must be unique.
+* `password` must store a secure hash.
+* Do not store plain text passwords.
+* No roles, permissions, profile data, or status fields in this version.
+
+---
+
+# 2. User Settings
+
+## Table: `user_settings`
+
+### Description
+
+Stores system preferences for each user.
+
+Main responsibilities:
+
+* locale
+* default currency
+* fiscal year cutoff
+
+### Columns
+
+```txt
+user_settings
+- id
+- user_id
+- locale
+- currency
+- fiscal_year_cutoff_day
+- fiscal_year_cutoff_month
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface UserSettingsTable {
+  id: Generated<number>;
+  user_id: number;
+  locale: string;
+  currency: string;
+  fiscal_year_cutoff_day: number;
+  fiscal_year_cutoff_month: number;
+}
+
+export type UserSettings = Selectable<UserSettingsTable>;
+export type NewUserSettings = Insertable<UserSettingsTable>;
+export type UserSettingsUpdate = Updateable<UserSettingsTable>;
+```
+
+### Example
+
+```txt
+locale = pt-BR
+currency = BRL
+fiscal_year_cutoff_day = 25
+fiscal_year_cutoff_month = 12
+```
+
+### Rules
+
+* Each user should have only one settings record.
+* `user_id` should be unique.
+* `locale` controls date, number, and currency formatting.
+* `currency` stores the default currency code.
+* `fiscal_year_cutoff_day` must be between 1 and 31.
+* `fiscal_year_cutoff_month` must be between 1 and 12.
+
+---
+
+# 3. Account Types
+
+## Table: `account_types`
+
+### Description
+
+Defines available account types.
+
+### Columns
+
+```txt
+account_types
+- id
+- name
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface AccountTypesTable {
+  id: Generated<number>;
+  name: string;
+}
+
+export type AccountType = Selectable<AccountTypesTable>;
+export type NewAccountType = Insertable<AccountTypesTable>;
+export type AccountTypeUpdate = Updateable<AccountTypesTable>;
+```
+
+### Default Seed Examples
+
+```txt
+Checking
+Savings
+Wallet
+Investment
+Other
+```
+
+### Rules
+
+* This table can be populated through seed data.
+* Use this table instead of hardcoded strings in `accounts`.
+
+---
+
+# 4. Accounts
+
+## Table: `accounts`
+
+### Description
+
+Represents where the user's real money exists.
+
+Examples:
+
+* checking account
+* digital bank account
+* physical wallet
+* savings account
+* investment account
+
+### Columns
+
+```txt
+accounts
+- id
+- user_id
+- account_type_id
+- name
+- initial_balance
+- notes
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface AccountsTable {
+  id: Generated<number>;
+  user_id: number;
+  account_type_id: number;
+  name: string;
+  initial_balance: number;
+  notes: string | null;
+}
+
+export type Account = Selectable<AccountsTable>;
+export type NewAccount = Insertable<AccountsTable>;
+export type AccountUpdate = Updateable<AccountsTable>;
+```
+
+### Rules
+
+* An account belongs to a user.
+* An account has one account type.
+* `initial_balance` is stored in cents.
+* `initial_balance` is the starting point for account balance calculation.
+* Do not store current balance directly.
+* Current balance must be calculated from transactions and transfers.
+
+### Conceptual Balance Calculation
+
+```txt
+current balance =
+initial_balance
++ confirmed income transactions
+- confirmed expense transactions
++ confirmed incoming transfers
+- confirmed outgoing transfers
+```
+
+---
+
+# 5. Category Groups
+
+## Table: `category_groups`
+
+### Description
+
+Groups categories for visual organization and reporting.
+
+### Columns
+
+```txt
+category_groups
+- id
+- user_id
+- name
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface CategoryGroupsTable {
+  id: Generated<number>;
+  user_id: number;
+  name: string;
+}
+
+export type CategoryGroup = Selectable<CategoryGroupsTable>;
+export type NewCategoryGroup = Insertable<CategoryGroupsTable>;
+export type CategoryGroupUpdate = Updateable<CategoryGroupsTable>;
+```
+
+### Examples
+
+```txt
+Income
+Fixed Expenses
+Variable Expenses
+Investments
+Credit Card
+```
+
+### Rules
+
+* A category group belongs to a user.
+* A category group is only used for organization.
+* Transactions should reference categories, not category groups.
+
+---
+
+# 6. Categories
+
+## Table: `categories`
+
+### Description
+
+Classifies financial transactions.
+
+Every income or expense transaction should have a category.
+
+### Columns
+
+```txt
+categories
+- id
+- user_id
+- category_group_id
+- name
+- type
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface CategoriesTable {
+  id: Generated<number>;
+  user_id: number;
+  category_group_id: number;
+  name: string;
+  type: TransactionType;
+}
+
+export type Category = Selectable<CategoriesTable>;
+export type NewCategory = Insertable<CategoriesTable>;
+export type CategoryUpdate = Updateable<CategoriesTable>;
+```
+
+### Type Values
+
+```txt
+income
+expense
+```
+
+### Examples
+
+```txt
+Group: Income
+- Salary
+- Freelance
+- Refund
+
+Group: Fixed Expenses
+- Rent
+- Electricity
+- Internet
+
+Group: Variable Expenses
+- Food
+- Transportation
+- Entertainment
+
+Group: Credit Card
+- Credit Card Payment
+```
+
+### Rules
+
+* A category belongs to a user.
+* A category belongs to a category group.
+* `type` defines whether the category is for income or expense.
+* Transaction values must always be positive.
+* Income/expense behavior comes from the transaction type.
+
+---
+
+# 7. Payees
+
+## Table: `payees`
+
+### Description
+
+Represents the person, company, bank, institution, or merchant involved in a transaction.
+
+### Columns
+
+```txt
+payees
+- id
+- user_id
+- name
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface PayeesTable {
+  id: Generated<number>;
+  user_id: number;
+  name: string;
+}
+
+export type Payee = Selectable<PayeesTable>;
+export type NewPayee = Insertable<PayeesTable>;
+export type PayeeUpdate = Updateable<PayeesTable>;
+```
+
+### Examples
+
+```txt
+Supermarket
+Netflix
+Shell Gas Station
+John Smith
+Nubank
+City Hall
+```
+
+### Rules
+
+* A payee belongs to a user.
+* `name` is required.
+* Duplicate payees may be allowed in the first version.
+* Name normalization can be implemented later.
+
+---
+
+# 8. Transactions
+
+## Table: `transactions`
+
+### Description
+
+Stores real financial movements in accounts.
+
+Used for:
+
+* income
+* expenses
+* credit card statement payments
+* manually entered transactions
+* direct payments through Pix, debit card, cash, bank slip, or bank transfer
+
+### Columns
+
+```txt
+transactions
+- id
+- user_id
+- account_id
+- category_id
+- payee_id
+- type
+- description
+- amount
+- date
+- status
+- notes
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface TransactionsTable {
+  id: Generated<number>;
+  user_id: number;
+  account_id: number;
+  category_id: number;
+  payee_id: number | null;
+  type: TransactionType;
+  description: string;
+  amount: number;
+  date: string;
+  status: TransactionStatus;
+  notes: string | null;
+}
+
+export type Transaction = Selectable<TransactionsTable>;
+export type NewTransaction = Insertable<TransactionsTable>;
+export type TransactionUpdate = Updateable<TransactionsTable>;
+```
+
+### Type Values
+
+```txt
+income
+expense
+```
+
+### Status Values
+
+```txt
+pending
+confirmed
+cancelled
+```
+
+### Rules
+
+* A transaction belongs to a user.
+* A transaction belongs to an account.
+* A transaction must have a category.
+* `payee_id` is optional.
+* `amount` must always be positive.
+* `type` defines whether the amount increases or decreases the account balance.
+* Credit card purchases should not be inserted directly into this table.
+* Credit cards have their own flow.
+* Only confirmed transactions should affect actual account balances.
+
+### Examples
+
+```txt
+Salary received
+type = income
+account = Checking Account
+category = Salary
+amount = 500000
+status = confirmed
+```
+
+```txt
+Electricity bill paid
+type = expense
+account = Checking Account
+category = Electricity
+amount = 23000
+status = confirmed
+```
+
+---
+
+# 9. Transfers
+
+## Table: `transfers`
+
+### Description
+
+Stores money movements between the user's own accounts.
+
+Examples:
+
+* checking account to savings
+* wallet to bank account
+* checking account to investment account
+
+### Columns
+
+```txt
+transfers
+- id
+- user_id
+- source_account_id
+- destination_account_id
+- amount
+- date
+- description
+- status
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface TransfersTable {
+  id: Generated<number>;
+  user_id: number;
+  source_account_id: number;
+  destination_account_id: number;
+  amount: number;
+  date: string;
+  description: string | null;
+  status: TransactionStatus;
+}
+
+export type Transfer = Selectable<TransfersTable>;
+export type NewTransfer = Insertable<TransfersTable>;
+export type TransferUpdate = Updateable<TransfersTable>;
+```
+
+### Status Values
+
+```txt
+pending
+confirmed
+cancelled
+```
+
+### Rules
+
+* A transfer is not income.
+* A transfer is not an expense.
+* A transfer does not change total net worth.
+* A transfer only moves money from one account to another.
+* `source_account_id` and `destination_account_id` must be different.
+* `amount` must be positive.
+* Only confirmed transfers should affect account balances.
+
+---
+
+# 10. Recurring Transactions
+
+## Table: `recurring_transactions`
+
+### Description
+
+Defines transactions that repeat over time.
+
+Used for:
+
+* salary
+* rent
+* internet
+* electricity
+* gym
+* school
+* subscriptions
+* monthly fees
+* fixed bills
+
+### Columns
+
+```txt
+recurring_transactions
+- id
+- user_id
+- account_id
+- category_id
+- payee_id
+- name
+- description
+- type
+- recurrence_type
+- amount
+- frequency
+- due_day
+- start_date
+- end_date
+- active
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface RecurringTransactionsTable {
+  id: Generated<number>;
+  user_id: number;
+  account_id: number;
+  category_id: number;
+  payee_id: number | null;
+  name: string;
+  description: string | null;
+  type: TransactionType;
+  recurrence_type: RecurrenceType;
+  amount: number;
+  frequency: RecurrenceFrequency;
+  due_day: number;
+  start_date: string;
+  end_date: string | null;
+  active: 0 | 1;
+}
+
+export type RecurringTransaction = Selectable<RecurringTransactionsTable>;
+export type NewRecurringTransaction = Insertable<RecurringTransactionsTable>;
+export type RecurringTransactionUpdate = Updateable<RecurringTransactionsTable>;
+```
+
+### Transaction Type Values
+
+```txt
+income
+expense
+```
+
+### Recurrence Type Values
+
+```txt
+subscription
+fixed_bill
+fixed_income
+monthly_fee
+other
+```
+
+### Frequency Values
+
+```txt
+monthly
+yearly
+weekly
+biweekly
+custom
+```
+
+### Rules
+
+* A recurring transaction is not a real transaction.
+* It is a template used to generate future transactions.
+* When a recurring transaction becomes due, the app may create a pending or confirmed transaction.
+* Subscriptions should be represented here using `recurrence_type = subscription`.
+* `due_day` should usually be between 1 and 31.
+* For weekly/biweekly/custom recurrence, future fields may be added if needed.
+
+### Example
+
+```txt
+Netflix
+type = expense
+recurrence_type = subscription
+frequency = monthly
+due_day = 10
+amount = 3990
+```
+
+---
+
+# 11. Credit Cards
+
+## Table: `credit_cards`
+
+### Description
+
+Represents a user's credit card.
+
+A credit card is not an account.
+
+It is a payment method that creates future debt.
+
+### Columns
+
+```txt
+credit_cards
+- id
+- user_id
+- name
+- credit_limit
+- closing_day
+- due_day
+- notes
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface CreditCardsTable {
+  id: Generated<number>;
+  user_id: number;
+  name: string;
+  credit_limit: number;
+  closing_day: number;
+  due_day: number;
+  notes: string | null;
+}
+
+export type CreditCard = Selectable<CreditCardsTable>;
+export type NewCreditCard = Insertable<CreditCardsTable>;
+export type CreditCardUpdate = Updateable<CreditCardsTable>;
+```
+
+### Rules
+
+* A credit card belongs to a user.
+* `credit_limit` is stored in cents.
+* `closing_day` is the day the statement closes.
+* `due_day` is the day the statement is due.
+* Credit card purchases should not immediately affect account balances.
+
+---
+
+# 12. Credit Card Statements
+
+## Table: `credit_card_statements`
+
+### Description
+
+Represents a credit card statement for a specific period.
+
+### Columns
+
+```txt
+credit_card_statements
+- id
+- credit_card_id
+- start_date
+- end_date
+- due_date
+- status
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface CreditCardStatementsTable {
+  id: Generated<number>;
+  credit_card_id: number;
+  start_date: string;
+  end_date: string;
+  due_date: string;
+  status: CreditCardStatementStatus;
+}
+
+export type CreditCardStatement = Selectable<CreditCardStatementsTable>;
+export type NewCreditCardStatement = Insertable<CreditCardStatementsTable>;
+export type CreditCardStatementUpdate = Updateable<CreditCardStatementsTable>;
+```
+
+### Status Values
+
+```txt
+open
+closed
+paid
+cancelled
+```
+
+### Rules
+
+* A statement belongs to a credit card.
+* A statement groups credit card installments.
+* A closed statement does not automatically create a transaction.
+* A real financial transaction only happens when the statement is paid.
+* The statement total should be calculated by summing its related credit card installments.
+* Do not store statement total in this first version unless needed for performance.
+
+### Conceptual Calculation
+
+```txt
+statement total =
+sum of credit_card_installments.amount
+where credit_card_installments.credit_card_statement_id = statement.id
+```
+
+---
+
+# 13. Credit Card Purchases
+
+## Table: `credit_card_purchases`
+
+### Description
+
+Stores purchases made with a credit card.
+
+Can represent:
+
+* one-time credit card purchase
+* installment purchase
+
+### Columns
+
+```txt
+credit_card_purchases
+- id
+- credit_card_id
+- category_id
+- payee_id
+- description
+- total_amount
+- installment_count
+- purchase_date
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface CreditCardPurchasesTable {
+  id: Generated<number>;
+  credit_card_id: number;
+  category_id: number;
+  payee_id: number | null;
+  description: string;
+  total_amount: number;
+  installment_count: number;
+  purchase_date: string;
+}
+
+export type CreditCardPurchase = Selectable<CreditCardPurchasesTable>;
+export type NewCreditCardPurchase = Insertable<CreditCardPurchasesTable>;
+export type CreditCardPurchaseUpdate = Updateable<CreditCardPurchasesTable>;
+```
+
+### Rules
+
+* A purchase belongs to a credit card.
+* A purchase must have a category.
+* `payee_id` is optional.
+* `total_amount` is stored in cents.
+* `installment_count` must be at least 1.
+* A credit card purchase does not generate a direct transaction in `transactions`.
+* A credit card purchase generates one or more records in `credit_card_installments`.
+
+### Example
+
+```txt
+Notebook purchase
+total_amount = 300000
+installment_count = 10
+```
+
+Generates:
+
+```txt
+10 installments of 30000
+```
+
+---
+
+# 14. Credit Card Installments
+
+## Table: `credit_card_installments`
+
+### Description
+
+Represents each installment of a credit card purchase.
+
+### Columns
+
+```txt
+credit_card_installments
+- id
+- credit_card_purchase_id
+- credit_card_statement_id
+- installment_number
+- amount
+- competence_date
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface CreditCardInstallmentsTable {
+  id: Generated<number>;
+  credit_card_purchase_id: number;
+  credit_card_statement_id: number;
+  installment_number: number;
+  amount: number;
+  competence_date: string;
+}
+
+export type CreditCardInstallment = Selectable<CreditCardInstallmentsTable>;
+export type NewCreditCardInstallment = Insertable<CreditCardInstallmentsTable>;
+export type CreditCardInstallmentUpdate = Updateable<CreditCardInstallmentsTable>;
+```
+
+### Rules
+
+* An installment belongs to a credit card purchase.
+* An installment belongs to a credit card statement.
+* Each installment should be assigned to the statement corresponding to its competence date.
+* The installment amount contributes to the statement total.
+* The installment does not directly generate a transaction.
+
+### Example
+
+```txt
+Notebook purchase: 300000 in 10 installments
+
+Installment 1 -> January statement
+Installment 2 -> February statement
+Installment 3 -> March statement
+...
+```
+
+---
+
+# 15. Credit Card Statement Payments
+
+## Table: `credit_card_statement_payments`
+
+### Description
+
+Stores payments made toward a credit card statement.
+
+### Columns
+
+```txt
+credit_card_statement_payments
+- id
+- credit_card_statement_id
+- account_id
+- amount
+- date
+- transaction_id
+```
+
+### Suggested Kysely Interface
+
+```ts
+export interface CreditCardStatementPaymentsTable {
+  id: Generated<number>;
+  credit_card_statement_id: number;
+  account_id: number;
+  amount: number;
+  date: string;
+  transaction_id: number;
+}
+
+export type CreditCardStatementPayment =
+  Selectable<CreditCardStatementPaymentsTable>;
+
+export type NewCreditCardStatementPayment =
+  Insertable<CreditCardStatementPaymentsTable>;
+
+export type CreditCardStatementPaymentUpdate =
+  Updateable<CreditCardStatementPaymentsTable>;
+```
+
+### Rules
+
+* A payment belongs to a credit card statement.
+* A payment is made from an account.
+* A statement payment must generate one transaction in `transactions`.
+* `transaction_id` links the payment to the real financial transaction.
+* Partial payments should be allowed.
+* A statement should become `paid` only when the total paid amount covers the calculated statement total.
+
+### Correct Flow
+
+```txt
+Credit card purchase
+-> credit_card_purchases
+-> credit_card_installments
+-> credit_card_statements
+-> credit_card_statement_payments
+-> transactions
+```
+
+### Critical Rule
+
+A credit card purchase must not generate a direct transaction.
+
+Only the credit card statement payment generates a transaction.
+
+This avoids duplicated expenses.
+
+---
+
+# Database Interface
+
+Create a central Kysely database interface like this:
+
+```ts
+export interface Database {
+  users: UsersTable;
+  user_settings: UserSettingsTable;
+
+  account_types: AccountTypesTable;
+  accounts: AccountsTable;
+
+  category_groups: CategoryGroupsTable;
+  categories: CategoriesTable;
+
+  payees: PayeesTable;
+
+  transactions: TransactionsTable;
+  transfers: TransfersTable;
+  recurring_transactions: RecurringTransactionsTable;
+
+  credit_cards: CreditCardsTable;
+  credit_card_statements: CreditCardStatementsTable;
+  credit_card_purchases: CreditCardPurchasesTable;
+  credit_card_installments: CreditCardInstallmentsTable;
+  credit_card_statement_payments: CreditCardStatementPaymentsTable;
+}
+```
+
+---
+
+# Relationships Summary
+
+## User Relations
+
+```txt
+users.id -> user_settings.user_id
+users.id -> accounts.user_id
+users.id -> category_groups.user_id
+users.id -> categories.user_id
+users.id -> payees.user_id
+users.id -> transactions.user_id
+users.id -> transfers.user_id
+users.id -> recurring_transactions.user_id
+users.id -> credit_cards.user_id
+```
+
+## Account Relations
+
+```txt
+account_types.id -> accounts.account_type_id
+
+accounts.id -> transactions.account_id
+accounts.id -> transfers.source_account_id
+accounts.id -> transfers.destination_account_id
+accounts.id -> credit_card_statement_payments.account_id
+```
+
+## Category Relations
+
+```txt
+category_groups.id -> categories.category_group_id
+
+categories.id -> transactions.category_id
+categories.id -> recurring_transactions.category_id
+categories.id -> credit_card_purchases.category_id
+```
+
+## Payee Relations
+
+```txt
+payees.id -> transactions.payee_id
+payees.id -> recurring_transactions.payee_id
+payees.id -> credit_card_purchases.payee_id
+```
+
+## Credit Card Relations
+
+```txt
+credit_cards.id -> credit_card_statements.credit_card_id
+credit_cards.id -> credit_card_purchases.credit_card_id
+
+credit_card_purchases.id -> credit_card_installments.credit_card_purchase_id
+credit_card_statements.id -> credit_card_installments.credit_card_statement_id
+credit_card_statements.id -> credit_card_statement_payments.credit_card_statement_id
+
+transactions.id -> credit_card_statement_payments.transaction_id
+```
+
+---
+
+# Recommended Indexes
+
+Create indexes for common queries.
+
+```txt
+users.email
+
+user_settings.user_id
+
+accounts.user_id
+accounts.account_type_id
+
+category_groups.user_id
+
+categories.user_id
+categories.category_group_id
+categories.type
+
+payees.user_id
+
+transactions.user_id
+transactions.account_id
+transactions.category_id
+transactions.payee_id
+transactions.date
+transactions.status
+transactions.type
+
+transfers.user_id
+transfers.source_account_id
+transfers.destination_account_id
+transfers.date
+transfers.status
+
+recurring_transactions.user_id
+recurring_transactions.active
+recurring_transactions.due_day
+
+credit_cards.user_id
+
+credit_card_statements.credit_card_id
+credit_card_statements.status
+credit_card_statements.due_date
+
+credit_card_purchases.credit_card_id
+credit_card_purchases.category_id
+credit_card_purchases.payee_id
+credit_card_purchases.purchase_date
+
+credit_card_installments.credit_card_purchase_id
+credit_card_installments.credit_card_statement_id
+credit_card_installments.competence_date
+
+credit_card_statement_payments.credit_card_statement_id
+credit_card_statement_payments.account_id
+credit_card_statement_payments.transaction_id
+credit_card_statement_payments.date
+```
+
+---
+
+# Suggested Constraints
+
+Use constraints where possible.
+
+## Unique Constraints
+
+```txt
+users.email unique
+user_settings.user_id unique
+```
+
+Optional:
+
+```txt
+account_types.name unique
+```
+
+## Check Constraints
+
+```txt
+transactions.amount > 0
+transfers.amount > 0
+recurring_transactions.amount > 0
+credit_cards.credit_limit >= 0
+credit_card_purchases.total_amount > 0
+credit_card_purchases.installment_count >= 1
+credit_card_installments.amount > 0
+credit_card_installments.installment_number >= 1
+credit_card_statement_payments.amount > 0
+
+user_settings.fiscal_year_cutoff_day between 1 and 31
+user_settings.fiscal_year_cutoff_month between 1 and 12
+
+credit_cards.closing_day between 1 and 31
+credit_cards.due_day between 1 and 31
+recurring_transactions.due_day between 1 and 31
+```
+
+## Enum-like Check Constraints
+
+SQLite does not have native enums.
+
+Use text columns with check constraints:
+
+```txt
+transactions.type in ('income', 'expense')
+transactions.status in ('pending', 'confirmed', 'cancelled')
+
+transfers.status in ('pending', 'confirmed', 'cancelled')
+
+categories.type in ('income', 'expense')
+
+recurring_transactions.type in ('income', 'expense')
+recurring_transactions.recurrence_type in (
+  'subscription',
+  'fixed_bill',
+  'fixed_income',
+  'monthly_fee',
+  'other'
+)
+recurring_transactions.frequency in (
+  'monthly',
+  'yearly',
+  'weekly',
+  'biweekly',
+  'custom'
+)
+
+credit_card_statements.status in (
+  'open',
+  'closed',
+  'paid',
+  'cancelled'
+)
+```
+
+---
+
+# Main Business Rules
+
+## Money
+
+All money values must be stored in cents.
+
+```txt
+1000 = 10.00
+3990 = 39.90
+```
+
+Do not use floating point values for money.
+
+---
+
+## Transactions
+
+Transaction amounts are always positive.
+
+Do not store negative values.
+
+Correct:
+
+```txt
+amount = 10000
+type = expense
+```
+
+Incorrect:
+
+```txt
+amount = -10000
+```
+
+---
+
+## Account Balance
+
+Account current balance must be calculated.
+
+Do not store current balance directly.
+
+Only confirmed transactions and confirmed transfers should affect the account balance.
+
+---
+
+## Transfers
+
+Transfers are neither income nor expense.
+
+They only move money between accounts.
+
+---
+
+## Recurring Transactions
+
+Recurring transactions are templates.
+
+They do not affect balances directly.
+
+They can generate real transactions when due.
+
+---
+
+## Credit Cards
+
+Credit cards are not accounts.
+
+Credit card purchases do not affect account balances immediately.
+
+Credit card purchases create installments.
+
+Installments belong to statements.
+
+Statements are paid from accounts.
+
+Statement payments generate real transactions.
+
+---
+
+## Credit Card Statements
+
+Closing a statement does not generate a transaction.
+
+Paying a statement generates a transaction.
+
+A statement can receive partial payments.
+
+A statement should be marked as paid only when the total amount paid is equal to or greater than the statement total.
+
+---
+
+# Main Flows
+
+## 1. Regular Expense
+
+```txt
+User pays an electricity bill from a bank account.
+
+transactions:
+- type = expense
+- account_id = checking account
+- category_id = electricity
+- payee_id = utility company
+- amount = 23000
+- status = confirmed
+```
+
+---
+
+## 2. Regular Income
+
+```txt
+User receives salary.
+
+transactions:
+- type = income
+- account_id = checking account
+- category_id = salary
+- payee_id = employer
+- amount = 500000
+- status = confirmed
+```
+
+---
+
+## 3. Transfer
+
+```txt
+User transfers money from checking account to savings account.
+
+transfers:
+- source_account_id = checking account
+- destination_account_id = savings account
+- amount = 100000
+- status = confirmed
+```
+
+Result:
+
+```txt
+Checking account: -100000
+Savings account: +100000
+Net worth: unchanged
+```
+
+---
+
+## 4. Subscription
+
+```txt
+User registers Netflix subscription.
+
+recurring_transactions:
+- name = Netflix
+- type = expense
+- recurrence_type = subscription
+- frequency = monthly
+- due_day = 10
+- amount = 3990
+```
+
+When due, the app may create:
+
+```txt
+transactions:
+- type = expense
+- amount = 3990
+- status = pending or confirmed
+```
+
+---
+
+## 5. One-time Credit Card Purchase
+
+```txt
+Credit card purchase of 10000 in 1 installment.
+
+credit_card_purchases:
+- total_amount = 10000
+- installment_count = 1
+
+credit_card_installments:
+- installment_number = 1
+- amount = 10000
+- credit_card_statement_id = related statement
+```
+
+When the statement is paid:
+
+```txt
+credit_card_statement_payments
+-> transactions
+```
+
+---
+
+## 6. Installment Credit Card Purchase
+
+```txt
+Credit card purchase of 120000 in 12 installments.
+
+credit_card_purchases:
+- total_amount = 120000
+- installment_count = 12
+
+credit_card_installments:
+- 12 records of 10000
+- each one linked to its corresponding statement
+```
+
+---
+
+## 7. Credit Card Statement Payment
+
+```txt
+User pays a credit card statement of 85000 using checking account.
+
+credit_card_statement_payments:
+- credit_card_statement_id = statement
+- account_id = checking account
+- amount = 85000
+- transaction_id = generated transaction
+```
+
+Generated transaction:
+
+```txt
+transactions:
+- type = expense
+- category_id = Credit Card Payment
+- account_id = checking account
+- amount = 85000
+- status = confirmed
+```
+
+---
+
+# Tables Included in Version 1
+
+```txt
+users
+user_settings
+
+account_types
+accounts
+
+category_groups
+categories
+
+payees
+
+transactions
+transfers
+recurring_transactions
+
+credit_cards
+credit_card_statements
+credit_card_purchases
+credit_card_installments
+credit_card_statement_payments
+```
+
+---
+
+# Tables Not Included in Version 1
+
+The following tables are intentionally left for a future version:
+
+```txt
+budgets
+budget_categories
+
+goals
+goal_contributions
+
+shopping_lists
+shopping_list_items
+purchases
+purchase_items
+```
+
+---
+
+# Final Architecture Summary
+
+```txt
+User
+ ├── User Settings
+ ├── Accounts
+ │    ├── Transactions
+ │    └── Transfers
+ ├── Category Groups
+ │    └── Categories
+ ├── Payees
+ ├── Recurring Transactions
+ └── Credit Cards
+      ├── Statements
+      ├── Purchases
+      ├── Installments
+      └── Statement Payments
+           └── Transactions
+```
+
+---
+
+# Codex Task
+
+Implement this database model in Kysely.
+
+Expected output:
+
+1. TypeScript table interfaces.
+2. Shared union types.
+3. Central `Database` interface.
+4. SQLite migrations for creating all tables.
+5. Indexes and constraints where possible.
+6. Seed data for default account types.
+7. Seed data for useful default category groups and categories.
+
+```
+
+
+::contentReference[oaicite:1]{index=1}
+```
+
+[1]: https://kysely.dev/?utm_source=chatgpt.com "Kysely"

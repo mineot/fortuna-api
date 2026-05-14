@@ -1,77 +1,83 @@
 import type { z } from 'zod';
 
 import {
-  accountSchema,
-  accountTypeSchema,
-  categoryGroupSchema,
-  categorySchema,
-  creditCardInstallmentSchema,
-  creditCardPurchaseSchema,
-  creditCardSchema,
-  creditCardStatementSchema,
-  createUserSchema,
+  createAccountSchema,
+  createAccountTypeSchema,
+  createCategoryGroupSchema,
+  createCategorySchema,
+  createCreditCardInstallmentSchema,
+  createCreditCardPurchaseSchema,
+  createCreditCardSchema,
   createCreditCardStatementPaymentSchema,
-  payeeSchema,
-  transactionSchema,
-  transferSchema,
-  userSettingsSchema,
-  userSchema,
-  recurringTransactionSchema,
+  createCreditCardStatementSchema,
+  createPayeeSchema,
+  createRecurringTransactionSchema,
+  createTransactionSchema,
+  createTransferSchema,
+  createUserSchema,
+  createUserSettingsSchema,
+  updateAccountSchema,
+  updateAccountTypeSchema,
+  updateCategoryGroupSchema,
+  updateCategorySchema,
+  updateCreditCardInstallmentSchema,
+  updateCreditCardPurchaseSchema,
+  updateCreditCardSchema,
+  updateCreditCardStatementPaymentSchema,
+  updateCreditCardStatementSchema,
+  updatePayeeSchema,
+  updateRecurringTransactionSchema,
+  updateTransactionSchema,
+  updateTransferSchema,
+  updateUserSchema,
+  updateUserSettingsSchema,
 } from '../schemas/finance.schemas';
 
-type NullableKeys<T extends Record<string, unknown>> = {
-  [K in keyof T]-?: null extends T[K] ? K : never;
-}[keyof T];
-
-type NullableToOptional<T extends Record<string, unknown>> = Omit<T, NullableKeys<T>> &
-  Partial<Pick<T, NullableKeys<T>>>;
-
-type CreateFromSchema<TSchema extends z.ZodTypeAny> = NullableToOptional<Omit<z.infer<TSchema>, 'id'>>;
-
 export type CreateUserDto = z.infer<typeof createUserSchema>;
-export type UpdateUserDto = Partial<Omit<z.infer<typeof userSchema>, 'id'>>;
+export type UpdateUserDto = z.infer<typeof updateUserSchema>;
 
-export type CreateUserSettingsDto = CreateFromSchema<typeof userSettingsSchema>;
-export type UpdateUserSettingsDto = Partial<CreateUserSettingsDto>;
+export type CreateUserSettingsDto = z.infer<typeof createUserSettingsSchema>;
+export type UpdateUserSettingsDto = z.infer<typeof updateUserSettingsSchema>;
 
-export type CreateAccountTypeDto = CreateFromSchema<typeof accountTypeSchema>;
-export type UpdateAccountTypeDto = Partial<CreateAccountTypeDto>;
+export type CreateAccountTypeDto = z.infer<typeof createAccountTypeSchema>;
+export type UpdateAccountTypeDto = z.infer<typeof updateAccountTypeSchema>;
 
-export type CreateAccountDto = CreateFromSchema<typeof accountSchema>;
-export type UpdateAccountDto = Partial<CreateAccountDto>;
+export type CreateAccountDto = z.infer<typeof createAccountSchema>;
+export type UpdateAccountDto = z.infer<typeof updateAccountSchema>;
 
-export type CreateCategoryGroupDto = CreateFromSchema<typeof categoryGroupSchema>;
-export type UpdateCategoryGroupDto = Partial<CreateCategoryGroupDto>;
+export type CreateCategoryGroupDto = z.infer<typeof createCategoryGroupSchema>;
+export type UpdateCategoryGroupDto = z.infer<typeof updateCategoryGroupSchema>;
 
-export type CreateCategoryDto = CreateFromSchema<typeof categorySchema>;
-export type UpdateCategoryDto = Partial<CreateCategoryDto>;
+export type CreateCategoryDto = z.infer<typeof createCategorySchema>;
+export type UpdateCategoryDto = z.infer<typeof updateCategorySchema>;
 
-export type CreatePayeeDto = CreateFromSchema<typeof payeeSchema>;
-export type UpdatePayeeDto = Partial<CreatePayeeDto>;
+export type CreatePayeeDto = z.infer<typeof createPayeeSchema>;
+export type UpdatePayeeDto = z.infer<typeof updatePayeeSchema>;
 
-export type CreateTransactionDto = CreateFromSchema<typeof transactionSchema>;
-export type UpdateTransactionDto = Partial<CreateTransactionDto>;
+export type CreateTransactionDto = z.infer<typeof createTransactionSchema>;
+export type UpdateTransactionDto = z.infer<typeof updateTransactionSchema>;
 
-export type CreateTransferDto = CreateFromSchema<typeof transferSchema>;
-export type UpdateTransferDto = Partial<CreateTransferDto>;
+export type CreateTransferDto = z.infer<typeof createTransferSchema>;
+export type UpdateTransferDto = z.infer<typeof updateTransferSchema>;
 
-export type CreateRecurringTransactionDto = CreateFromSchema<typeof recurringTransactionSchema>;
-export type UpdateRecurringTransactionDto = Partial<CreateRecurringTransactionDto>;
+export type CreateRecurringTransactionDto = z.infer<typeof createRecurringTransactionSchema>;
+export type UpdateRecurringTransactionDto = z.infer<typeof updateRecurringTransactionSchema>;
 
-export type CreateCreditCardDto = CreateFromSchema<typeof creditCardSchema>;
-export type UpdateCreditCardDto = Partial<CreateCreditCardDto>;
+export type CreateCreditCardDto = z.infer<typeof createCreditCardSchema>;
+export type UpdateCreditCardDto = z.infer<typeof updateCreditCardSchema>;
 
-export type CreateCreditCardStatementDto = CreateFromSchema<typeof creditCardStatementSchema>;
-export type UpdateCreditCardStatementDto = Partial<CreateCreditCardStatementDto>;
+export type CreateCreditCardStatementDto = z.infer<typeof createCreditCardStatementSchema>;
+export type UpdateCreditCardStatementDto = z.infer<typeof updateCreditCardStatementSchema>;
 
-export type CreateCreditCardPurchaseDto = CreateFromSchema<typeof creditCardPurchaseSchema>;
-export type UpdateCreditCardPurchaseDto = Partial<CreateCreditCardPurchaseDto>;
+export type CreateCreditCardPurchaseDto = z.infer<typeof createCreditCardPurchaseSchema>;
+export type UpdateCreditCardPurchaseDto = z.infer<typeof updateCreditCardPurchaseSchema>;
 
-export type CreateCreditCardInstallmentDto = CreateFromSchema<typeof creditCardInstallmentSchema>;
-export type UpdateCreditCardInstallmentDto = Partial<CreateCreditCardInstallmentDto>;
+export type CreateCreditCardInstallmentDto = z.infer<typeof createCreditCardInstallmentSchema>;
+export type UpdateCreditCardInstallmentDto = z.infer<typeof updateCreditCardInstallmentSchema>;
 
 export type CreateCreditCardStatementPaymentDto = z.infer<
   typeof createCreditCardStatementPaymentSchema
 >;
-
-export type UpdateCreditCardStatementPaymentDto = Partial<CreateCreditCardStatementPaymentDto>;
+export type UpdateCreditCardStatementPaymentDto = z.infer<
+  typeof updateCreditCardStatementPaymentSchema
+>;

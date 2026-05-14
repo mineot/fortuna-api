@@ -10,11 +10,14 @@
     "dev": "tsc -p tsconfig.json --watch --preserveWatchOutput",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"No lint configured for @repo/shared yet\"",
-    "test": "echo \"No tests configured for @repo/shared yet\"",
+    "test": "tsx --test test/**/*.test.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {
     "kysely": "^0.28.8",
     "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
   }
 }
