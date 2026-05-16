@@ -13,7 +13,7 @@ test('transactions flow: create and list by user', async () => {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'x-user-id': String(context.userId),
+      authorization: context.authHeader,
     },
     body: JSON.stringify({
       account_id: base.accountId,
@@ -36,7 +36,7 @@ test('transactions flow: create and list by user', async () => {
   const listResponse = await context.app.request('/api/v1/transactions?page=1&page_size=20', {
     method: 'GET',
     headers: {
-      'x-user-id': String(context.userId),
+      authorization: context.authHeader,
     },
   });
 

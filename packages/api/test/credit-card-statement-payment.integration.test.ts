@@ -15,7 +15,7 @@ test('credit card statement payment flow: register payment and mark statement as
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-user-id': String(context.userId),
+        authorization: context.authHeader,
       },
       body: JSON.stringify({
         account_id: scenario.accountId,
@@ -42,7 +42,7 @@ test('credit card statement payment flow: register payment and mark statement as
     {
       method: 'GET',
       headers: {
-        'x-user-id': String(context.userId),
+        authorization: context.authHeader,
       },
     },
   );

@@ -1,9 +1,11 @@
 import { Hono } from 'hono';
 
 import type { ApiVariables } from '../lib/http-context.js';
+import { getApiEnvironment } from '../lib/env.js';
 import { createApiRepositories } from '../lib/repositories.js';
 import { createAccountTypesRoutes } from '../modules/account-types/routes.js';
 import { createAccountsRoutes } from '../modules/accounts/routes.js';
+import { createAuthRoutes } from '../modules/auth/routes.js';
 import { createCategoriesRoutes } from '../modules/categories/routes.js';
 import { createCategoryGroupsRoutes } from '../modules/category-groups/routes.js';
 import { createCreditCardInstallmentsRoutes } from '../modules/credit-card-installments/routes.js';
@@ -22,8 +24,10 @@ import { createUsersRoutes } from '../modules/users/routes.js';
 
 export const registerRoutes = (app: Hono<{ Variables: ApiVariables }>): void => {
   const repositories = createApiRepositories();
+  const environment = getApiEnvironment();
   const apiV1 = new Hono<{ Variables: ApiVariables }>();
 
+  apiV1.route('/auth', createAuthRoutes(repositories, environment));
   apiV1.route('/users', createUsersRoutes(repositories));
   apiV1.route('/user-settings', createUserSettingsRoutes(repositories));
   apiV1.route('/account-types', createAccountTypesRoutes(repositories));

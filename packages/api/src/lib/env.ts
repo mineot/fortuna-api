@@ -3,12 +3,15 @@ const DEFAULT_WEB_PORT = 4200;
 const DEFAULT_API_PORT = 3000;
 const DEFAULT_WEB_URL = `http://localhost:${DEFAULT_WEB_PORT}`;
 const DEFAULT_API_BASE_URL = `http://localhost:${DEFAULT_API_PORT}/api/v1`;
+const DEFAULT_JWT_SECRET = 'fortuna-dev-secret-change-me';
+const DEFAULT_JWT_ACCESS_TOKEN_EXPIRES_IN = '1h';
 
 const REQUIRED_PROD_KEYS = [
   'FORTUNA_WEB_PORT',
   'FORTUNA_API_PORT',
   'FORTUNA_WEB_URL',
   'FORTUNA_API_BASE_URL',
+  'FORTUNA_JWT_SECRET',
 ] as const;
 
 type RequiredProdKey = (typeof REQUIRED_PROD_KEYS)[number];
@@ -69,6 +72,8 @@ export interface ApiEnvironment {
   webPort: number;
   webUrl: string;
   apiBaseUrl: string;
+  jwtSecret: string;
+  jwtAccessTokenExpiresIn: string;
 }
 
 export const getApiEnvironment = (): ApiEnvironment => {
@@ -83,6 +88,9 @@ export const getApiEnvironment = (): ApiEnvironment => {
       port: parsePort(prod.FORTUNA_API_PORT, 'FORTUNA_API_PORT'),
       webUrl: prod.FORTUNA_WEB_URL,
       apiBaseUrl: prod.FORTUNA_API_BASE_URL,
+      jwtSecret: prod.FORTUNA_JWT_SECRET,
+      jwtAccessTokenExpiresIn:
+        readValue('FORTUNA_JWT_ACCESS_TOKEN_EXPIRES_IN') ?? DEFAULT_JWT_ACCESS_TOKEN_EXPIRES_IN,
     };
   }
 
@@ -99,5 +107,8 @@ export const getApiEnvironment = (): ApiEnvironment => {
     port: apiPort,
     webUrl: readValue('FORTUNA_WEB_URL') ?? DEFAULT_WEB_URL,
     apiBaseUrl: readValue('FORTUNA_API_BASE_URL') ?? DEFAULT_API_BASE_URL,
+    jwtSecret: readValue('FORTUNA_JWT_SECRET') ?? DEFAULT_JWT_SECRET,
+    jwtAccessTokenExpiresIn:
+      readValue('FORTUNA_JWT_ACCESS_TOKEN_EXPIRES_IN') ?? DEFAULT_JWT_ACCESS_TOKEN_EXPIRES_IN,
   };
 };

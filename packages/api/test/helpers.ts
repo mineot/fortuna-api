@@ -6,11 +6,13 @@ import { createSqliteKysely, reconcileMigrations } from '@repo/database';
 import type { Database as FortunaDatabase } from '@repo/shared';
 
 import { createApp } from '../src/app.js';
+import { signAccessToken } from '../src/lib/jwt.js';
 
 export interface TestContext {
   app: ReturnType<typeof createApp>;
   dbPath: string;
   userId: number;
+  authHeader: string;
   cleanup: () => Promise<void>;
 }
 
@@ -26,6 +28,12 @@ export const setupTestContext = async (): Promise<TestContext> => {
 
   process.env.FORTUNA_ENV = 'PROD';
   process.env.FORTUNA_DB = dbPath;
+  process.env.FORTUNA_WEB_PORT = '4200';
+  process.env.FORTUNA_API_PORT = '3000';
+  process.env.FORTUNA_WEB_URL = 'http://localhost:4200';
+  process.env.FORTUNA_API_BASE_URL = 'http://localhost:3000/api/v1';
+  process.env.FORTUNA_JWT_SECRET = 'test-jwt-secret';
+  process.env.FORTUNA_JWT_ACCESS_TOKEN_EXPIRES_IN = '1h';
 
   await reconcileMigrations({ databaseUrl: dbPath });
 
@@ -43,12 +51,19 @@ export const setupTestContext = async (): Promise<TestContext> => {
 
   await db.destroy();
 
+  const accessToken = await signAccessToken(
+    { sub: String(user.id) },
+    process.env.FORTUNA_JWT_SECRET,
+    process.env.FORTUNA_JWT_ACCESS_TOKEN_EXPIRES_IN,
+  );
+
   const app = createApp();
 
   return {
     app,
     dbPath,
     userId: user.id,
+    authHeader: `Bearer ${accessToken}`,
     cleanup: async () => {
       await rm(tempDir, { recursive: true, force: true });
     },

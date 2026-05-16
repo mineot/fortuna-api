@@ -1,29 +1,47 @@
 import type { MiddlewareHandler } from 'hono';
 
+import { getApiEnvironment } from '../lib/env.js';
 import { DomainError } from '../lib/errors.js';
+import { verifyAccessToken } from '../lib/jwt.js';
 
-const USER_ID_HEADER = 'x-user-id';
+const AUTHORIZATION_HEADER = 'authorization';
+const BEARER_PREFIX = 'Bearer ';
 
 export const authUserMiddleware: MiddlewareHandler = async (context, next) => {
-  const userIdHeader = context.req.header(USER_ID_HEADER);
+  const authorizationHeader = context.req.header(AUTHORIZATION_HEADER);
 
-  if (!userIdHeader) {
+  if (!authorizationHeader || !authorizationHeader.startsWith(BEARER_PREFIX)) {
     throw new DomainError(401, {
       code: 'UNAUTHORIZED',
-      message: `Missing required header: ${USER_ID_HEADER}`,
+      message: 'Missing or invalid Authorization header. Expected: Bearer <token>.',
     });
   }
 
-  const userId = Number(userIdHeader);
+  const token = authorizationHeader.slice(BEARER_PREFIX.length).trim();
 
-  if (!Number.isInteger(userId) || userId <= 0) {
+  if (!token) {
     throw new DomainError(400, {
-      code: 'INVALID_USER_ID',
-      message: `${USER_ID_HEADER} must be a positive integer`,
+      code: 'INVALID_TOKEN',
+      message: 'Token is empty.',
     });
   }
 
-  context.set('userId', userId);
+  try {
+    const environment = getApiEnvironment();
+    const payload = await verifyAccessToken(token, environment.jwtSecret);
+    const userId = Number(payload.sub);
+
+    if (!Number.isInteger(userId) || userId <= 0) {
+      throw new Error('Invalid subject.');
+    }
+
+    context.set('userId', userId);
+  } catch {
+    throw new DomainError(401, {
+      code: 'INVALID_TOKEN',
+      message: 'Token is invalid or expired.',
+    });
+  }
 
   await next();
 };
