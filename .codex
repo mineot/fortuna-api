@@ -354,7 +354,7 @@ Each package may have its own implementation per module:
 ## 14) Guidelines
 - By default, do not implement changes. Provide guidance and show how to implement them. Only implement when the user explicitly asks for implementation.
 - If a requirement is missing from this file, or conflicts with this file, do not decide autonomously. Ask the user what should be done before proceeding.
-- Production package builds should generate minified JavaScript artifacts. Prefer `tsup` (or equivalent bundler/minifier) for JS output, and keep TypeScript declaration generation (`.d.ts`) via `tsc`.
+- Package builds for `@repo/shared` and `@repo/database` should use standard TypeScript compilation (`tsc`) without JS minification. Prefer build mode with force rebuild for deterministic project-reference outputs.
 
 ## 15) Bootstrap Notes (Applied Adjustments)
 - Root dev dependency: `typescript` is required in workspace root `package.json`.
@@ -368,6 +368,9 @@ Each package may have its own implementation per module:
 - Initial setup sequence after cloning:
 1. `pnpm install`
 2. `pnpm build`
+- Build strategy currently in use:
+1. `@repo/shared`: `tsc -b tsconfig.json --force`
+2. `@repo/database`: `tsc -b tsconfig.json --force`
 
 ## 16) Current Status (Implemented So Far)
 ### Completed

@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "dist/shared.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format esm --sourcemap --minify --clean && mv dist/index.js dist/shared.js && mv dist/index.js.map dist/shared.js.map && tsc -b tsconfig.json --emitDeclarationOnly --force",
+    "build": "tsc -b tsconfig.json --force",
     "dev": "tsup src/index.ts --format esm --dts --sourcemap --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"No lint configured for @repo/shared yet\"",
