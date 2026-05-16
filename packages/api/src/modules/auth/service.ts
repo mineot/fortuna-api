@@ -1,35 +1,25 @@
+import type {
+  AuthenticatedUser,
+  LoginRequest,
+  LoginResponse,
+} from '@repo/shared/dist/contracts/auth.contracts.js';
 import { DomainError } from '../../lib/errors.js';
 import { signAccessToken } from '../../lib/jwt.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
-
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
 
 export interface AuthEnvironment {
   jwtSecret: string;
   jwtAccessTokenExpiresIn: string;
 }
 
-export interface LoginResponse {
-  access_token: string;
-}
-
-export interface AuthenticatedUserResponse {
-  id: number;
-  name: string;
-  email: string;
-}
-
-const toAuthenticatedUser = (user: { id: number; name: string; email: string }) => ({
+const toAuthenticatedUser = (user: { id: number; name: string; email: string }): AuthenticatedUser => ({
   id: user.id,
   name: user.name,
   email: user.email,
 });
 
 export const createAuthService = (repositories: ApiRepositories, environment: AuthEnvironment) => ({
-  login: async (payload: LoginPayload): Promise<LoginResponse> => {
+  login: async (payload: LoginRequest): Promise<LoginResponse> => {
     const user = await repositories.users.findByEmail(payload.email);
 
     if (!user || user.password !== payload.password) {
@@ -50,7 +40,7 @@ export const createAuthService = (repositories: ApiRepositories, environment: Au
     };
   },
 
-  me: async (userId: number): Promise<AuthenticatedUserResponse> => {
+  me: async (userId: number): Promise<AuthenticatedUser> => {
     const user = await repositories.users.findById(userId);
 
     if (!user) {
