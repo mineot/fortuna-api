@@ -11,7 +11,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "start": "node --env-file=../../.env dist/server.js",
     "lint": "echo \"No lint configured for @repo/api yet\"",
-    "test": "echo \"No tests configured for @repo/api yet\"",
+    "test": "tsx --test test/**/*.test.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^25.7.0"
+    "@types/node": "^25.7.0",
+    "tsx": "^4.21.0"
   }
 }
