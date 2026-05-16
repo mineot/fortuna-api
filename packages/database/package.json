@@ -17,9 +17,11 @@
   },
   "dependencies": {
     "@repo/shared": "workspace:*",
+    "better-sqlite3": "^12.10.0",
     "kysely": "^0.28.8"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.7.0",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0"
