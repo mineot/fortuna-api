@@ -14,6 +14,7 @@ import { createCreditCardsRoutes } from '../modules/credit-cards/routes.js';
 import { healthRoutes } from '../modules/health/routes.js';
 import { createPayeesRoutes } from '../modules/payees/routes.js';
 import { createRecurringTransactionsRoutes } from '../modules/recurring-transactions/routes.js';
+import { createReportsRoutes } from '../modules/reports/routes.js';
 import { createTransactionsRoutes } from '../modules/transactions/routes.js';
 import { createTransfersRoutes } from '../modules/transfers/routes.js';
 import { createUserSettingsRoutes } from '../modules/user-settings/routes.js';
@@ -38,6 +39,7 @@ export const registerRoutes = (app: Hono<{ Variables: ApiVariables }>): void => 
   apiV1.route('/transactions', createTransactionsRoutes(repositories));
   apiV1.route('/transfers', createTransfersRoutes(repositories));
   apiV1.route('/recurring-transactions', createRecurringTransactionsRoutes(repositories));
+  apiV1.route('/', createReportsRoutes(repositories));
 
   app.route('/', healthRoutes);
   app.route('/api/v1', apiV1);
