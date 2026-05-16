@@ -4,54 +4,39 @@ import type {
   UserSettingsUpdate,
   UserSettingsResponse,
 } from '@repo/shared';
+import { createUserSettingsUseCases } from '@repo/domain';
 
-import { DomainError } from '../../lib/errors.js';
+import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import { omitUndefined } from '../../lib/object.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
 
 type UserSettingsUpsertPayload = Omit<CreateUserSettingsDto, 'user_id'>;
-
 type UserSettingsPatchPayload = Omit<UpdateUserSettingsDto, 'user_id'>;
 
-export const createUserSettingsService = (repositories: ApiRepositories) => ({
-  findByUserId: async (userId: number): Promise<UserSettingsResponse> => {
-    const settings = await repositories.userSettings.findByUserId(userId);
+export const createUserSettingsService = (repositories: ApiRepositories) => {
+  const useCases = createUserSettingsUseCases(repositories.userSettings);
 
-    if (!settings) {
-      throw new DomainError(404, {
-        code: 'USER_SETTINGS_NOT_FOUND',
-        message: 'User settings not found.',
-      });
-    }
+  return {
+    findByUserId: async (userId: number): Promise<UserSettingsResponse> => {
+      try {
+        return await useCases.findByUserId(userId);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-    return settings;
-  },
+    upsertByUserId: async (userId: number, payload: UserSettingsUpsertPayload): Promise<UserSettingsResponse> => {
+      return useCases.upsertByUserId(userId, payload);
+    },
 
-  upsertByUserId: async (
-    userId: number,
-    payload: UserSettingsUpsertPayload,
-  ): Promise<UserSettingsResponse> => {
-    return repositories.userSettings.upsertByUserId(userId, payload);
-  },
-
-  updateByUserId: async (
-    userId: number,
-    payload: UserSettingsPatchPayload,
-  ): Promise<UserSettingsResponse> => {
-    const settings = await repositories.userSettings.updateByUserId(
-      userId,
-      omitUndefined(payload) as UserSettingsUpdate,
-    );
-
-    if (!settings) {
-      throw new DomainError(404, {
-        code: 'USER_SETTINGS_NOT_FOUND',
-        message: 'User settings not found.',
-      });
-    }
-
-    return settings;
-  },
-});
+    updateByUserId: async (userId: number, payload: UserSettingsPatchPayload): Promise<UserSettingsResponse> => {
+      try {
+        return await useCases.updateByUserId(userId, omitUndefined(payload) as UserSettingsUpdate);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
+  };
+};
 
 export type UserSettingsService = ReturnType<typeof createUserSettingsService>;

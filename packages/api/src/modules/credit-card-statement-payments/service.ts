@@ -4,8 +4,9 @@ import type {
   NewCreditCardStatementPayment,
   UpdateCreditCardStatementPaymentDto,
 } from '@repo/shared';
+import { createCreditCardStatementPaymentsUseCases } from '@repo/domain';
 
-import { DomainError } from '../../lib/errors.js';
+import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import { omitUndefined } from '../../lib/object.js';
 import { getOffsetFromPagination, toPaginatedResponse, type PaginationInput } from '../../lib/pagination.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
@@ -18,69 +19,58 @@ export interface CreditCardStatementPaymentsListQuery extends PaginationInput {
 
 type UpdateCreditCardStatementPaymentPayload = UpdateCreditCardStatementPaymentDto;
 
-export const createCreditCardStatementPaymentsService = (repositories: ApiRepositories) => ({
-  create: async (payload: NewCreditCardStatementPayment): Promise<CreditCardStatementPaymentResponse> => {
-    return repositories.creditCardStatementPayments.create(payload);
-  },
+export const createCreditCardStatementPaymentsService = (repositories: ApiRepositories) => {
+  const useCases = createCreditCardStatementPaymentsUseCases(repositories.creditCardStatementPayments);
 
-  findById: async (userId: number, paymentId: number): Promise<CreditCardStatementPaymentResponse> => {
-    const payment = await repositories.creditCardStatementPayments.findById(userId, paymentId);
+  return {
+    create: async (payload: NewCreditCardStatementPayment): Promise<CreditCardStatementPaymentResponse> =>
+      useCases.create(payload),
 
-    if (!payment) {
-      throw new DomainError(404, {
-        code: 'CREDIT_CARD_STATEMENT_PAYMENT_NOT_FOUND',
-        message: 'Credit card statement payment not found.',
+    findById: async (userId: number, paymentId: number): Promise<CreditCardStatementPaymentResponse> => {
+      try {
+        return await useCases.findById(userId, paymentId);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
+
+    listByStatement: async (
+      userId: number,
+      statementId: number,
+      query: CreditCardStatementPaymentsListQuery,
+    ) => {
+      const data = await useCases.listByStatement(userId, statementId, {
+        limit: query.page_size,
+        offset: getOffsetFromPagination(query),
+        ...(query.account_id !== undefined ? { accountId: query.account_id } : {}),
+        ...(query.date_from !== undefined ? { dateFrom: query.date_from } : {}),
+        ...(query.date_to !== undefined ? { dateTo: query.date_to } : {}),
       });
-    }
+      return toPaginatedResponse(data, query);
+    },
 
-    return payment;
-  },
+    updateById: async (
+      userId: number,
+      paymentId: number,
+      payload: UpdateCreditCardStatementPaymentPayload,
+    ): Promise<CreditCardStatementPaymentResponse> => {
+      try {
+        return await useCases.updateById(
+          userId,
+          paymentId,
+          omitUndefined(payload) as CreditCardStatementPaymentUpdate,
+        );
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-  listByStatement: async (
-    userId: number,
-    statementId: number,
-    query: CreditCardStatementPaymentsListQuery,
-  ) => {
-    const data = await repositories.creditCardStatementPayments.listByStatement(userId, statementId, {
-      limit: query.page_size,
-      offset: getOffsetFromPagination(query),
-      ...(query.account_id !== undefined ? { accountId: query.account_id } : {}),
-      ...(query.date_from !== undefined ? { dateFrom: query.date_from } : {}),
-      ...(query.date_to !== undefined ? { dateTo: query.date_to } : {}),
-    });
-
-    return toPaginatedResponse(data, query);
-  },
-
-  updateById: async (
-    userId: number,
-    paymentId: number,
-    payload: UpdateCreditCardStatementPaymentPayload,
-  ): Promise<CreditCardStatementPaymentResponse> => {
-    const payment = await repositories.creditCardStatementPayments.updateById(
-      userId,
-      paymentId,
-      omitUndefined(payload) as CreditCardStatementPaymentUpdate,
-    );
-
-    if (!payment) {
-      throw new DomainError(404, {
-        code: 'CREDIT_CARD_STATEMENT_PAYMENT_NOT_FOUND',
-        message: 'Credit card statement payment not found.',
-      });
-    }
-
-    return payment;
-  },
-
-  deleteById: async (userId: number, paymentId: number): Promise<void> => {
-    const deleted = await repositories.creditCardStatementPayments.deleteById(userId, paymentId);
-
-    if (!deleted) {
-      throw new DomainError(404, {
-        code: 'CREDIT_CARD_STATEMENT_PAYMENT_NOT_FOUND',
-        message: 'Credit card statement payment not found.',
-      });
-    }
-  },
-});
+    deleteById: async (userId: number, paymentId: number): Promise<void> => {
+      try {
+        await useCases.deleteById(userId, paymentId);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
+  };
+};
