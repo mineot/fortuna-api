@@ -1,11 +1,12 @@
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, isAbsolute, resolve } from 'node:path';
-import { cwd, env } from 'node:process';
+import { env } from 'node:process';
+import { DatabaseSync } from 'node:sqlite';
+import { fileURLToPath } from 'node:url';
 
 import type { Database as FortunaDatabase } from '@repo/shared';
-import BetterSqlite3 from 'better-sqlite3';
-import { Kysely, SqliteDialect, type SqliteDatabase } from 'kysely';
+import { Kysely, SqliteDialect, type SqliteDatabase, type SqliteStatement } from 'kysely';
 
 export const SQLITE_FILE_PROTOCOL = 'file:';
 
@@ -15,6 +16,8 @@ export const SQLITE_DEFAULT_FILENAME_BY_ENV = {
 } as const;
 
 export const SQLITE_DEFAULT_PRAGMAS = ['foreign_keys = ON', 'journal_mode = WAL'] as const;
+
+const PROJECT_ROOT = fileURLToPath(new URL('../../../../', import.meta.url));
 
 export interface CreateSqliteAdapterOptions {
   databaseUrl?: string;
@@ -61,7 +64,7 @@ const getDefaultDatabaseUrl = (): string => {
     return resolveProdDatabaseUrl();
   }
 
-  return resolve(cwd(), SQLITE_DEFAULT_FILENAME_BY_ENV.DEV);
+  return resolve(PROJECT_ROOT, SQLITE_DEFAULT_FILENAME_BY_ENV.DEV);
 };
 
 const stripFileProtocol = (value: string): string => value.slice(SQLITE_FILE_PROTOCOL.length);
@@ -79,7 +82,7 @@ const normalizeSqliteFilename = (databaseUrl: string): string => {
     return normalizedUrl;
   }
 
-  return resolve(cwd(), normalizedUrl);
+  return resolve(PROJECT_ROOT, normalizedUrl);
 };
 
 const ensureSqliteDirectory = (filename: string): void => {
@@ -102,18 +105,32 @@ const createSqliteDatabase = ({
 
   ensureSqliteDirectory(filename);
 
-  const sqlite = new BetterSqlite3(filename, {
-    readonly,
-    fileMustExist,
-  }) as unknown as SqliteDatabase & {
-    pragma: (command: string) => unknown;
-  };
-
-  for (const pragma of pragmas) {
-    sqlite.pragma(pragma);
+  if (!isMemoryDatabase(filename) && fileMustExist && !existsSync(filename)) {
+    throw new Error(`SQLite database file does not exist: ${filename}`);
   }
 
-  return sqlite;
+  const nativeDatabase = new DatabaseSync(filename, {
+    readOnly: readonly ?? false,
+  });
+
+  for (const pragma of pragmas) {
+    nativeDatabase.exec(`PRAGMA ${pragma}`);
+  }
+
+  return {
+    close: () => nativeDatabase.close(),
+    prepare: (sql): SqliteStatement => {
+      const statement = nativeDatabase.prepare(sql);
+      const asPositional = (parameters: ReadonlyArray<unknown>): unknown[] => [...parameters];
+
+      return {
+        reader: statement.columns().length > 0,
+        all: (parameters) => statement.all(...asPositional(parameters) as []),
+        run: (parameters) => statement.run(...asPositional(parameters) as []),
+        iterate: (parameters) => statement.iterate(...asPositional(parameters) as []),
+      };
+    },
+  };
 };
 
 export const createSqliteAdapter = (
@@ -128,10 +145,10 @@ export const createSqliteAdapter = (
   };
 };
 
-export const createSqliteKysely = (
+export const createSqliteKysely = <TDatabase extends object = FortunaDatabase>(
   options: CreateSqliteAdapterOptions = {},
-): Kysely<FortunaDatabase> => {
+): Kysely<TDatabase> => {
   const { dialect } = createSqliteAdapter(options);
 
-  return new Kysely<FortunaDatabase>({ dialect });
+  return new Kysely<TDatabase>({ dialect });
 };
