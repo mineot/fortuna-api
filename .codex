@@ -416,12 +416,17 @@ Each package may have its own implementation per module:
 - request id propagation (`x-request-id`)
 - standardized error handling (`domain`/`validation`/`internal`)
 - `404` handler
-- temporary auth middleware via `x-user-id` (MVP)
+- JWT authentication middleware via `Authorization: Bearer <token>`
 - standardized HTTP response contract implemented:
 - success envelope `{ data, request_id }`
 - domain error envelope `{ code, message, request_id }`
 - validation error envelope `{ code: 'VALIDATION_ERROR', message, fields, request_id }`
 - validation/parsing utilities implemented for `params`, `query`, and `body`.
+- auth module implemented under `/api/v1/auth`:
+- `POST /auth/login`
+- `POST /auth/refresh`
+- `POST /auth/logout`
+- `GET /auth/me`
 - API modules implemented and wired under `/api/v1`:
 - core registry: `users`, `user-settings`, `account-types`, `accounts`, `category-groups`, `categories`, `payees`
 - movement: `transactions`, `transfers`, `recurring-transactions`
@@ -431,20 +436,46 @@ Each package may have its own implementation per module:
 - purchases do not create direct `transactions`
 - statement payment creates the real financial `transaction`
 - API integration test suite implemented (`@repo/api`):
+- auth flow (`login`, `me`, `refresh`, `logout`) + invalid credential/token scenarios
 - transactions create/list flow
 - transfers create/list flow
 - credit card statement payment reconciliation flow
 - local validation passing for `@repo/api` (`typecheck`, `build`, and test suite).
 - `@repo/api` package documented in English (`packages/api/README.md`).
 
+- Phase 5 completed (`@repo/web`, Angular + API/JWT base):
+- Angular application bootstrap implemented (`main.ts`, standalone app config, routes).
+- package/runtime scripts implemented for env-aware `dev`, `build`, and `typecheck`.
+- environment resolution implemented in `packages/web/scripts/env.mjs`:
+- `FORTUNA_ENV=DEV` defaults for web/api URLs and ports
+- `FORTUNA_ENV=PROD` fail-fast when required vars are missing
+- base HTTP layer implemented:
+- `ApiClientService` with typed `get/post/put/patch/delete`
+- envelope handling for API success/error payloads
+- auth/session base implemented:
+- `AuthSessionService` with bootstrap restore from `sessionStorage`
+- `AuthService` (`login`, `me`, `refresh`, `logout`)
+- routing/auth guards implemented:
+- `AuthGuard` for protected routes
+- `GuestGuard` for login route
+- interceptors implemented:
+- bearer token injection (`Authorization`)
+- centralized `401/403` handling with session clear + redirect to `/login`
+- minimal technical pages implemented for flow validation (`home`, `login`).
+- unit test suite implemented for core auth/session behavior (`@repo/web`).
+- `@repo/web` package documented in English (`packages/web/README.md`).
+- local validation passing for `@repo/web` (`typecheck`, `build`, and test suite).
+
 - ESM compatibility hardening completed for `@repo/shared` and `@repo/database`:
 - relative internal imports/exports normalized with `.js` extension in source to ensure Node ESM runtime resolution from compiled `dist`.
 
 ### Pending
-- Phase 5 start (`@repo/web`): Angular modules and HTTP integration against `/api/v1`.
+- Phase 5.5 start (`@repo/domain`): extract and centralize business rules currently orchestrated in API services into pure domain use-cases/services before CLI expansion.
+- sequence decision: prioritize `@repo/domain` implementation before Phase 6 (`@repo/cli`) to maximize business-rule reuse and reduce future refactor cost.
 - Phase 6 start (`@repo/cli`): local/remote operational command integration.
 - expand `@repo/api` test coverage across all modules and negative-path scenarios.
 - refine/expand `@repo/shared` DTO/schema coverage as web/cli consumers are integrated.
+- align direct `@repo/shared` contract consumption in Angular app compilation (current web auth types remain locally mirrored to avoid TS path-resolution conflicts in app typecheck/build).
 
 ## 17) File Usage Protocol
 Before any task:
