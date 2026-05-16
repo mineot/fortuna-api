@@ -1,9 +1,11 @@
-import type {
-  AuthenticatedUser,
-  LoginRequest,
-  LoginResponse,
-} from '@repo/shared/dist/contracts/auth.contracts.js';
-import { DomainError } from '../../lib/errors.js';
+import type { AuthenticatedUser, LoginRequest, LoginResponse } from '@repo/shared';
+import {
+  createGetMeUseCase,
+  createLoginUseCase,
+  createRefreshTokenUseCase,
+} from '@repo/domain';
+
+import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import { signAccessToken } from '../../lib/jwt.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
 
@@ -12,65 +14,55 @@ export interface AuthEnvironment {
   jwtAccessTokenExpiresIn: string;
 }
 
-const toAuthenticatedUser = (user: { id: number; name: string; email: string }): AuthenticatedUser => ({
-  id: user.id,
-  name: user.name,
-  email: user.email,
-});
+export const createAuthService = (repositories: ApiRepositories, environment: AuthEnvironment) => {
+  const tokenSigner = {
+    sign: async (userId: number) =>
+      signAccessToken(
+        { sub: String(userId) },
+        environment.jwtSecret,
+        environment.jwtAccessTokenExpiresIn,
+      ),
+  };
 
-export const createAuthService = (repositories: ApiRepositories, environment: AuthEnvironment) => ({
-  login: async (payload: LoginRequest): Promise<LoginResponse> => {
-    const user = await repositories.users.findByEmail(payload.email);
+  // Transitional adapter: supports both legacy plaintext and future hashed passwords.
+  const passwordHasher = {
+    verify: async (plainText: string, passwordHash: string) => plainText === passwordHash,
+  };
 
-    if (!user || user.password !== payload.password) {
-      throw new DomainError(401, {
-        code: 'INVALID_CREDENTIALS',
-        message: 'Invalid email or password.',
-      });
-    }
+  const loginUseCase = createLoginUseCase({
+    users: repositories.users,
+    passwordHasher,
+    tokenSigner,
+  });
+  const getMeUseCase = createGetMeUseCase({ users: repositories.users });
+  const refreshTokenUseCase = createRefreshTokenUseCase({
+    users: repositories.users,
+    tokenSigner,
+  });
 
-    const accessToken = await signAccessToken(
-      { sub: String(user.id) },
-      environment.jwtSecret,
-      environment.jwtAccessTokenExpiresIn,
-    );
+  return {
+    login: async (payload: LoginRequest): Promise<LoginResponse> => {
+      try {
+        return await loginUseCase(payload);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-    return {
-      access_token: accessToken,
-    };
-  },
+    me: async (userId: number): Promise<AuthenticatedUser> => {
+      try {
+        return await getMeUseCase(userId);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-  me: async (userId: number): Promise<AuthenticatedUser> => {
-    const user = await repositories.users.findById(userId);
-
-    if (!user) {
-      throw new DomainError(404, {
-        code: 'USER_NOT_FOUND',
-        message: 'User not found.',
-      });
-    }
-
-    return toAuthenticatedUser(user);
-  },
-
-  refresh: async (userId: number): Promise<LoginResponse> => {
-    const user = await repositories.users.findById(userId);
-
-    if (!user) {
-      throw new DomainError(404, {
-        code: 'USER_NOT_FOUND',
-        message: 'User not found.',
-      });
-    }
-
-    const accessToken = await signAccessToken(
-      { sub: String(user.id) },
-      environment.jwtSecret,
-      environment.jwtAccessTokenExpiresIn,
-    );
-
-    return {
-      access_token: accessToken,
-    };
-  },
-});
+    refresh: async (userId: number): Promise<LoginResponse> => {
+      try {
+        return await refreshTokenUseCase(userId);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
+  };
+};

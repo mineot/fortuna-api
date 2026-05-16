@@ -11,7 +11,11 @@ export interface UsersPort {
   create(input: { name: string; email: string; password: string }): Promise<UserRecord>;
   updateById(
     userId: number,
-    input: Partial<{ name: string; email: string; password: string }>,
+    input: {
+      name?: string | undefined;
+      email?: string | undefined;
+      password?: string | undefined;
+    },
   ): Promise<UserRecord | undefined>;
   deleteById(userId: number): Promise<boolean>;
 }

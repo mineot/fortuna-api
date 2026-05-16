@@ -1,85 +1,62 @@
-import type { CreateUserDto, UpdateUserDto, UserResponse, UserUpdate } from '@repo/shared';
+import type { CreateUserDto, UpdateUserDto, UserResponse } from '@repo/shared';
+import {
+  createCreateUserUseCase,
+  createDeleteUserUseCase,
+  createGetUserUseCase,
+  createUpdateUserUseCase,
+} from '@repo/domain';
 
-import { DomainError } from '../../lib/errors.js';
 import { omitUndefined } from '../../lib/object.js';
+import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
 
-const toPublicUser = (user: {
-  id: number;
-  name: string;
-  email: string;
-}): UserResponse => ({
-  id: user.id,
-  name: user.name,
-  email: user.email,
-});
+export const createUsersService = (repositories: ApiRepositories) => {
+  const usersPort = {
+    ...repositories.users,
+    updateById: (
+      userId: number,
+      input: Partial<{ name: string; email: string; password: string }>,
+    ) => repositories.users.updateById(userId, omitUndefined(input)),
+  };
 
-export const createUsersService = (repositories: ApiRepositories) => ({
-  create: async (payload: CreateUserDto): Promise<UserResponse> => {
-    const existingUser = await repositories.users.findByEmail(payload.email);
+  const createUserUseCase = createCreateUserUseCase({ users: usersPort });
+  const getUserUseCase = createGetUserUseCase({ users: usersPort });
+  const updateUserUseCase = createUpdateUserUseCase({ users: usersPort });
+  const deleteUserUseCase = createDeleteUserUseCase({ users: usersPort });
 
-    if (existingUser) {
-      throw new DomainError(409, {
-        code: 'USER_EMAIL_CONFLICT',
-        message: 'User email is already in use.',
-      });
-    }
-
-    const user = await repositories.users.create(payload);
-
-    return toPublicUser(user);
-  },
-
-  findById: async (userId: number): Promise<UserResponse> => {
-    const user = await repositories.users.findById(userId);
-
-    if (!user) {
-      throw new DomainError(404, {
-        code: 'USER_NOT_FOUND',
-        message: 'User not found.',
-      });
-    }
-
-    return toPublicUser(user);
-  },
-
-  updateById: async (userId: number, payload: UpdateUserDto): Promise<UserResponse> => {
-    if (payload.email) {
-      const existingUser = await repositories.users.findByEmail(payload.email);
-
-      if (existingUser && existingUser.id !== userId) {
-        throw new DomainError(409, {
-          code: 'USER_EMAIL_CONFLICT',
-          message: 'User email is already in use.',
-        });
+  return {
+    create: async (payload: CreateUserDto): Promise<UserResponse> => {
+      try {
+        return await createUserUseCase(payload);
+      } catch (error) {
+        return mapDomainError(error);
       }
-    }
+    },
 
-    const user = await repositories.users.updateById(
-      userId,
-      omitUndefined(payload) as UserUpdate,
-    );
+    findById: async (userId: number): Promise<UserResponse> => {
+      try {
+        return await getUserUseCase(userId);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-    if (!user) {
-      throw new DomainError(404, {
-        code: 'USER_NOT_FOUND',
-        message: 'User not found.',
-      });
-    }
+    updateById: async (userId: number, payload: UpdateUserDto): Promise<UserResponse> => {
+      try {
+        return await updateUserUseCase(userId, omitUndefined(payload));
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-    return toPublicUser(user);
-  },
-
-  deleteById: async (userId: number): Promise<void> => {
-    const deleted = await repositories.users.deleteById(userId);
-
-    if (!deleted) {
-      throw new DomainError(404, {
-        code: 'USER_NOT_FOUND',
-        message: 'User not found.',
-      });
-    }
-  },
-});
+    deleteById: async (userId: number): Promise<void> => {
+      try {
+        await deleteUserUseCase(userId);
+      } catch (error) {
+        mapDomainError(error);
+      }
+    },
+  };
+};
 
 export type UsersService = ReturnType<typeof createUsersService>;

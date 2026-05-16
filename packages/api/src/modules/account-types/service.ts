@@ -1,91 +1,76 @@
-import type {
-  AccountTypeUpdate,
-  AccountTypeResponse,
-  CreateAccountTypeDto,
-  UpdateAccountTypeDto,
-} from '@repo/shared';
+import type { AccountTypeResponse, CreateAccountTypeDto, UpdateAccountTypeDto } from '@repo/shared';
+import {
+  createCreateAccountTypeUseCase,
+  createDeleteAccountTypeUseCase,
+  createGetAccountTypeUseCase,
+  createListAccountTypesUseCase,
+  createUpdateAccountTypeUseCase,
+} from '@repo/domain';
 
-import { DomainError } from '../../lib/errors.js';
 import { omitUndefined } from '../../lib/object.js';
+import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
 
-const normalizeAccountTypeName = (name: string): string => name.trim().toLowerCase();
+export const createAccountTypesService = (repositories: ApiRepositories) => {
+  const accountTypesPort = {
+    ...repositories.accountTypes,
+    updateById: (id: number, input: Partial<{ name: string }>) =>
+      repositories.accountTypes.updateById(id, omitUndefined(input)),
+  };
 
-export const createAccountTypesService = (repositories: ApiRepositories) => ({
-  create: async (payload: CreateAccountTypeDto): Promise<AccountTypeResponse> => {
-    const existingTypes = await repositories.accountTypes.list();
+  const createAccountTypeUseCase = createCreateAccountTypeUseCase({
+    accountTypes: accountTypesPort,
+  });
+  const getAccountTypeUseCase = createGetAccountTypeUseCase({
+    accountTypes: accountTypesPort,
+  });
+  const listAccountTypesUseCase = createListAccountTypesUseCase({
+    accountTypes: accountTypesPort,
+  });
+  const updateAccountTypeUseCase = createUpdateAccountTypeUseCase({
+    accountTypes: accountTypesPort,
+  });
+  const deleteAccountTypeUseCase = createDeleteAccountTypeUseCase({
+    accountTypes: accountTypesPort,
+  });
 
-    if (
-      existingTypes.some((type) => normalizeAccountTypeName(type.name) === normalizeAccountTypeName(payload.name))
-    ) {
-      throw new DomainError(409, {
-        code: 'ACCOUNT_TYPE_CONFLICT',
-        message: 'Account type already exists.',
-      });
-    }
-
-    return repositories.accountTypes.create(payload);
-  },
-
-  findById: async (id: number): Promise<AccountTypeResponse> => {
-    const accountType = await repositories.accountTypes.findById(id);
-
-    if (!accountType) {
-      throw new DomainError(404, {
-        code: 'ACCOUNT_TYPE_NOT_FOUND',
-        message: 'Account type not found.',
-      });
-    }
-
-    return accountType;
-  },
-
-  list: async (): Promise<AccountTypeResponse[]> => {
-    return repositories.accountTypes.list();
-  },
-
-  updateById: async (id: number, payload: UpdateAccountTypeDto): Promise<AccountTypeResponse> => {
-    const normalizedPayload = omitUndefined(payload) as AccountTypeUpdate;
-
-    if (normalizedPayload.name) {
-      const nextName = normalizedPayload.name;
-      const existingTypes = await repositories.accountTypes.list();
-
-      if (
-        existingTypes.some(
-          (type) =>
-            type.id !== id && normalizeAccountTypeName(type.name) === normalizeAccountTypeName(nextName),
-        )
-      ) {
-        throw new DomainError(409, {
-          code: 'ACCOUNT_TYPE_CONFLICT',
-          message: 'Account type already exists.',
-        });
+  return {
+    create: async (payload: CreateAccountTypeDto): Promise<AccountTypeResponse> => {
+      try {
+        return await createAccountTypeUseCase(payload);
+      } catch (error) {
+        return mapDomainError(error);
       }
-    }
+    },
 
-    const accountType = await repositories.accountTypes.updateById(id, normalizedPayload);
+    findById: async (id: number): Promise<AccountTypeResponse> => {
+      try {
+        return await getAccountTypeUseCase(id);
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-    if (!accountType) {
-      throw new DomainError(404, {
-        code: 'ACCOUNT_TYPE_NOT_FOUND',
-        message: 'Account type not found.',
-      });
-    }
+    list: async (): Promise<AccountTypeResponse[]> => {
+      return listAccountTypesUseCase();
+    },
 
-    return accountType;
-  },
+    updateById: async (id: number, payload: UpdateAccountTypeDto): Promise<AccountTypeResponse> => {
+      try {
+        return await updateAccountTypeUseCase(id, omitUndefined(payload));
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-  deleteById: async (id: number): Promise<void> => {
-    const deleted = await repositories.accountTypes.deleteById(id);
-
-    if (!deleted) {
-      throw new DomainError(404, {
-        code: 'ACCOUNT_TYPE_NOT_FOUND',
-        message: 'Account type not found.',
-      });
-    }
-  },
-});
+    deleteById: async (id: number): Promise<void> => {
+      try {
+        await deleteAccountTypeUseCase(id);
+      } catch (error) {
+        mapDomainError(error);
+      }
+    },
+  };
+};
 
 export type AccountTypesService = ReturnType<typeof createAccountTypesService>;
