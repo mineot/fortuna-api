@@ -354,7 +354,7 @@ Each package may have its own implementation per module:
 ## 14) Guidelines
 - By default, do not implement changes. Provide guidance and show how to implement them. Only implement when the user explicitly asks for implementation.
 - If a requirement is missing from this file, or conflicts with this file, do not decide autonomously. Ask the user what should be done before proceeding.
-- Package builds for `@repo/shared` and `@repo/database` should use standard TypeScript compilation (`tsc`) without JS minification. Prefer build mode with force rebuild for deterministic project-reference outputs.
+- Package builds for `@repo/shared`, `@repo/database`, and `@repo/api` should use standard TypeScript compilation (`tsc`) without JS minification. Prefer build mode with force rebuild for deterministic project-reference outputs.
 
 ## 15) Bootstrap Notes (Applied Adjustments)
 - Root dev dependency: `typescript` is required in workspace root `package.json`.
@@ -371,6 +371,7 @@ Each package may have its own implementation per module:
 - Build strategy currently in use:
 1. `@repo/shared`: `tsc -b tsconfig.json --force`
 2. `@repo/database`: `tsc -b tsconfig.json --force`
+3. `@repo/api`: `tsc -b tsconfig.json --force`
 
 ## 16) Current Status (Implemented So Far)
 ### Completed

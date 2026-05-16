@@ -6,11 +6,23 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -b tsconfig.json --force",
     "dev": "tsc -p tsconfig.json --watch --preserveWatchOutput",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node --env-file=../../.env dist/server.js",
     "lint": "echo \"No lint configured for @repo/api yet\"",
     "test": "echo \"No tests configured for @repo/api yet\"",
     "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.0.2",
+    "@hono/zod-validator": "^0.8.0",
+    "@repo/database": "workspace:^",
+    "@repo/shared": "workspace:^",
+    "hono": "^4.12.19",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.7.0"
   }
 }
