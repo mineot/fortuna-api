@@ -12,7 +12,7 @@
     "migrate": "tsx src/migrations/index.ts",
     "seed": "tsx src/seeds/index.ts",
     "lint": "echo \"No lint configured for @repo/database yet\"",
-    "test": "echo \"No tests configured for @repo/database yet\"",
+    "test": "tsx --test test/**/*.test.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {
