@@ -12,6 +12,8 @@ export interface TestContext {
   app: ReturnType<typeof createApp>;
   dbPath: string;
   userId: number;
+  userEmail: string;
+  userPassword: string;
   authHeader: string;
   cleanup: () => Promise<void>;
 }
@@ -38,13 +40,15 @@ export const setupTestContext = async (): Promise<TestContext> => {
   await reconcileMigrations({ databaseUrl: dbPath });
 
   const db = createSqliteKysely<FortunaDatabase>({ databaseUrl: dbPath });
+  const userEmail = `test+${Date.now()}@fortuna.local`;
+  const userPassword = 'test-password-hash';
 
   const user = await db
     .insertInto('users')
     .values({
       name: 'Test User',
-      email: `test+${Date.now()}@fortuna.local`,
-      password: 'test-password-hash',
+      email: userEmail,
+      password: userPassword,
     })
     .returning('id')
     .executeTakeFirstOrThrow();
@@ -63,6 +67,8 @@ export const setupTestContext = async (): Promise<TestContext> => {
     app,
     dbPath,
     userId: user.id,
+    userEmail,
+    userPassword,
     authHeader: `Bearer ${accessToken}`,
     cleanup: async () => {
       await rm(tempDir, { recursive: true, force: true });
