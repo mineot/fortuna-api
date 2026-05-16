@@ -7,7 +7,7 @@ export class AuthSessionService {
 
   setAccessToken(token: string): void {
     this.accessToken = token.trim();
-    sessionStorage.setItem(AuthSessionService.ACCESS_TOKEN_KEY, this.accessToken);
+    this.getStorage()?.setItem(AuthSessionService.ACCESS_TOKEN_KEY, this.accessToken);
   }
 
   getAccessToken(): string | null {
@@ -16,7 +16,7 @@ export class AuthSessionService {
 
   clear(): void {
     this.accessToken = null;
-    sessionStorage.removeItem(AuthSessionService.ACCESS_TOKEN_KEY);
+    this.getStorage()?.removeItem(AuthSessionService.ACCESS_TOKEN_KEY);
   }
 
   isAuthenticated(): boolean {
@@ -24,12 +24,20 @@ export class AuthSessionService {
   }
 
   initializeFromStorage(): void {
-    const savedToken = sessionStorage.getItem(AuthSessionService.ACCESS_TOKEN_KEY);
+    const savedToken = this.getStorage()?.getItem(AuthSessionService.ACCESS_TOKEN_KEY);
 
     if (!savedToken) {
       return;
     }
 
     this.accessToken = savedToken;
+  }
+
+  private getStorage(): Storage | null {
+    if (typeof window === 'undefined' || !window.sessionStorage) {
+      return null;
+    }
+
+    return window.sessionStorage;
   }
 }

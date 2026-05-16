@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, finalize, tap } from 'rxjs';
 
 import { ApiClientService } from '../http/api-client.service.js';
 import type { AuthenticatedUser, LoginRequest, LoginResponse } from './auth.types.js';
@@ -30,7 +30,7 @@ export class AuthService {
 
   logout(): Observable<void> {
     return this.apiClient.post<Record<string, never>, void>('/auth/logout', {}).pipe(
-      tap(() => {
+      finalize(() => {
         this.session.clear();
       }),
     );
