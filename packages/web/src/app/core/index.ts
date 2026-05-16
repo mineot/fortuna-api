@@ -1,5 +1,7 @@
 export * from './config/app-env.js';
 export * from './auth/auth-session.service.js';
+export * from './auth/auth.service.js';
+export * from './auth/auth.types.js';
 export * from './guards/auth.guard.js';
 export * from './guards/guest.guard.js';
 export * from './http/api-client.service.js';
