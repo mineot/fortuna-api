@@ -6,7 +6,7 @@
   "main": "dist/shared.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format esm --sourcemap --minify --clean && mv dist/index.js dist/shared.js && mv dist/index.js.map dist/shared.js.map && tsc -p tsconfig.json --emitDeclarationOnly",
+    "build": "tsup src/index.ts --format esm --sourcemap --minify --clean && mv dist/index.js dist/shared.js && mv dist/index.js.map dist/shared.js.map && tsc -b tsconfig.json --emitDeclarationOnly --force",
     "dev": "tsup src/index.ts --format esm --dts --sourcemap --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"No lint configured for @repo/shared yet\"",

@@ -361,6 +361,10 @@ Each package may have its own implementation per module:
 - In pnpm workspaces, adding root dependencies must be explicit: use `pnpm add -Dw <pkg>`.
 - TypeScript 6 deprecation handling: keep `baseUrl` for current alias strategy, and set `"ignoreDeprecations": "6.0"` in `tsconfig.base.json`.
 - Non-interactive environments with `nvm` may not load `pnpm`/`node` automatically; if needed, prepend this path to `PATH` before running workspace commands: `/home/mineot/.nvm/versions/node/v24.15.0/bin` (example: `export PATH=/home/mineot/.nvm/versions/node/v24.15.0/bin:$PATH`).
+- SQLite `.env` resolution rule (implemented in `@repo/database` adapter):
+1. `FORTUNA_ENV=DEV` -> database file is created/used at project root as `./dev.db` (must stay gitignored).
+2. `FORTUNA_ENV=PROD` -> first try `FORTUNA_DB` (must be a valid file path including filename).
+3. If `FORTUNA_ENV=PROD` and `FORTUNA_DB` is missing/invalid -> fallback path is `~/.fortuna/fortuna.db`.
 - Initial setup sequence after cloning:
 1. `pnpm install`
 2. `pnpm build`
