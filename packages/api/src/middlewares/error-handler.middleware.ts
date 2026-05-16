@@ -1,23 +1,22 @@
 import type { ErrorHandler } from 'hono';
 
 import { DomainError, ValidationError } from '../lib/errors.js';
+import { jsonDomainError, jsonValidationError } from '../lib/response.js';
 
 export const errorHandler: ErrorHandler = (error, context) => {
   if (error instanceof ValidationError) {
-    return context.json(error.payload, 400);
+    return jsonValidationError(context, error.payload);
   }
 
   if (error instanceof DomainError) {
-    return context.json(error.toPayload(), error.status);
+    return jsonDomainError(context, error.toPayload(), error.status);
   }
 
-  const requestId = context.get('requestId');
-
-  return context.json(
+  return jsonDomainError(
+    context,
     {
       code: 'INTERNAL_SERVER_ERROR',
       message: 'Unexpected server error.',
-      request_id: requestId,
     },
     500,
   );

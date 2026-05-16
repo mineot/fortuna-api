@@ -10,3 +10,6 @@ export * from './middlewares/auth-user.middleware.js';
 export * from './middlewares/error-handler.middleware.js';
 export * from './middlewares/not-found.middleware.js';
 export * from './middlewares/request-id.middleware.js';
+
+export * from './validators/common.validators.js';
+export * from './validators/query.validators.js';
