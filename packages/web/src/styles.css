@@ -1,0 +1,12 @@
+:root {
+  color-scheme: light;
+  font-family: sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
