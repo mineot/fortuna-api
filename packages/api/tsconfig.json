@@ -6,5 +6,5 @@
     "types": ["node"]
   },
   "include": ["src/**/*"],
-  "references": [{ "path": "../shared" }, { "path": "../database" }]
+  "references": [{ "path": "../shared" }, { "path": "../domain" }, { "path": "../database" }]
 }

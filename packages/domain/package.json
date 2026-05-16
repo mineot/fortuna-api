@@ -12,5 +12,8 @@
     "lint": "echo \"No lint configured for @repo/domain yet\"",
     "test": "echo \"No tests configured for @repo/domain yet\"",
     "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@repo/shared": "workspace:^"
   }
 }
