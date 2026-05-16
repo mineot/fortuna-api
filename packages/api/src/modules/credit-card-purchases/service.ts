@@ -4,9 +4,11 @@ import type {
   CreditCardPurchaseUpdate,
   UpdateCreditCardPurchaseDto,
 } from '@repo/shared';
-import { createCreatePurchaseWithInstallmentsUseCase } from '@repo/domain';
+import {
+  createCreatePurchaseWithInstallmentsUseCase,
+  createCreditCardPurchasesUseCases,
+} from '@repo/domain';
 
-import { DomainError } from '../../lib/errors.js';
 import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import { omitUndefined } from '../../lib/object.js';
 import { getOffsetFromPagination, toPaginatedResponse, type PaginationInput } from '../../lib/pagination.js';
@@ -32,6 +34,7 @@ export interface CreatePurchaseWithInstallmentsPayload extends CreateCreditCardP
 }
 
 export const createCreditCardPurchasesService = (repositories: ApiRepositories) => {
+  const purchasesUseCases = createCreditCardPurchasesUseCases(repositories.creditCardPurchases);
   const createPurchaseWithInstallmentsUseCase = createCreatePurchaseWithInstallmentsUseCase({
     creditCards: {
       createPurchaseWithInstallments: repositories.creditCardPurchases.createWithInstallments,
@@ -43,13 +46,12 @@ export const createCreditCardPurchasesService = (repositories: ApiRepositories) 
     create: async (
       creditCardId: number,
       payload: CreateCreditCardPurchasePayload,
-    ): Promise<CreditCardPurchaseResponse> => {
-      return repositories.creditCardPurchases.create({
+    ): Promise<CreditCardPurchaseResponse> =>
+      purchasesUseCases.create({
         credit_card_id: creditCardId,
         ...payload,
         payee_id: payload.payee_id ?? null,
-      });
-    },
+      }),
 
     createWithInstallments: async (
       userId: number,
@@ -81,20 +83,15 @@ export const createCreditCardPurchasesService = (repositories: ApiRepositories) 
     },
 
     findById: async (userId: number, purchaseId: number): Promise<CreditCardPurchaseResponse> => {
-      const purchase = await repositories.creditCardPurchases.findById(userId, purchaseId);
-
-      if (!purchase) {
-        throw new DomainError(404, {
-          code: 'CREDIT_CARD_PURCHASE_NOT_FOUND',
-          message: 'Credit card purchase not found.',
-        });
+      try {
+        return await purchasesUseCases.findById(userId, purchaseId);
+      } catch (error) {
+        return mapDomainError(error);
       }
-
-      return purchase;
     },
 
     listByCard: async (userId: number, creditCardId: number, query: CreditCardPurchasesListQuery) => {
-      const data = await repositories.creditCardPurchases.listByCard(userId, creditCardId, {
+      const data = await purchasesUseCases.listByCard(userId, creditCardId, {
         limit: query.page_size,
         offset: getOffsetFromPagination(query),
         ...(query.category_id !== undefined ? { categoryId: query.category_id } : {}),
@@ -111,30 +108,22 @@ export const createCreditCardPurchasesService = (repositories: ApiRepositories) 
       purchaseId: number,
       payload: UpdateCreditCardPurchasePayload,
     ): Promise<CreditCardPurchaseResponse> => {
-      const purchase = await repositories.creditCardPurchases.updateById(
-        userId,
-        purchaseId,
-        omitUndefined(payload) as CreditCardPurchaseUpdate,
-      );
-
-      if (!purchase) {
-        throw new DomainError(404, {
-          code: 'CREDIT_CARD_PURCHASE_NOT_FOUND',
-          message: 'Credit card purchase not found.',
-        });
+      try {
+        return await purchasesUseCases.updateById(
+          userId,
+          purchaseId,
+          omitUndefined(payload) as CreditCardPurchaseUpdate,
+        );
+      } catch (error) {
+        return mapDomainError(error);
       }
-
-      return purchase;
     },
 
     deleteById: async (userId: number, purchaseId: number): Promise<void> => {
-      const deleted = await repositories.creditCardPurchases.deleteById(userId, purchaseId);
-
-      if (!deleted) {
-        throw new DomainError(404, {
-          code: 'CREDIT_CARD_PURCHASE_NOT_FOUND',
-          message: 'Credit card purchase not found.',
-        });
+      try {
+        await purchasesUseCases.deleteById(userId, purchaseId);
+      } catch (error) {
+        return mapDomainError(error);
       }
     },
   };

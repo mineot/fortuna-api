@@ -47,3 +47,7 @@ export * from './modules/credit-card-statement-payments/ports.js';
 export * from './modules/credit-card-statement-payments/usecases/credit-card-statement-payments.usecases.js';
 export * from './modules/reports/ports.js';
 export * from './modules/reports/usecases/reports.usecases.js';
+export * from './modules/credit-card-statements/ports.js';
+export * from './modules/credit-card-statements/usecases/credit-card-statements.usecases.js';
+export * from './modules/credit-card-purchases/ports.js';
+export * from './modules/credit-card-purchases/usecases/credit-card-purchases.usecases.js';
