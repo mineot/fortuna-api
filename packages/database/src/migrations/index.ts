@@ -10,9 +10,23 @@ const parseTargetVersionArg = (): string | undefined => {
   return targetArg.slice('--target='.length).trim() || undefined;
 };
 
+const parseDatabaseUrlArg = (): string | undefined => {
+  const databaseUrlArg = process.argv.find((arg) => arg.startsWith('--database-url='));
+
+  if (!databaseUrlArg) {
+    return undefined;
+  }
+
+  return databaseUrlArg.slice('--database-url='.length).trim() || undefined;
+};
+
 const command = process.argv[2] === 'status' ? 'status' : 'reconcile';
 const targetVersion = parseTargetVersionArg();
-const options = targetVersion ? { targetVersion } : {};
+const databaseUrl = parseDatabaseUrlArg();
+const options = {
+  ...(targetVersion ? { targetVersion } : {}),
+  ...(databaseUrl ? { databaseUrl } : {}),
+};
 
 if (command === 'status') {
   const status = await getMigrationStatus(options);

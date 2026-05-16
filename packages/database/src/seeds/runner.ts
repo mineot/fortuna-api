@@ -7,6 +7,7 @@ import { DEFAULT_ACCOUNT_TYPES, DEFAULT_CATEGORY_GROUPS } from './templates';
 export type SeedMode = 'all' | 'account-types' | 'categories';
 
 export interface SeedOptions {
+  databaseUrl?: string;
   mode?: SeedMode;
   userId?: number;
 }
@@ -160,7 +161,9 @@ const resolveMode = (mode: SeedMode | undefined): SeedMode => mode ?? 'all';
 
 export const runSeeds = async (options: SeedOptions = {}): Promise<SeedReport> => {
   const mode = resolveMode(options.mode);
-  const db = createSqliteKysely<FortunaDatabase>();
+  const db = createSqliteKysely<FortunaDatabase>(
+    options.databaseUrl ? { databaseUrl: options.databaseUrl } : {},
+  );
 
   try {
     let accountTypesInserted = 0;

@@ -101,19 +101,21 @@ export const createReportsRepository = (db: Kysely<FortunaDatabase>): ReportsRep
 
       const transfersInQuery = applyDateRangeOnTransfers(
         db
-          .selectFrom('transfers')
+          .selectFrom('transfers as t')
+          .innerJoin('accounts as a', 'a.id', 't.destination_account_id')
           .select((eb) => eb.fn.coalesce(eb.fn.sum<number>('amount'), sql.lit(0)).as('total'))
-          .where('user_id', '=', userId)
-          .where('status', '=', 'confirmed'),
+          .where('a.user_id', '=', userId)
+          .where('t.status', '=', 'confirmed'),
         filter,
       );
 
       const transfersOutQuery = applyDateRangeOnTransfers(
         db
-          .selectFrom('transfers')
+          .selectFrom('transfers as t')
+          .innerJoin('accounts as a', 'a.id', 't.source_account_id')
           .select((eb) => eb.fn.coalesce(eb.fn.sum<number>('amount'), sql.lit(0)).as('total'))
-          .where('user_id', '=', userId)
-          .where('status', '=', 'confirmed'),
+          .where('a.user_id', '=', userId)
+          .where('t.status', '=', 'confirmed'),
         filter,
       );
 

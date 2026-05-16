@@ -10,7 +10,10 @@
     "dev": "tsc -p tsconfig.json --watch --preserveWatchOutput",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "migrate": "tsx src/migrations/index.ts",
+    "migrate:status": "tsx src/migrations/index.ts status",
     "seed": "tsx src/seeds/index.ts",
+    "seed:account-types": "tsx src/seeds/index.ts account-types",
+    "seed:categories": "tsx src/seeds/index.ts categories",
     "lint": "echo \"No lint configured for @repo/database yet\"",
     "test": "tsx --test test/**/*.test.ts",
     "clean": "rm -rf dist"

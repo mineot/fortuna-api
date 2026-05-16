@@ -34,10 +34,25 @@ const parseUserId = (): number | undefined => {
   return parsedUserId;
 };
 
+const parseDatabaseUrl = (): string | undefined => {
+  const databaseUrlArg = process.argv.find((arg) => arg.startsWith('--database-url='));
+
+  if (!databaseUrlArg) {
+    return undefined;
+  }
+
+  return databaseUrlArg.slice('--database-url='.length).trim() || undefined;
+};
+
 const mode = parseMode();
 const userId = parseUserId();
+const databaseUrl = parseDatabaseUrl();
 
-const report = await runSeeds(userId ? { mode, userId } : { mode });
+const report = await runSeeds({
+  mode,
+  ...(userId ? { userId } : {}),
+  ...(databaseUrl ? { databaseUrl } : {}),
+});
 
 console.log(`mode=${report.mode}`);
 console.log(`account_types_inserted=${report.accountTypesInserted}`);

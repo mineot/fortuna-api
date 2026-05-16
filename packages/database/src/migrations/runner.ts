@@ -99,13 +99,16 @@ const resolveTargetMigrations = (
 };
 
 export interface ReconcileMigrationsOptions {
+  databaseUrl?: string;
   targetVersion?: string;
 }
 
 export const reconcileMigrations = async (
   options: ReconcileMigrationsOptions = {},
 ): Promise<MigrationReconcileReport> => {
-  const db = createSqliteKysely<MigrationDatabase>();
+  const db = createSqliteKysely<MigrationDatabase>(
+    options.databaseUrl ? { databaseUrl: options.databaseUrl } : {},
+  );
 
   try {
     const targetVersion = options.targetVersion ?? (await readAppVersion());
@@ -177,7 +180,9 @@ export interface MigrationStatus {
 export const getMigrationStatus = async (
   options: ReconcileMigrationsOptions = {},
 ): Promise<MigrationStatus> => {
-  const db = createSqliteKysely<MigrationDatabase>();
+  const db = createSqliteKysely<MigrationDatabase>(
+    options.databaseUrl ? { databaseUrl: options.databaseUrl } : {},
+  );
 
   try {
     const targetVersion = options.targetVersion ?? (await readAppVersion());

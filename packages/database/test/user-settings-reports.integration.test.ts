@@ -266,6 +266,8 @@ describe('User settings and reports repositories', () => {
     assert.equal(summary.incomeTotal, 5_000);
     assert.equal(summary.expenseTotal, 21_000);
     assert.equal(summary.netFlow, -16_000);
+    assert.equal(summary.confirmedTransfersIn, 400);
+    assert.equal(summary.confirmedTransfersOut, 400);
 
     const balances = await reports.getAccountBalancesByUser(user.id);
     const mainBalance = balances.find((item) => item.accountId === account.id);
