@@ -3,10 +3,10 @@ import { fileURLToPath } from 'node:url';
 
 import type { Kysely } from 'kysely';
 
-import { createSqliteKysely } from '../adapters';
-import { compareSemver } from './semver';
-import { versionedMigrations } from './registry';
-import type { MigrationDatabase, MigrationReconcileReport, VersionedMigration } from './types';
+import { createSqliteKysely } from '../adapters/index.js';
+import { compareSemver } from './semver.js';
+import { versionedMigrations } from './registry.js';
+import type { MigrationDatabase, MigrationReconcileReport, VersionedMigration } from './types.js';
 
 const PACKAGE_JSON_URL = new URL('../../../../package.json', import.meta.url);
 

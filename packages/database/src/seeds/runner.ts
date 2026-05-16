@@ -1,8 +1,8 @@
 import type { Database as FortunaDatabase, TransactionType } from '@repo/shared';
 import type { Kysely, Transaction } from 'kysely';
 
-import { createSqliteKysely } from '../adapters';
-import { DEFAULT_ACCOUNT_TYPES, DEFAULT_CATEGORY_GROUPS } from './templates';
+import { createSqliteKysely } from '../adapters/index.js';
+import { DEFAULT_ACCOUNT_TYPES, DEFAULT_CATEGORY_GROUPS } from './templates.js';
 
 export type SeedMode = 'all' | 'account-types' | 'categories';
 

@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import { paginationSchema } from '../schemas/common.schemas';
+import { paginationSchema } from '../schemas/common.schemas.js';
 
 import type {
   accountSchema,
@@ -17,7 +17,7 @@ import type {
   transferSchema,
   publicUserSchema,
   userSettingsSchema,
-} from '../schemas/finance.schemas';
+} from '../schemas/finance.schemas.js';
 
 export interface PaginatedResponse<T> {
   data: T[];

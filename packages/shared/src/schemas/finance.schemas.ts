@@ -6,7 +6,7 @@ import {
   RECURRENCE_TYPES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
-} from '../constants/finance.constants';
+} from '../constants/finance.constants.js';
 
 import {
   booleanIntSchema,
@@ -14,7 +14,7 @@ import {
   isoDateSchema,
   optionalNoteSchema,
   positiveMoneyCentsSchema,
-} from './common.schemas';
+} from './common.schemas.js';
 
 export const userSchema = z.object({
   id: idSchema,

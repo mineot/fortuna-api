@@ -1,4 +1,4 @@
-import { runSeeds, type SeedMode } from './runner';
+import { runSeeds, type SeedMode } from './runner.js';
 
 const SUPPORTED_SEED_MODES: readonly SeedMode[] = ['all', 'account-types', 'categories'];
 

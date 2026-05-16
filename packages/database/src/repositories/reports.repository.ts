@@ -1,7 +1,7 @@
 import type { CreditCardStatementStatus, Database as FortunaDatabase } from '@repo/shared';
 import { sql, type Kysely } from 'kysely';
 
-import { toNumber } from './utils';
+import { toNumber } from './utils.js';
 
 export interface PeriodFilter {
   dateFrom?: string;

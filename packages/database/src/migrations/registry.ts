@@ -7,7 +7,7 @@ import {
 } from '@repo/shared';
 import { expressionBuilder, sql } from 'kysely';
 
-import type { MigrationDatabase, VersionedMigration } from './types';
+import type { MigrationDatabase, VersionedMigration } from './types.js';
 
 const BOOLEAN_INT_VALUES = [0, 1] as const;
 

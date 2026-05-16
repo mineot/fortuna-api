@@ -9,7 +9,7 @@ import type {
   RecurrenceType,
   TransactionStatus,
   TransactionType,
-} from '../types/finance.types';
+} from '../types/finance.types.js';
 
 export interface BaseTable {
   id: Generated<number>;

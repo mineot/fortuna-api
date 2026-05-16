@@ -10,7 +10,7 @@ import type {
 } from '@repo/shared';
 import { sql, type Kysely } from 'kysely';
 
-import { hasPatchValues, toNumber } from './utils';
+import { hasPatchValues, toNumber } from './utils.js';
 
 export interface CreditCardStatementListFilters {
   status?: CreditCardStatementStatus;

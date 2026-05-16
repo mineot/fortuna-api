@@ -1,4 +1,4 @@
-import { getMigrationStatus, reconcileMigrations } from './runner';
+import { getMigrationStatus, reconcileMigrations } from './runner.js';
 
 const parseTargetVersionArg = (): string | undefined => {
   const targetArg = process.argv.find((arg) => arg.startsWith('--target='));

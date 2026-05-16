@@ -31,7 +31,7 @@ import {
   updateTransferSchema,
   updateUserSchema,
   updateUserSettingsSchema,
-} from '../schemas/finance.schemas';
+} from '../schemas/finance.schemas.js';
 
 export type CreateUserDto = z.infer<typeof createUserSchema>;
 export type UpdateUserDto = z.infer<typeof updateUserSchema>;

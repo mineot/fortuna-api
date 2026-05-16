@@ -8,7 +8,7 @@ import type {
 } from '@repo/shared';
 import type { Kysely } from 'kysely';
 
-import { hasPatchValues, toNumber } from './utils';
+import { hasPatchValues, toNumber } from './utils.js';
 
 export interface CreditCardPurchaseListFilters {
   categoryId?: number;

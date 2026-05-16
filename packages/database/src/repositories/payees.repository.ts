@@ -1,7 +1,7 @@
 import type { Database as FortunaDatabase, NewPayee, Payee, PayeeUpdate } from '@repo/shared';
 import type { Kysely } from 'kysely';
 
-import { hasPatchValues, toNumber } from './utils';
+import { hasPatchValues, toNumber } from './utils.js';
 
 export interface PayeeListFilters {
   search?: string;
