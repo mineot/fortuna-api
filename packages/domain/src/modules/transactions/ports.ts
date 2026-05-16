@@ -1,3 +1,5 @@
+import type { TransactionResponse } from '@repo/shared';
+
 export interface TransactionCreateInput {
   user_id: number;
   account_id: number;
@@ -12,5 +14,5 @@ export interface TransactionCreateInput {
 }
 
 export interface TransactionsPort {
-  create(input: TransactionCreateInput): Promise<unknown>;
+  create(input: TransactionCreateInput): Promise<TransactionResponse>;
 }

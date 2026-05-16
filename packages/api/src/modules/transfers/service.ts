@@ -5,8 +5,10 @@ import type {
   TransferUpdate,
   UpdateTransferDto,
 } from '@repo/shared';
+import { createCreateTransferUseCase } from '@repo/domain';
 
 import { DomainError } from '../../lib/errors.js';
+import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import { omitUndefined } from '../../lib/object.js';
 import { getOffsetFromPagination, toPaginatedResponse, type PaginationInput } from '../../lib/pagination.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
@@ -22,77 +24,87 @@ export interface TransfersListQuery extends PaginationInput {
 type CreateTransferPayload = Omit<CreateTransferDto, 'user_id'>;
 type UpdateTransferPayload = Omit<UpdateTransferDto, 'user_id'>;
 
-export const createTransfersService = (repositories: ApiRepositories) => ({
-  create: async (userId: number, payload: CreateTransferPayload): Promise<TransferResponse> => {
-    return repositories.transfers.create({
-      user_id: userId,
-      ...payload,
-      description: payload.description ?? null,
-    });
-  },
+export const createTransfersService = (repositories: ApiRepositories) => {
+  const createTransferUseCase = createCreateTransferUseCase({
+    transfers: repositories.transfers,
+  });
 
-  findById: async (userId: number, transferId: number): Promise<TransferResponse> => {
-    const transfer = await repositories.transfers.findById(userId, transferId);
+  return {
+    create: async (userId: number, payload: CreateTransferPayload): Promise<TransferResponse> => {
+      try {
+        return await createTransferUseCase({
+          user_id: userId,
+          ...payload,
+          description: payload.description ?? null,
+        });
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-    if (!transfer) {
-      throw new DomainError(404, {
-        code: 'TRANSFER_NOT_FOUND',
-        message: 'Transfer not found.',
-      });
-    }
+    findById: async (userId: number, transferId: number): Promise<TransferResponse> => {
+      const transfer = await repositories.transfers.findById(userId, transferId);
 
-    return transfer;
-  },
+      if (!transfer) {
+        throw new DomainError(404, {
+          code: 'TRANSFER_NOT_FOUND',
+          message: 'Transfer not found.',
+        });
+      }
 
-  listByUser: async (userId: number, query: TransfersListQuery) => {
-    const filters = {
-      limit: query.page_size,
-      offset: getOffsetFromPagination(query),
-      ...(query.source_account_id !== undefined ? { sourceAccountId: query.source_account_id } : {}),
-      ...(query.destination_account_id !== undefined
-        ? { destinationAccountId: query.destination_account_id }
-        : {}),
-      ...(query.status !== undefined ? { status: query.status } : {}),
-      ...(query.date_from !== undefined ? { dateFrom: query.date_from } : {}),
-      ...(query.date_to !== undefined ? { dateTo: query.date_to } : {}),
-    };
+      return transfer;
+    },
 
-    const data = await repositories.transfers.listByUser(userId, filters);
+    listByUser: async (userId: number, query: TransfersListQuery) => {
+      const filters = {
+        limit: query.page_size,
+        offset: getOffsetFromPagination(query),
+        ...(query.source_account_id !== undefined ? { sourceAccountId: query.source_account_id } : {}),
+        ...(query.destination_account_id !== undefined
+          ? { destinationAccountId: query.destination_account_id }
+          : {}),
+        ...(query.status !== undefined ? { status: query.status } : {}),
+        ...(query.date_from !== undefined ? { dateFrom: query.date_from } : {}),
+        ...(query.date_to !== undefined ? { dateTo: query.date_to } : {}),
+      };
 
-    return toPaginatedResponse(data, query);
-  },
+      const data = await repositories.transfers.listByUser(userId, filters);
 
-  updateById: async (
-    userId: number,
-    transferId: number,
-    payload: UpdateTransferPayload,
-  ): Promise<TransferResponse> => {
-    const transfer = await repositories.transfers.updateById(
-      userId,
-      transferId,
-      omitUndefined(payload) as TransferUpdate,
-    );
+      return toPaginatedResponse(data, query);
+    },
 
-    if (!transfer) {
-      throw new DomainError(404, {
-        code: 'TRANSFER_NOT_FOUND',
-        message: 'Transfer not found.',
-      });
-    }
+    updateById: async (
+      userId: number,
+      transferId: number,
+      payload: UpdateTransferPayload,
+    ): Promise<TransferResponse> => {
+      const transfer = await repositories.transfers.updateById(
+        userId,
+        transferId,
+        omitUndefined(payload) as TransferUpdate,
+      );
 
-    return transfer;
-  },
+      if (!transfer) {
+        throw new DomainError(404, {
+          code: 'TRANSFER_NOT_FOUND',
+          message: 'Transfer not found.',
+        });
+      }
 
-  deleteById: async (userId: number, transferId: number): Promise<void> => {
-    const deleted = await repositories.transfers.deleteById(userId, transferId);
+      return transfer;
+    },
 
-    if (!deleted) {
-      throw new DomainError(404, {
-        code: 'TRANSFER_NOT_FOUND',
-        message: 'Transfer not found.',
-      });
-    }
-  },
-});
+    deleteById: async (userId: number, transferId: number): Promise<void> => {
+      const deleted = await repositories.transfers.deleteById(userId, transferId);
+
+      if (!deleted) {
+        throw new DomainError(404, {
+          code: 'TRANSFER_NOT_FOUND',
+          message: 'Transfer not found.',
+        });
+      }
+    },
+  };
+};
 
 export type TransfersService = ReturnType<typeof createTransfersService>;

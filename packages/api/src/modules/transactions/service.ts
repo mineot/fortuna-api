@@ -6,8 +6,10 @@ import type {
   TransactionUpdate,
   UpdateTransactionDto,
 } from '@repo/shared';
+import { createCreateTransactionUseCase } from '@repo/domain';
 
 import { DomainError } from '../../lib/errors.js';
+import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import { omitUndefined } from '../../lib/object.js';
 import { getOffsetFromPagination, toPaginatedResponse, type PaginationInput } from '../../lib/pagination.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
@@ -25,81 +27,91 @@ export interface TransactionsListQuery extends PaginationInput {
 type CreateTransactionPayload = Omit<CreateTransactionDto, 'user_id'>;
 type UpdateTransactionPayload = Omit<UpdateTransactionDto, 'user_id'>;
 
-export const createTransactionsService = (repositories: ApiRepositories) => ({
-  create: async (
-    userId: number,
-    payload: CreateTransactionPayload,
-  ): Promise<TransactionResponse> => {
-    return repositories.transactions.create({
-      user_id: userId,
-      ...payload,
-      payee_id: payload.payee_id ?? null,
-      notes: payload.notes ?? null,
-    });
-  },
+export const createTransactionsService = (repositories: ApiRepositories) => {
+  const createTransactionUseCase = createCreateTransactionUseCase({
+    transactions: repositories.transactions,
+  });
 
-  findById: async (userId: number, transactionId: number): Promise<TransactionResponse> => {
-    const transaction = await repositories.transactions.findById(userId, transactionId);
+  return {
+    create: async (
+      userId: number,
+      payload: CreateTransactionPayload,
+    ): Promise<TransactionResponse> => {
+      try {
+        return await createTransactionUseCase({
+          user_id: userId,
+          ...payload,
+          payee_id: payload.payee_id ?? null,
+          notes: payload.notes ?? null,
+        });
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
 
-    if (!transaction) {
-      throw new DomainError(404, {
-        code: 'TRANSACTION_NOT_FOUND',
-        message: 'Transaction not found.',
-      });
-    }
+    findById: async (userId: number, transactionId: number): Promise<TransactionResponse> => {
+      const transaction = await repositories.transactions.findById(userId, transactionId);
 
-    return transaction;
-  },
+      if (!transaction) {
+        throw new DomainError(404, {
+          code: 'TRANSACTION_NOT_FOUND',
+          message: 'Transaction not found.',
+        });
+      }
 
-  listByUser: async (userId: number, query: TransactionsListQuery) => {
-    const filters = {
-      limit: query.page_size,
-      offset: getOffsetFromPagination(query),
-      ...(query.account_id !== undefined ? { accountId: query.account_id } : {}),
-      ...(query.category_id !== undefined ? { categoryId: query.category_id } : {}),
-      ...(query.payee_id !== undefined ? { payeeId: query.payee_id } : {}),
-      ...(query.type !== undefined ? { type: query.type } : {}),
-      ...(query.status !== undefined ? { status: query.status } : {}),
-      ...(query.date_from !== undefined ? { dateFrom: query.date_from } : {}),
-      ...(query.date_to !== undefined ? { dateTo: query.date_to } : {}),
-    };
+      return transaction;
+    },
 
-    const data = await repositories.transactions.listByUser(userId, filters);
+    listByUser: async (userId: number, query: TransactionsListQuery) => {
+      const filters = {
+        limit: query.page_size,
+        offset: getOffsetFromPagination(query),
+        ...(query.account_id !== undefined ? { accountId: query.account_id } : {}),
+        ...(query.category_id !== undefined ? { categoryId: query.category_id } : {}),
+        ...(query.payee_id !== undefined ? { payeeId: query.payee_id } : {}),
+        ...(query.type !== undefined ? { type: query.type } : {}),
+        ...(query.status !== undefined ? { status: query.status } : {}),
+        ...(query.date_from !== undefined ? { dateFrom: query.date_from } : {}),
+        ...(query.date_to !== undefined ? { dateTo: query.date_to } : {}),
+      };
 
-    return toPaginatedResponse(data, query);
-  },
+      const data = await repositories.transactions.listByUser(userId, filters);
 
-  updateById: async (
-    userId: number,
-    transactionId: number,
-    payload: UpdateTransactionPayload,
-  ): Promise<TransactionResponse> => {
-    const transaction = await repositories.transactions.updateById(
-      userId,
-      transactionId,
-      omitUndefined(payload) as TransactionUpdate,
-    );
+      return toPaginatedResponse(data, query);
+    },
 
-    if (!transaction) {
-      throw new DomainError(404, {
-        code: 'TRANSACTION_NOT_FOUND',
-        message: 'Transaction not found.',
-      });
-    }
+    updateById: async (
+      userId: number,
+      transactionId: number,
+      payload: UpdateTransactionPayload,
+    ): Promise<TransactionResponse> => {
+      const transaction = await repositories.transactions.updateById(
+        userId,
+        transactionId,
+        omitUndefined(payload) as TransactionUpdate,
+      );
 
-    return transaction;
-  },
+      if (!transaction) {
+        throw new DomainError(404, {
+          code: 'TRANSACTION_NOT_FOUND',
+          message: 'Transaction not found.',
+        });
+      }
 
-  deleteById: async (userId: number, transactionId: number): Promise<void> => {
-    const deleted = await repositories.transactions.deleteById(userId, transactionId);
+      return transaction;
+    },
 
-    if (!deleted) {
-      throw new DomainError(404, {
-        code: 'TRANSACTION_NOT_FOUND',
-        message: 'Transaction not found.',
-      });
-    }
-  },
-});
+    deleteById: async (userId: number, transactionId: number): Promise<void> => {
+      const deleted = await repositories.transactions.deleteById(userId, transactionId);
+
+      if (!deleted) {
+        throw new DomainError(404, {
+          code: 'TRANSACTION_NOT_FOUND',
+          message: 'Transaction not found.',
+        });
+      }
+    },
+  };
+};
 
 export type TransactionsService = ReturnType<typeof createTransactionsService>;

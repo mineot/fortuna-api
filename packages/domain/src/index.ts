@@ -22,3 +22,8 @@ export * from './modules/account-types/usecases/get-account-type.usecase.js';
 export * from './modules/account-types/usecases/list-account-types.usecase.js';
 export * from './modules/account-types/usecases/update-account-type.usecase.js';
 export * from './modules/account-types/usecases/delete-account-type.usecase.js';
+
+export * from './modules/transactions/usecases/create-transaction.usecase.js';
+export * from './modules/transfers/usecases/create-transfer.usecase.js';
+export * from './modules/credit-cards/usecases/register-statement-payment.usecase.js';
+export * from './modules/credit-cards/usecases/create-purchase-with-installments.usecase.js';

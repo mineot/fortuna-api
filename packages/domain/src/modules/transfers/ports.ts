@@ -1,3 +1,5 @@
+import type { TransferResponse } from '@repo/shared';
+
 export interface TransferCreateInput {
   user_id: number;
   source_account_id: number;
@@ -9,5 +11,5 @@ export interface TransferCreateInput {
 }
 
 export interface TransfersPort {
-  create(input: TransferCreateInput): Promise<unknown>;
+  create(input: TransferCreateInput): Promise<TransferResponse>;
 }

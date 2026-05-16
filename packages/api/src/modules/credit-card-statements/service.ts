@@ -6,8 +6,10 @@ import type {
   TransactionStatus,
   UpdateCreditCardStatementDto,
 } from '@repo/shared';
+import { createRegisterStatementPaymentUseCase } from '@repo/domain';
 
 import { DomainError } from '../../lib/errors.js';
+import { mapDomainError } from '../../lib/domain-error.mapper.js';
 import { omitUndefined } from '../../lib/object.js';
 import { getOffsetFromPagination, toPaginatedResponse, type PaginationInput } from '../../lib/pagination.js';
 import type { ApiRepositories } from '../../lib/repositories.js';
@@ -32,123 +34,126 @@ export interface RegisterStatementPaymentPayload {
   transaction_status?: TransactionStatus | undefined;
 }
 
-export const createCreditCardStatementsService = (repositories: ApiRepositories) => ({
-  create: async (
-    userId: number,
-    creditCardId: number,
-    payload: CreateCreditCardStatementPayload,
-  ): Promise<CreditCardStatementResponse> => {
-    return repositories.creditCardStatements.create({
-      credit_card_id: creditCardId,
-      ...payload,
-    });
-  },
+export const createCreditCardStatementsService = (repositories: ApiRepositories) => {
+  const registerStatementPaymentUseCase = createRegisterStatementPaymentUseCase({
+    creditCards: {
+      createPurchaseWithInstallments: repositories.creditCardPurchases.createWithInstallments,
+      registerStatementPayment: repositories.creditCardStatements.registerPayment,
+    },
+  });
 
-  findById: async (userId: number, statementId: number): Promise<CreditCardStatementResponse> => {
-    const statement = await repositories.creditCardStatements.findById(userId, statementId);
-
-    if (!statement) {
-      throw new DomainError(404, {
-        code: 'CREDIT_CARD_STATEMENT_NOT_FOUND',
-        message: 'Credit card statement not found.',
+  return {
+    create: async (
+      userId: number,
+      creditCardId: number,
+      payload: CreateCreditCardStatementPayload,
+    ): Promise<CreditCardStatementResponse> => {
+      return repositories.creditCardStatements.create({
+        credit_card_id: creditCardId,
+        ...payload,
       });
-    }
+    },
 
-    return statement;
-  },
+    findById: async (userId: number, statementId: number): Promise<CreditCardStatementResponse> => {
+      const statement = await repositories.creditCardStatements.findById(userId, statementId);
 
-  listByCard: async (userId: number, creditCardId: number, query: CreditCardStatementsListQuery) => {
-    const data = await repositories.creditCardStatements.listByCard(userId, creditCardId, {
-      limit: query.page_size,
-      offset: getOffsetFromPagination(query),
-      ...(query.status !== undefined ? { status: query.status } : {}),
-      ...(query.due_date_from !== undefined ? { dueDateFrom: query.due_date_from } : {}),
-      ...(query.due_date_to !== undefined ? { dueDateTo: query.due_date_to } : {}),
-    });
+      if (!statement) {
+        throw new DomainError(404, {
+          code: 'CREDIT_CARD_STATEMENT_NOT_FOUND',
+          message: 'Credit card statement not found.',
+        });
+      }
 
-    return toPaginatedResponse(data, query);
-  },
+      return statement;
+    },
 
-  updateById: async (
-    userId: number,
-    statementId: number,
-    payload: UpdateCreditCardStatementPayload,
-  ): Promise<CreditCardStatementResponse> => {
-    const statement = await repositories.creditCardStatements.updateById(
-      userId,
-      statementId,
-      omitUndefined(payload) as CreditCardStatementUpdate,
-    );
-
-    if (!statement) {
-      throw new DomainError(404, {
-        code: 'CREDIT_CARD_STATEMENT_NOT_FOUND',
-        message: 'Credit card statement not found.',
+    listByCard: async (userId: number, creditCardId: number, query: CreditCardStatementsListQuery) => {
+      const data = await repositories.creditCardStatements.listByCard(userId, creditCardId, {
+        limit: query.page_size,
+        offset: getOffsetFromPagination(query),
+        ...(query.status !== undefined ? { status: query.status } : {}),
+        ...(query.due_date_from !== undefined ? { dueDateFrom: query.due_date_from } : {}),
+        ...(query.due_date_to !== undefined ? { dueDateTo: query.due_date_to } : {}),
       });
-    }
 
-    return statement;
-  },
+      return toPaginatedResponse(data, query);
+    },
 
-  deleteById: async (userId: number, statementId: number): Promise<void> => {
-    const deleted = await repositories.creditCardStatements.deleteById(userId, statementId);
+    updateById: async (
+      userId: number,
+      statementId: number,
+      payload: UpdateCreditCardStatementPayload,
+    ): Promise<CreditCardStatementResponse> => {
+      const statement = await repositories.creditCardStatements.updateById(
+        userId,
+        statementId,
+        omitUndefined(payload) as CreditCardStatementUpdate,
+      );
 
-    if (!deleted) {
-      throw new DomainError(404, {
-        code: 'CREDIT_CARD_STATEMENT_NOT_FOUND',
-        message: 'Credit card statement not found.',
-      });
-    }
-  },
+      if (!statement) {
+        throw new DomainError(404, {
+          code: 'CREDIT_CARD_STATEMENT_NOT_FOUND',
+          message: 'Credit card statement not found.',
+        });
+      }
 
-  getTotals: async (userId: number, statementId: number) => {
-    const [statementTotal, statementPaidTotal] = await Promise.all([
-      repositories.creditCardStatements.getStatementTotal(userId, statementId),
-      repositories.creditCardStatements.getStatementPaidTotal(userId, statementId),
-    ]);
+      return statement;
+    },
 
-    if (statementTotal === undefined || statementPaidTotal === undefined) {
-      throw new DomainError(404, {
-        code: 'CREDIT_CARD_STATEMENT_NOT_FOUND',
-        message: 'Credit card statement not found.',
-      });
-    }
+    deleteById: async (userId: number, statementId: number): Promise<void> => {
+      const deleted = await repositories.creditCardStatements.deleteById(userId, statementId);
 
-    return {
-      statement_total: statementTotal,
-      statement_paid_total: statementPaidTotal,
-      statement_remaining_total: statementTotal - statementPaidTotal,
-    };
-  },
+      if (!deleted) {
+        throw new DomainError(404, {
+          code: 'CREDIT_CARD_STATEMENT_NOT_FOUND',
+          message: 'Credit card statement not found.',
+        });
+      }
+    },
 
-  registerPayment: async (
-    userId: number,
-    statementId: number,
-    payload: RegisterStatementPaymentPayload,
-  ) => {
-    try {
-      const registerPayload = {
-        creditCardStatementId: statementId,
-        accountId: payload.account_id,
-        amount: payload.amount,
-        date: payload.date,
-        categoryId: payload.category_id,
-        description: payload.description,
-        payeeId: payload.payee_id ?? null,
-        notes: payload.notes ?? null,
-        ...(payload.transaction_status !== undefined
-          ? { transactionStatus: payload.transaction_status }
-          : {}),
+    getTotals: async (userId: number, statementId: number) => {
+      const [statementTotal, statementPaidTotal] = await Promise.all([
+        repositories.creditCardStatements.getStatementTotal(userId, statementId),
+        repositories.creditCardStatements.getStatementPaidTotal(userId, statementId),
+      ]);
+
+      if (statementTotal === undefined || statementPaidTotal === undefined) {
+        throw new DomainError(404, {
+          code: 'CREDIT_CARD_STATEMENT_NOT_FOUND',
+          message: 'Credit card statement not found.',
+        });
+      }
+
+      return {
+        statement_total: statementTotal,
+        statement_paid_total: statementPaidTotal,
+        statement_remaining_total: statementTotal - statementPaidTotal,
       };
+    },
 
-      return await repositories.creditCardStatements.registerPayment(userId, {
-        ...registerPayload,
-      });
-    } catch (error) {
-      throw new DomainError(400, {
-        code: 'CREDIT_CARD_STATEMENT_PAYMENT_ERROR',
-        message: error instanceof Error ? error.message : 'Could not register statement payment.',
-      });
-    }
-  },
-});
+    registerPayment: async (
+      userId: number,
+      statementId: number,
+      payload: RegisterStatementPaymentPayload,
+    ) => {
+      try {
+        return await registerStatementPaymentUseCase({
+          userId,
+          statementId,
+          accountId: payload.account_id,
+          amount: payload.amount,
+          date: payload.date,
+          categoryId: payload.category_id,
+          description: payload.description,
+          payeeId: payload.payee_id ?? null,
+          notes: payload.notes ?? null,
+          ...(payload.transaction_status !== undefined
+            ? { transactionStatus: payload.transaction_status }
+            : {}),
+        });
+      } catch (error) {
+        return mapDomainError(error);
+      }
+    },
+  };
+};

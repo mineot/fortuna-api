@@ -1,3 +1,11 @@
+import type {
+  CreditCardInstallmentResponse,
+  CreditCardPurchaseResponse,
+  CreditCardStatementPaymentResponse,
+  CreditCardStatementStatus,
+  TransactionResponse,
+} from '@repo/shared';
+
 export interface CreditCardStatementPaymentInput {
   creditCardStatementId: number;
   accountId: number;
@@ -27,14 +35,27 @@ export interface CreditCardPurchaseInput {
   purchase_date: string;
 }
 
+export interface RegisterStatementPaymentResult {
+  payment: CreditCardStatementPaymentResponse;
+  transaction: TransactionResponse;
+  statementTotal: number;
+  statementPaidTotal: number;
+  statementStatus: CreditCardStatementStatus;
+}
+
+export interface PurchaseWithInstallmentsResult {
+  purchase: CreditCardPurchaseResponse;
+  installments: CreditCardInstallmentResponse[];
+}
+
 export interface CreditCardsPort {
   registerStatementPayment(
     userId: number,
     input: CreditCardStatementPaymentInput,
-  ): Promise<unknown>;
+  ): Promise<RegisterStatementPaymentResult>;
   createPurchaseWithInstallments(
     userId: number,
     purchase: CreditCardPurchaseInput,
     installments: CreditCardInstallmentInput[],
-  ): Promise<unknown>;
+  ): Promise<PurchaseWithInstallmentsResult>;
 }
