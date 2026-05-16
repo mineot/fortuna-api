@@ -373,7 +373,7 @@ Each package may have its own implementation per module:
 - internal base folders created for each package according to this guide.
 - minimal `package.json`, `tsconfig.json`, and `src/index.ts` created for each package.
 
-- Phase 2 started (`@repo/shared`, API-shaped contracts):
+- Phase 2 completed (`@repo/shared`, API-shaped contracts):
 - `zod` added to `@repo/shared` dependencies.
 - shared financial union types created (transaction types/status, recurrence, statement status).
 - shared constants created as `as const` arrays.
@@ -382,11 +382,29 @@ Each package may have its own implementation per module:
 - base DTOs created for key flows.
 - base contracts created (paginated response, validation/domain error payloads, list query, typed responses).
 - barrel exports consolidated in `packages/shared/src/index.ts`.
+- `@repo/shared` package documented in English (`packages/shared/README.md`).
+
+- Phase 3 completed (`@repo/database`, Kysely + SQLite):
+- SQLite adapter implemented with `FORTUNA_ENV`/`FORTUNA_DB` path resolution and Kysely integration.
+- migration runner implemented with semantic version reconciliation (`up/down`) based on root `package.json`.
+- migration status command implemented and exposed (`migrate:status`).
+- full V1 schema migration implemented (all core tables, relationships, checks, and indexes).
+- seed runner implemented with idempotent behavior (`account-types`, `categories`, `all`).
+- `@repo/database` repositories implemented for:
+- `users`, `user_settings`, `account_types`, `accounts`,
+- `category_groups`, `categories`, `payees`,
+- `transactions`, `transfers`, `recurring_transactions`,
+- `credit_cards`, `credit_card_purchases`, `credit_card_installments`,
+- `credit_card_statements`, `credit_card_statement_payments`,
+- analytical/report reads.
+- integration tests implemented for repositories, credit card flow, migration versioning, and seed idempotency.
+- local validation passing for `@repo/database` (`typecheck` and test suite).
+- `@repo/database` package documented in English (`packages/database/README.md`).
 
 ### Pending
-- local validation executed successfully (`pnpm install`, `pnpm build`, `pnpm --filter @repo/shared typecheck`) on 2026-05-13.
-- refine schema constraints and DTO coverage based on first API use cases.
-- begin Phase 3 (`@repo/database`) after shared contract stabilization.
+- Phase 4 start (`@repo/api`): wire database repositories into Hono modules/services/routes.
+- refine `@repo/shared` constraints/DTO coverage based on first real API use cases.
+- keep expanding integration scenarios as API flows are added.
 
 ## 17) File Usage Protocol
 Before any task:
