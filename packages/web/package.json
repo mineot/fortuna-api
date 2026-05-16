@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "ng build",
-    "dev": "ng serve --host 0.0.0.0 --port 4200",
-    "typecheck": "tsc -p tsconfig.app.json --noEmit",
+    "build": "node --env-file=../../.env ./scripts/build.mjs",
+    "dev": "node --env-file=../../.env ./scripts/dev.mjs",
+    "typecheck": "node --env-file=../../.env ./scripts/typecheck.mjs",
     "lint": "echo \"No lint configured for @repo/web yet\"",
     "test": "echo \"No tests configured for @repo/web yet\"",
     "clean": "rm -rf dist"

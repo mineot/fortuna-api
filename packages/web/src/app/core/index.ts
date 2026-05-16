@@ -1,1 +1,1 @@
-export {};
+export * from './config/app-env.js';
