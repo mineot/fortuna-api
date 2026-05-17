@@ -99,3 +99,20 @@ Implemented artifacts:
   - implemented in `src/commands/auth.ts`
 - command registry wiring for auth handlers:
   - `src/commands/registry.ts`
+
+## Phase 6 - Part 6 (Implemented)
+
+Part 6 delivers the first end-to-end vertical slice with transactions in both modes.
+
+Implemented artifacts:
+
+- transaction command handlers:
+  - `transactions create`
+  - `transactions list`
+  - file: `src/commands/transactions.ts`
+- local transactions client (database direct):
+  - `src/adapters/local/transactions-client.ts`
+- remote transactions client (API + bearer token):
+  - `src/adapters/remote/transactions-client.ts`
+- registry wiring for transaction handlers:
+  - `src/commands/registry.ts`

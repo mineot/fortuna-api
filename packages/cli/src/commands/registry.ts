@@ -7,6 +7,7 @@ import {
   authMeHandler,
   authRefreshHandler
 } from './auth.js';
+import { transactionsCreateHandler, transactionsListHandler } from './transactions.js';
 
 export interface CliCommandHandler {
   execute(args: readonly string[], context: CliContext): Promise<unknown>;
@@ -21,7 +22,9 @@ const commandHandlers: Record<string, CliCommandHandler> = {
   'auth login': authLoginHandler,
   'auth refresh': authRefreshHandler,
   'auth logout': authLogoutHandler,
-  'auth me': authMeHandler
+  'auth me': authMeHandler,
+  'transactions create': transactionsCreateHandler,
+  'transactions list': transactionsListHandler
 };
 
 export const COMMAND_REGISTRY: ReadonlyArray<CliCommandRegistration> = PHASE_6_COMMAND_MATRIX.map(

@@ -9,6 +9,7 @@ export interface CliConfig {
   environment: 'DEV' | 'PROD';
   apiBaseUrl: string;
   sessionFilePath: string;
+  localUserId: number;
 }
 
 const DEFAULT_API_BASE_URL = 'http://localhost:3000';
@@ -46,11 +47,17 @@ export function createCliConfig(
   const sessionFilePath =
     env.FORTUNA_CLI_SESSION_FILE ??
     (environment === 'PROD' ? DEFAULT_SESSION_FILE_PROD : DEFAULT_SESSION_FILE_DEV);
+  const localUserIdRaw = env.FORTUNA_CLI_USER_ID ?? '1';
+  const localUserId = Number(localUserIdRaw);
   return {
     mode: resolveCliMode(args, env),
     output: resolveOutputFormat(args, env),
     environment,
     apiBaseUrl: env.FORTUNA_API_BASE_URL ?? DEFAULT_API_BASE_URL,
-    sessionFilePath
+    sessionFilePath,
+    localUserId:
+      Number.isFinite(localUserId) && Number.isInteger(localUserId) && localUserId > 0
+        ? localUserId
+        : 1
   };
 }
