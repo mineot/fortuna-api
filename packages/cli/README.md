@@ -77,3 +77,25 @@ Implemented artifacts:
   - clock
   - session store/provider
   - mode-resolved adapter
+
+## Phase 6 - Part 5 (Implemented)
+
+Part 5 implements remote auth commands and persistent session storage.
+
+Implemented artifacts:
+
+- file-based session store:
+  - `src/services/session/file-session-store.ts`
+  - default paths by environment:
+    - `DEV`: `~/.fortuna/session.dev.json`
+    - `PROD`: `~/.fortuna/session.prod.json`
+- remote auth HTTP client:
+  - `src/adapters/remote/auth-client.ts`
+- auth handlers:
+  - `auth login`
+  - `auth refresh`
+  - `auth logout`
+  - `auth me`
+  - implemented in `src/commands/auth.ts`
+- command registry wiring for auth handlers:
+  - `src/commands/registry.ts`

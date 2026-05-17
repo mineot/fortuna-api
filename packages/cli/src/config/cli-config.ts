@@ -8,9 +8,12 @@ export interface CliConfig {
   output: CliOutputFormat;
   environment: 'DEV' | 'PROD';
   apiBaseUrl: string;
+  sessionFilePath: string;
 }
 
 const DEFAULT_API_BASE_URL = 'http://localhost:3000';
+const DEFAULT_SESSION_FILE_DEV = '.fortuna/session.dev.json';
+const DEFAULT_SESSION_FILE_PROD = '.fortuna/session.prod.json';
 
 function readFlagValue(flag: string, args: readonly string[]): string | undefined {
   const index = args.findIndex((arg) => arg === flag);
@@ -40,10 +43,14 @@ export function createCliConfig(
   env: EnvMap = {}
 ): CliConfig {
   const environment = env.FORTUNA_ENV === 'PROD' ? 'PROD' : 'DEV';
+  const sessionFilePath =
+    env.FORTUNA_CLI_SESSION_FILE ??
+    (environment === 'PROD' ? DEFAULT_SESSION_FILE_PROD : DEFAULT_SESSION_FILE_DEV);
   return {
     mode: resolveCliMode(args, env),
     output: resolveOutputFormat(args, env),
     environment,
-    apiBaseUrl: env.FORTUNA_API_BASE_URL ?? DEFAULT_API_BASE_URL
+    apiBaseUrl: env.FORTUNA_API_BASE_URL ?? DEFAULT_API_BASE_URL,
+    sessionFilePath
   };
 }

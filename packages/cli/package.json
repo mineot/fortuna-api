@@ -16,4 +16,8 @@
     "test": "echo \"No tests configured for @repo/cli yet\"",
     "clean": "rm -rf dist"
   }
+  ,
+  "devDependencies": {
+    "@types/node": "^25.7.0"
+  }
 }

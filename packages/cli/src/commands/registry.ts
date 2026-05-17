@@ -1,6 +1,12 @@
 import { PHASE_6_COMMAND_MATRIX } from '../plan/command-matrix.js';
 import type { CliCommandSpec } from '../plan/command-matrix.js';
 import type { CliContext } from '../services/types.js';
+import {
+  authLoginHandler,
+  authLogoutHandler,
+  authMeHandler,
+  authRefreshHandler
+} from './auth.js';
 
 export interface CliCommandHandler {
   execute(args: readonly string[], context: CliContext): Promise<unknown>;
@@ -11,8 +17,22 @@ export interface CliCommandRegistration {
   handler?: CliCommandHandler;
 }
 
-export const COMMAND_REGISTRY: ReadonlyArray<CliCommandRegistration> =
-  PHASE_6_COMMAND_MATRIX.map((spec) => ({ spec }));
+const commandHandlers: Record<string, CliCommandHandler> = {
+  'auth login': authLoginHandler,
+  'auth refresh': authRefreshHandler,
+  'auth logout': authLogoutHandler,
+  'auth me': authMeHandler
+};
+
+export const COMMAND_REGISTRY: ReadonlyArray<CliCommandRegistration> = PHASE_6_COMMAND_MATRIX.map(
+  (spec) => {
+    const handler = commandHandlers[spec.command];
+    if (!handler) {
+      return { spec };
+    }
+    return { spec, handler };
+  }
+);
 
 export function findCommand(command: string): CliCommandRegistration | undefined {
   return COMMAND_REGISTRY.find((entry) => entry.spec.command === command);
