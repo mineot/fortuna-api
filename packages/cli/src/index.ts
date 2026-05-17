@@ -24,6 +24,7 @@ export * from './adapters/remote/statement-payments-client.js';
 export * from './adapters/local/statement-payments-client.js';
 export * from './runtime/argv.js';
 export * from './runtime/run-cli.js';
+export * from './runtime/errors.js';
 export * from './commands/auth.js';
 export * from './commands/transactions.js';
 export * from './commands/accounts.js';

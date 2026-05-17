@@ -1,139 +1,137 @@
 # @repo/cli
 
-CLI package for Project Fortuna operations, with two execution modes:
+CLI operacional do Project Fortuna.
 
-- `local`: direct operation against local persistence layer.
-- `remote`: operation through `@repo/api` HTTP endpoints.
+Modos suportados:
+- `local`: executa direto no banco via `@repo/database`
+- `remote`: executa via HTTP em `@repo/api`
 
-## Phase 6 - Part 1 (Implemented)
+## Pré-requisitos
 
-Part 1 defines command scope and command matrix only. It does not implement command execution yet.
+- Dependências instaladas no monorepo (`pnpm install`)
+- Build dos pacotes quando necessário (`pnpm build`)
+- Para uso por binário: `pnpm --filter @repo/cli build`
 
-Implemented artifacts:
+Executar por Node:
+- `node packages/cli/dist/main.js ...`
 
-- typed command matrix: `src/plan/command-matrix.ts`
-- package export for planning metadata: `src/index.ts`
+## Convenções Globais
 
-Primary modules in scope:
+Flags globais:
+- `--mode local|remote` (default: `local`)
+- `--output human|json` (default: `human`)
 
-- `auth`
-- `accounts`
-- `categories`
-- `transactions`
-- `transfers`
-- `reports`
-- `credit-cards`
-- `statement-payments`
+Envelope de saída:
+- sucesso: `{ "ok": true, "data": ... }`
+- erro: `{ "ok": false, "error": { "code", "message" } }`
 
-Milestone mapping:
+Exit codes:
+- `0` sucesso
+- `2` erro de uso/validação (`UNKNOWN_COMMAND`, `COMMAND_NOT_IMPLEMENTED`, `VALIDATION_ERROR`)
+- `3` erro de modo (`MODE_ERROR`)
+- `4` autenticação necessária (`AUTH_REQUIRED`)
+- `5` erro de API (`API_ERROR`)
+- `1` erro interno (`INTERNAL_ERROR`)
 
-- `M1`: auth + first vertical slice (`transactions create/list`)
-- `M2`: core finance commands (`accounts`, `categories`, `transfers`)
-- `M3`: credit-card flows, statement payments, reports
-- `M4`: hardening and delivery quality
+## Variáveis de Ambiente
 
-## Next Step
+Variáveis comuns:
+- `FORTUNA_ENV=DEV|PROD`
+- `FORTUNA_API_BASE_URL` (ex: `http://localhost:3000`)
+- `FORTUNA_CLI_MODE=local|remote`
+- `FORTUNA_CLI_OUTPUT=human|json`
+- `FORTUNA_CLI_USER_ID` (default user no modo local, fallback `1`)
 
-Part 2 should implement architecture baseline folders and foundational abstractions for mode-resolved command execution.
+Sessão remota:
+- `FORTUNA_CLI_SESSION_FILE`
+- padrão em `DEV`: `~/.fortuna/session.dev.json`
+- padrão em `PROD`: `~/.fortuna/session.prod.json`
 
-## Phase 6 - Part 2 (Implemented)
+Banco local (via `@repo/database`):
+- `FORTUNA_DB` (caminho SQLite)
 
-Part 2 establishes the architecture baseline and composition root, still without domain command execution.
+## Catálogo de Comandos
 
-Implemented artifacts:
+### Auth (`remote`)
+- `auth login --email <email> --password <password>`
+- `auth refresh`
+- `auth logout`
+- `auth me`
 
-- `src/config/cli-config.ts`: runtime mode and output resolution
-- `src/services/types.ts`: core context contracts
-- `src/services/defaults.ts`: default logger/clock/session store
-- `src/services/container.ts`: composition root (`createCliContext`)
-- `src/adapters/local/local-adapter.ts`: local adapter baseline
-- `src/adapters/remote/remote-adapter.ts`: remote adapter baseline
-- `src/commands/registry.ts`: command registry bound to command matrix
-- `src/formatters/output.ts`: output formatting (`human`/`json`)
+### Accounts (`local`/`remote`)
+- `accounts list [--page <n>] [--page-size <n>] [--account-type-id <id>] [--user-id <id>]`
+- `accounts create --account-type-id <id> --name <name> --initial-balance <cents> [--notes <text>] [--user-id <id>]`
 
-## Phase 6 - Part 3 (Implemented)
+### Categories (`local`/`remote`)
+- `categories list [--type income|expense] [--page <n>] [--page-size <n>] [--category-group-id <id>] [--user-id <id>]`
+- `categories create --category-group-id <id> --name <name> --type income|expense [--user-id <id>]`
 
-Part 3 adds the CLI runtime entrypoint and command dispatch flow.
+### Transactions (`local`/`remote`)
+- `transactions list [--account-id <id>] [--category-id <id>] [--payee-id <id>] [--type income|expense] [--status pending|confirmed|cancelled] [--from <YYYY-MM-DD>] [--to <YYYY-MM-DD>] [--page <n>] [--page-size <n>] [--user-id <id>]`
+- `transactions create --account-id <id> --category-id <id> --type income|expense --amount <cents> --date <YYYY-MM-DD> --description <text> --status pending|confirmed|cancelled [--payee-id <id>] [--notes <text>] [--user-id <id>]`
 
-Implemented artifacts:
+### Transfers (`local`/`remote`)
+- `transfers list [--source-account-id <id>] [--destination-account-id <id>] [--status pending|confirmed|cancelled] [--from <YYYY-MM-DD>] [--to <YYYY-MM-DD>] [--page <n>] [--page-size <n>] [--user-id <id>]`
+- `transfers create --source-account-id <id> --destination-account-id <id> --amount <cents> --date <YYYY-MM-DD> --status pending|confirmed|cancelled [--description <text>] [--user-id <id>]`
 
-- `src/runtime/argv.ts`: argument parsing and command extraction
-- `src/runtime/run-cli.ts`: runtime dispatcher and exit code contract
-- `src/main.ts`: executable entrypoint
-- `package.json` `bin` mapping: `fortuna -> dist/main.js`
+### Reports (`local`/`remote`)
+- `reports summary [--from <YYYY-MM-DD>] [--to <YYYY-MM-DD>] [--user-id <id>]`
+- `reports account-balances [--user-id <id>]`
 
-## Phase 6 - Part 4 (Implemented)
+### Credit Cards (`local`/`remote`)
+- `credit-cards list [--page <n>] [--page-size <n>] [--user-id <id>]`
+- `credit-cards purchase --credit-card-id <id> --category-id <id> --total-amount <cents> --installment-count <n> --purchase-date <YYYY-MM-DD> --description <text> [--payee-id <id>]`
 
-Part 4 consolidates composition root and execution context wiring.
+### Statement Payments (`local`/`remote`)
+- `statement-payments create --credit-card-statement-id <id> --account-id <id> --amount <cents> --date <YYYY-MM-DD> --category-id <id> [--description <text>] [--payee-id <id>] [--notes <text>] [--transaction-status pending|confirmed|cancelled] [--user-id <id>]`
 
-Implemented artifacts:
+## Exemplos
 
-- execution metadata in context: `requestId`, `startedAt`
-- env-aware config: `environment` (`DEV`/`PROD`)
-- mode-specific adapters now receive environment metadata
-- `SessionProvider` abstraction layered on top of `SessionStore`
-- centralized context bootstrap in `createCliContext` with:
-  - logger
-  - clock
-  - session store/provider
-  - mode-resolved adapter
+### 1) Login remoto
+```bash
+node packages/cli/dist/main.js --mode remote --output json auth login \
+  --email remote.integration@fortuna.local \
+  --password remote-password
+```
 
-## Phase 6 - Part 5 (Implemented)
+### 2) Criar conta no modo local
+```bash
+node packages/cli/dist/main.js --mode local --output json accounts create \
+  --user-id 1 \
+  --account-type-id 1 \
+  --name "Checking" \
+  --initial-balance 100000
+```
 
-Part 5 implements remote auth commands and persistent session storage.
+### 3) Criar transação no modo remoto
+```bash
+node packages/cli/dist/main.js --mode remote --output json transactions create \
+  --account-id 1 \
+  --category-id 1 \
+  --type expense \
+  --amount 2500 \
+  --date 2026-05-16 \
+  --description "Lunch" \
+  --status confirmed
+```
 
-Implemented artifacts:
+### 4) Relatório de resumo
+```bash
+node packages/cli/dist/main.js --mode local --output json reports summary \
+  --user-id 1 \
+  --from 2026-05-01 \
+  --to 2026-05-31
+```
 
-- file-based session store:
-  - `src/services/session/file-session-store.ts`
-  - default paths by environment:
-    - `DEV`: `~/.fortuna/session.dev.json`
-    - `PROD`: `~/.fortuna/session.prod.json`
-- remote auth HTTP client:
-  - `src/adapters/remote/auth-client.ts`
-- auth handlers:
-  - `auth login`
-  - `auth refresh`
-  - `auth logout`
-  - `auth me`
-  - implemented in `src/commands/auth.ts`
-- command registry wiring for auth handlers:
-  - `src/commands/registry.ts`
+## Testes
 
-## Phase 6 - Part 6 (Implemented)
+Unitários + integração local + integração remota:
+```bash
+pnpm --filter @repo/cli test
+```
 
-Part 6 delivers the first end-to-end vertical slice with transactions in both modes.
+## Observações Operacionais
 
-Implemented artifacts:
-
-- transaction command handlers:
-  - `transactions create`
-  - `transactions list`
-  - file: `src/commands/transactions.ts`
-- local transactions client (database direct):
-  - `src/adapters/local/transactions-client.ts`
-- remote transactions client (API + bearer token):
-  - `src/adapters/remote/transactions-client.ts`
-- registry wiring for transaction handlers:
-  - `src/commands/registry.ts`
-
-## M2 Progress (Implemented)
-
-Added first core-finance commands after the initial vertical slice:
-
-- `accounts list`
-- `accounts create`
-- `categories list`
-- `categories create`
-- `transfers list`
-- `transfers create`
-- `reports summary`
-- `reports account-balances`
-- `credit-cards list`
-- `credit-cards purchase`
-- `statement-payments create`
-
-Implemented for both modes:
-
-- local (`database` direct adapters)
-- remote (`api` adapters with bearer token)
+- No modo `remote`, rode a API antes de executar comandos.
+- `credit-cards purchase` usa o endpoint de compras de cartão (`/credit-cards/:id/purchases`).
+- `statement-payments create` usa o fluxo de negócio de pagamento de fatura (`register-payment`), que gera transação vinculada.

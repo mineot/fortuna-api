@@ -13,11 +13,12 @@
     "dev": "tsc -p tsconfig.json --watch --preserveWatchOutput",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"No lint configured for @repo/cli yet\"",
-    "test": "echo \"No tests configured for @repo/cli yet\"",
+    "test": "tsx --test test/**/*.test.ts",
     "clean": "rm -rf dist"
   }
   ,
   "devDependencies": {
-    "@types/node": "^25.7.0"
+    "@types/node": "^25.7.0",
+    "tsx": "^4.21.0"
   }
 }
