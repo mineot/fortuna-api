@@ -491,8 +491,35 @@ Each package may have its own implementation per module:
 - `@repo/domain`: `typecheck`, `build`, and unit tests.
 - `@repo/api`: `typecheck` and integration test suite.
 
+- Phase 6 completed (`@repo/cli`, local/remote operations + hardening + tests + docs):
+- CLI runtime/composition foundation implemented:
+- argument parsing, command dispatch, mode resolution (`local`/`remote`), output format resolution (`human`/`json`),
+- context/container wiring (logger, clock, session provider/store, mode-specific adapters),
+- executable entrypoint and bin mapping (`fortuna -> dist/main.js`).
+- remote auth/session flow implemented:
+- `auth login`, `auth refresh`, `auth logout`, `auth me`,
+- persistent file-based session storage (`~/.fortuna/session.dev.json`, `~/.fortuna/session.prod.json`).
+- core command coverage implemented in both modes (`local` + `remote`):
+- `transactions create/list`,
+- `accounts create/list`,
+- `categories create/list`,
+- `transfers create/list`,
+- `reports summary`,
+- `reports account-balances`,
+- `credit-cards list`,
+- `credit-cards purchase`,
+- `statement-payments create` (via statement `register-payment` flow).
+- CLI error/output hardening implemented:
+- normalized output envelopes (`ok: true|false` with typed payload/error),
+- stable exit-code mapping by category (`usage`, `mode`, `auth`, `api`, `internal`).
+- CLI validation coverage implemented and passing:
+- unit tests (`argv`, config resolvers, runtime errors, output formatter, file session store, runtime base behavior),
+- local integration test (real CLI flow against isolated SQLite),
+- remote integration test (real CLI flow against test API process and isolated SQLite).
+- `@repo/cli` operational documentation finalized in `packages/cli/README.md`:
+- command catalog, flags, env vars, examples, mode differences, output/error contracts.
+
 ### Pending
-- Phase 6 start (`@repo/cli`): local/remote operational command integration.
 - expand `@repo/api` test coverage across all modules and negative-path scenarios.
 - expand `@repo/domain` unit test coverage across all modules and negative-path scenarios.
 - refine/expand `@repo/shared` DTO/schema coverage as web/cli consumers are integrated.
