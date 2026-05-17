@@ -12,6 +12,8 @@ import { accountsCreateHandler, accountsListHandler } from './accounts.js';
 import { categoriesCreateHandler, categoriesListHandler } from './categories.js';
 import { transfersCreateHandler, transfersListHandler } from './transfers.js';
 import { reportsAccountBalancesHandler, reportsSummaryHandler } from './reports.js';
+import { creditCardsListHandler, creditCardsPurchaseHandler } from './credit-cards.js';
+import { statementPaymentsCreateHandler } from './statement-payments.js';
 
 export interface CliCommandHandler {
   execute(args: readonly string[], context: CliContext): Promise<unknown>;
@@ -36,7 +38,10 @@ const commandHandlers: Record<string, CliCommandHandler> = {
   'transfers create': transfersCreateHandler,
   'transfers list': transfersListHandler,
   'reports summary': reportsSummaryHandler,
-  'reports account-balances': reportsAccountBalancesHandler
+  'reports account-balances': reportsAccountBalancesHandler,
+  'credit-cards list': creditCardsListHandler,
+  'credit-cards purchase': creditCardsPurchaseHandler,
+  'statement-payments create': statementPaymentsCreateHandler
 };
 
 export const COMMAND_REGISTRY: ReadonlyArray<CliCommandRegistration> = PHASE_6_COMMAND_MATRIX.map(

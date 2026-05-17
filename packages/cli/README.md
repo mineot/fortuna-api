@@ -129,6 +129,9 @@ Added first core-finance commands after the initial vertical slice:
 - `transfers create`
 - `reports summary`
 - `reports account-balances`
+- `credit-cards list`
+- `credit-cards purchase`
+- `statement-payments create`
 
 Implemented for both modes:
 
