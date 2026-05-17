@@ -125,6 +125,10 @@ Added first core-finance commands after the initial vertical slice:
 - `accounts create`
 - `categories list`
 - `categories create`
+- `transfers list`
+- `transfers create`
+- `reports summary`
+- `reports account-balances`
 
 Implemented for both modes:
 
