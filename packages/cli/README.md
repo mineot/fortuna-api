@@ -116,3 +116,17 @@ Implemented artifacts:
   - `src/adapters/remote/transactions-client.ts`
 - registry wiring for transaction handlers:
   - `src/commands/registry.ts`
+
+## M2 Progress (Implemented)
+
+Added first core-finance commands after the initial vertical slice:
+
+- `accounts list`
+- `accounts create`
+- `categories list`
+- `categories create`
+
+Implemented for both modes:
+
+- local (`database` direct adapters)
+- remote (`api` adapters with bearer token)

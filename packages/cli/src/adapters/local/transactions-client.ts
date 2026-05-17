@@ -55,7 +55,8 @@ export async function createLocalTransaction(payload: LocalCreateTransactionInpu
   const db = dbModule.createSqliteKysely();
   try {
     const repository = dbModule.createTransactionsRepository(db);
-    return repository.create(payload);
+    const created = await repository.create(payload);
+    return created;
   } finally {
     await db.destroy();
   }
