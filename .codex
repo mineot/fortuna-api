@@ -534,3 +534,21 @@ Before any task:
 5. Ensure shared contracts stay in `shared`.
 
 If speed conflicts with architecture, prioritize architecture.
+
+## 18) Review Notes to Fix Later (2026-05-17)
+These items were identified in a full repository review and are intentionally recorded here for later implementation/alignment.
+
+### Architectural Alignment Gaps
+- `shared` currently depends on `kysely` and contains DB-table contracts (`finance.tables.ts`), which conflicts with section `6.1` (`shared` should not depend on infrastructure concerns).
+- Database package layout diverges from the documented initial shape in section `8` (`client/`, `schema/`, and `adapters/sqlite/` are not present as declared in the guide).
+- CLI local mode currently loads `database/dist` through relative dynamic imports instead of explicit workspace package runtime dependencies, creating coupling to prebuilt artifacts.
+
+### Status / Coverage Gaps
+- Current `api` integration coverage is still partial relative to all registered modules and negative-path scenarios.
+- Current `domain` unit coverage is still partial relative to all modules and negative-path scenarios.
+- `web` still uses locally mirrored auth types instead of direct `@repo/shared` contract consumption (already listed as pending in section `16`).
+
+### Validation Notes from Review Run
+- Local validation confirms typecheck/build success across packages.
+- Test suites passed for `shared`, `domain`, `database`, `api`, and `web`.
+- CLI remote integration test did not complete in this environment due to sandbox networking restriction (`EPERM` when binding `0.0.0.0:3301`), so this specific test needs re-run in a non-restricted environment for full confirmation.
