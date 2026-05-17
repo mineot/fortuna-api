@@ -469,11 +469,32 @@ Each package may have its own implementation per module:
 - ESM compatibility hardening completed for `@repo/shared` and `@repo/database`:
 - relative internal imports/exports normalized with `.js` extension in source to ensure Node ESM runtime resolution from compiled `dist`.
 
+- Phase 5.5 completed (`@repo/domain` extraction and centralization):
+- Onda 0 completed:
+- `@repo/api` now references and depends on `@repo/domain`.
+- foundational domain error and module port conventions established.
+- Onda 1 completed:
+- business rules moved to `domain` use-cases for `auth`, `users`, and `account-types`.
+- API services refactored to delegate to domain use-cases with domain-to-HTTP error mapping.
+- Onda 2 completed:
+- critical financial rules centralized in `domain` for:
+- transaction creation validation (`amount > 0`),
+- transfer validation (`amount > 0`, source/destination must differ),
+- credit-card purchase-with-installments consistency checks,
+- credit-card statement payment validation/coordination.
+- Onda 3 + 3.1 completed:
+- remaining API modules refactored to domain-delegation pattern (`accounts`, `categories`, `category-groups`, `payees`, `user-settings`, `recurring-transactions`, `credit-cards`, `credit-card-statements`, `credit-card-purchases`, `credit-card-installments`, `credit-card-statement-payments`, `reports`).
+- domain module coverage expanded with ports/use-cases across those modules.
+- `@repo/domain` unit test suite implemented and passing (`tsx --test`), covering critical use-case rules.
+- `@repo/domain` package documented in English (`packages/domain/README.md`).
+- post-migration validation passing:
+- `@repo/domain`: `typecheck`, `build`, and unit tests.
+- `@repo/api`: `typecheck` and integration test suite.
+
 ### Pending
-- Phase 5.5 start (`@repo/domain`): extract and centralize business rules currently orchestrated in API services into pure domain use-cases/services before CLI expansion.
-- sequence decision: prioritize `@repo/domain` implementation before Phase 6 (`@repo/cli`) to maximize business-rule reuse and reduce future refactor cost.
 - Phase 6 start (`@repo/cli`): local/remote operational command integration.
 - expand `@repo/api` test coverage across all modules and negative-path scenarios.
+- expand `@repo/domain` unit test coverage across all modules and negative-path scenarios.
 - refine/expand `@repo/shared` DTO/schema coverage as web/cli consumers are integrated.
 - align direct `@repo/shared` contract consumption in Angular app compilation (current web auth types remain locally mirrored to avoid TS path-resolution conflicts in app typecheck/build).
 
