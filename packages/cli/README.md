@@ -50,3 +50,14 @@ Implemented artifacts:
 - `src/adapters/remote/remote-adapter.ts`: remote adapter baseline
 - `src/commands/registry.ts`: command registry bound to command matrix
 - `src/formatters/output.ts`: output formatting (`human`/`json`)
+
+## Phase 6 - Part 3 (Implemented)
+
+Part 3 adds the CLI runtime entrypoint and command dispatch flow.
+
+Implemented artifacts:
+
+- `src/runtime/argv.ts`: argument parsing and command extraction
+- `src/runtime/run-cli.ts`: runtime dispatcher and exit code contract
+- `src/main.ts`: executable entrypoint
+- `package.json` `bin` mapping: `fortuna -> dist/main.js`

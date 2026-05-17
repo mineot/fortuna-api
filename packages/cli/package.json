@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "fortuna": "dist/main.js"
+  },
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",

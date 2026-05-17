@@ -7,3 +7,5 @@ export * from './commands/registry.js';
 export * from './formatters/output.js';
 export * from './adapters/local/local-adapter.js';
 export * from './adapters/remote/remote-adapter.js';
+export * from './runtime/argv.js';
+export * from './runtime/run-cli.js';
