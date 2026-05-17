@@ -35,3 +35,18 @@ Milestone mapping:
 ## Next Step
 
 Part 2 should implement architecture baseline folders and foundational abstractions for mode-resolved command execution.
+
+## Phase 6 - Part 2 (Implemented)
+
+Part 2 establishes the architecture baseline and composition root, still without domain command execution.
+
+Implemented artifacts:
+
+- `src/config/cli-config.ts`: runtime mode and output resolution
+- `src/services/types.ts`: core context contracts
+- `src/services/defaults.ts`: default logger/clock/session store
+- `src/services/container.ts`: composition root (`createCliContext`)
+- `src/adapters/local/local-adapter.ts`: local adapter baseline
+- `src/adapters/remote/remote-adapter.ts`: remote adapter baseline
+- `src/commands/registry.ts`: command registry bound to command matrix
+- `src/formatters/output.ts`: output formatting (`human`/`json`)
