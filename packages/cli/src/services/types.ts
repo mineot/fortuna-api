@@ -16,12 +16,20 @@ export interface SessionStore {
   clear(): Promise<void>;
 }
 
+export interface SessionProvider {
+  readToken(): Promise<string | null>;
+  writeToken(token: string): Promise<void>;
+  clearToken(): Promise<void>;
+}
+
 export interface LocalAdapter {
   readonly mode: 'local';
+  readonly environment: 'DEV' | 'PROD';
 }
 
 export interface RemoteAdapter {
   readonly mode: 'remote';
+  readonly environment: 'DEV' | 'PROD';
   readonly apiBaseUrl: string;
 }
 
@@ -31,11 +39,13 @@ export type CliAdapterByMode = {
 };
 
 export interface CliContext {
+  requestId: string;
+  startedAt: Date;
   mode: CliMode;
   config: CliConfig;
   logger: CliLogger;
   clock: Clock;
   sessionStore: SessionStore;
+  sessionProvider: SessionProvider;
   adapter: LocalAdapter | RemoteAdapter;
 }
-

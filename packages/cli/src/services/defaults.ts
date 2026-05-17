@@ -1,4 +1,4 @@
-import type { CliLogger, Clock, SessionStore } from './types.js';
+import type { CliLogger, Clock, SessionStore, SessionProvider } from './types.js';
 
 export const systemClock: Clock = {
   now: () => new Date()
@@ -36,3 +36,10 @@ export function createInMemorySessionStore(): SessionStore {
   };
 }
 
+export function createSessionProvider(sessionStore: SessionStore): SessionProvider {
+  return {
+    readToken: () => sessionStore.getAccessToken(),
+    writeToken: (token: string) => sessionStore.setAccessToken(token),
+    clearToken: () => sessionStore.clear()
+  };
+}

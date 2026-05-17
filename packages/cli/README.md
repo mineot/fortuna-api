@@ -61,3 +61,19 @@ Implemented artifacts:
 - `src/runtime/run-cli.ts`: runtime dispatcher and exit code contract
 - `src/main.ts`: executable entrypoint
 - `package.json` `bin` mapping: `fortuna -> dist/main.js`
+
+## Phase 6 - Part 4 (Implemented)
+
+Part 4 consolidates composition root and execution context wiring.
+
+Implemented artifacts:
+
+- execution metadata in context: `requestId`, `startedAt`
+- env-aware config: `environment` (`DEV`/`PROD`)
+- mode-specific adapters now receive environment metadata
+- `SessionProvider` abstraction layered on top of `SessionStore`
+- centralized context bootstrap in `createCliContext` with:
+  - logger
+  - clock
+  - session store/provider
+  - mode-resolved adapter

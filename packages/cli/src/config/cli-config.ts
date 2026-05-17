@@ -6,6 +6,7 @@ export type EnvMap = Record<string, string | undefined>;
 export interface CliConfig {
   mode: CliMode;
   output: CliOutputFormat;
+  environment: 'DEV' | 'PROD';
   apiBaseUrl: string;
 }
 
@@ -38,9 +39,11 @@ export function createCliConfig(
   args: readonly string[],
   env: EnvMap = {}
 ): CliConfig {
+  const environment = env.FORTUNA_ENV === 'PROD' ? 'PROD' : 'DEV';
   return {
     mode: resolveCliMode(args, env),
     output: resolveOutputFormat(args, env),
+    environment,
     apiBaseUrl: env.FORTUNA_API_BASE_URL ?? DEFAULT_API_BASE_URL
   };
 }
