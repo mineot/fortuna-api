@@ -1,12 +1,28 @@
-:root {
-  color-scheme: light;
-  font-family: sans-serif;
-}
+@import 'tailwindcss';
+@import './theme.css';
+@import './assets/styles/input.css';
 
 * {
   box-sizing: border-box;
 }
 
+html,
 body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   margin: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+
+  app-root {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
 }

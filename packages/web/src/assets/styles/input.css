@@ -1,0 +1,30 @@
+@layer components {
+  .app-input {
+    @apply flex flex-col gap-1 px-2 py-1;
+    @apply border border-foreground-dark;
+    @apply bg-background-dark text-foreground-dark;
+    @apply transition-colors duration-300;
+
+    &:focus-within {
+      @apply border-primary;
+
+      > span:first-child {
+        @apply text-primary;
+      }
+    }
+
+    > input {
+      @apply text-foreground-dark;
+      @apply caret-primary;
+      outline: none;
+
+      &:focus {
+        @apply text-primary;
+      }
+    }
+
+    > .messages {
+      @apply text-xs text-foreground-dark;
+    }
+  }
+}

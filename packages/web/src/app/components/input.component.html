@@ -1,0 +1,23 @@
+<label class="app-input">
+  <span>
+    {{ label }}
+    @if (isRequired) {
+      <span aria-hidden="true">*</span>
+    }
+  </span>
+  <input
+    [id]="inputId || null"
+    [name]="name || null"
+    [type]="type"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [value]="value"
+    (input)="handleInput($event)"
+    (blur)="handleBlur()"
+  />
+  <span class="messages flex-col gap-1" [class.hidden]="!showError" [class.flex]="showError">
+    @for (message of errorMessages; track message) {
+      <span>{{ message }}</span>
+    }
+  </span>
+</label>

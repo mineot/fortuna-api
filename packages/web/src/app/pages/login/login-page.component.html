@@ -1,0 +1,26 @@
+<section>
+  <form class="flex flex-col gap-2" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-input
+      label="Email"
+      inputId="email"
+      name="email"
+      type="email"
+      placeholder="Digite seu email"
+      formControlName="email"
+    />
+    <app-input
+      label="Senha"
+      inputId="password"
+      name="password"
+      type="password"
+      placeholder="Digite sua senha"
+      formControlName="password"
+    />
+    <button type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Entrando...' : 'Entrar' }}
+    </button>
+  </form>
+  @if (errorMessage) {
+    <p>{{ errorMessage }}</p>
+  }
+</section>

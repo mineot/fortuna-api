@@ -1,0 +1,25 @@
+:root {
+  --color-background: var(--color-slate-900);
+  --color-background-dark: var(--color-slate-950);
+  --color-foreground: var(--color-slate-400);
+  --color-foreground-dark: var(--color-slate-600);
+  --color-primary: var(--color-yellow-600);
+  --color-secondary: var(--color-zinc-500);
+  --color-success: var(--color-green-500);
+  --color-warning: var(--color-orange-500);
+  --color-danger: var(--color-red-500);
+  --color-info: var(--color-purple-500);
+}
+
+@theme {
+  --color-background: var(--color-background);
+  --color-background-dark: var(--color-background-dark);
+  --color-foreground: var(--color-foreground);
+  --color-foreground-dark: var(--color-foreground-dark);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-danger: var(--color-danger);
+  --color-info: var(--color-info);
+}

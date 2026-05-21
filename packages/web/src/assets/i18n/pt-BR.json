@@ -1,0 +1,9 @@
+{
+  "app": {
+    "header": "Fortuna"
+  },
+  "validation": {
+    "required": "Este campo e obrigatorio.",
+    "email": "Digite um e-mail valido."
+  }
+}
