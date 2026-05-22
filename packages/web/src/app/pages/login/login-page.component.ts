@@ -1,4 +1,5 @@
 import { AuthService } from '../../core/auth/auth.service.js';
+import { ButtonComponent } from '../../components/button.component.js';
 import { Component, inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { InputComponent } from '../../components/input.component.js';
@@ -17,7 +18,7 @@ import {
 @Component({
   standalone: true,
   selector: 'app-login-page',
-  imports: [InputComponent, ReactiveFormsModule],
+  imports: [InputComponent, ReactiveFormsModule, ButtonComponent],
   templateUrl: './login-page.component.html',
 })
 export class LoginPageComponent {

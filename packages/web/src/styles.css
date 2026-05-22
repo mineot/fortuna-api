@@ -2,6 +2,7 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 @import './theme.css';
 @import './assets/styles/input.css';
+@import './assets/styles/button.css';
 
 * {
   box-sizing: border-box;
