@@ -2,20 +2,38 @@
   <span>
     {{ label }}
     @if (isRequired) {
-      <span aria-hidden="true">*</span>
+      <span class="star" aria-hidden="true">*</span>
     }
   </span>
-  <input
-    [id]="inputId || null"
-    [name]="name || null"
-    [type]="type"
-    [placeholder]="placeholder"
-    [disabled]="disabled"
-    [value]="value"
-    (input)="handleInput($event)"
-    (blur)="handleBlur()"
-  />
-  <span class="messages flex-col gap-1" [class.hidden]="!showError" [class.flex]="showError">
+  <span class="input-wrapper">
+    <input
+      [id]="inputId || null"
+      [name]="name || null"
+      [type]="inputType"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [value]="value"
+      (input)="handleInput($event)"
+      (blur)="handleBlur()"
+    />
+
+    @if (canTogglePassword) {
+      <button
+        type="button"
+        class="password-toggle"
+        [attr.aria-label]="isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'"
+        [disabled]="disabled"
+        (click)="togglePasswordVisibility()"
+      >
+        <i
+          class="bi"
+          [class.bi-eye]="!isPasswordVisible"
+          [class.bi-eye-slash]="isPasswordVisible"
+        ></i>
+      </button>
+    }
+  </span>
+  <span class="messages" [class.hidden]="!showError" [class.flex]="showError">
     @for (message of errorMessages; track message) {
       <span>{{ message }}</span>
     }

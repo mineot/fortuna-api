@@ -13,18 +13,45 @@
       }
     }
 
-    > input {
-      @apply text-foreground-dark;
-      @apply caret-primary;
-      outline: none;
+    > span {
+      > .star {
+        @apply text-xs text-warning;
+      }
+    }
 
-      &:focus {
-        @apply text-primary;
+    > .input-wrapper {
+      @apply flex items-center gap-2;
+
+      > input {
+        @apply flex-1 text-foreground-dark;
+        @apply caret-primary;
+        outline: none;
+
+        &:focus {
+          @apply text-primary;
+        }
+      }
+
+      > .password-toggle {
+        @apply inline-flex items-center justify-center;
+        @apply text-foreground-dark transition-colors duration-300;
+        @apply cursor-pointer;
+        background: transparent;
+        border: 0;
+
+        &:hover:not(:disabled) {
+          @apply text-primary;
+        }
+
+        &:disabled {
+          @apply cursor-not-allowed opacity-60;
+        }
       }
     }
 
     > .messages {
-      @apply text-xs text-foreground-dark;
+      @apply text-xs text-warning;
+      @apply flex-col gap-1;
     }
   }
 }

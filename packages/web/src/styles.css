@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
 @import './theme.css';
 @import './assets/styles/input.css';
 

@@ -3,6 +3,9 @@ import { Component, inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { InputComponent } from '../../components/input.component.js';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { validationHelpers } from '../../shared/index.js';
+
 import {
   FormControl,
   FormGroup,
@@ -10,31 +13,6 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
-
-const withTranslatedMessage = (
-  validator: ValidatorFn,
-  errorKey: string,
-  getMessage: () => string,
-): ValidatorFn => {
-  return (control) => {
-    const result = validator(control);
-    if (!result || !(errorKey in result)) {
-      return null;
-    }
-
-    const errorValue = result[errorKey];
-    const normalizedErrorValue =
-      errorValue && typeof errorValue === 'object' ? errorValue : {};
-
-    return {
-      [errorKey]: {
-        ...normalizedErrorValue,
-        message: getMessage(),
-      },
-    };
-  };
-};
 
 @Component({
   standalone: true,
@@ -50,10 +28,6 @@ export class LoginPageComponent {
   protected isSubmitting = false;
   protected errorMessage: string | null = null;
 
-  private translatedValidator(errorKey: string, validator: ValidatorFn, messageKey: string): ValidatorFn {
-    return withTranslatedMessage(validator, errorKey, () => this.translate.instant(messageKey));
-  }
-
   readonly form = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
@@ -64,7 +38,9 @@ export class LoginPageComponent {
     }),
     password: new FormControl('', {
       nonNullable: true,
-      validators: [this.translatedValidator('required', Validators.required, 'validation.required')],
+      validators: [
+        this.translatedValidator('required', Validators.required, 'validation.required'),
+      ],
     }),
   });
 
@@ -94,5 +70,15 @@ export class LoginPageComponent {
           this.errorMessage = error.message ?? 'Falha no login.';
         },
       });
+  }
+
+  private translatedValidator(
+    errorKey: string,
+    validator: ValidatorFn,
+    messageKey: string,
+  ): ValidatorFn {
+    return validationHelpers.withMessage(validator, errorKey, () =>
+      this.translate.instant(messageKey),
+    );
   }
 }

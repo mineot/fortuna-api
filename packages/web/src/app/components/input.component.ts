@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
+
 import {
   ControlValueAccessor,
+  FormControl,
   NgControl,
   ValidationErrors,
   Validators,
@@ -21,9 +23,12 @@ export class InputComponent implements ControlValueAccessor {
   @Input() placeholder = '';
   @Input() inputId = '';
   @Input() name = '';
+  @Input() forceTouched = false;
+  @Input() showPasswordToggle = false;
 
   value = '';
   disabled = false;
+  isPasswordVisible = false;
 
   private readonly ngControl: NgControl | null = null;
 
@@ -39,7 +44,19 @@ export class InputComponent implements ControlValueAccessor {
 
   get showError(): boolean {
     const control = this.ngControl?.control;
-    return Boolean(control?.invalid && (control.touched || control.dirty));
+    return Boolean(control?.invalid && (this.forceTouched || control.touched || control.dirty));
+  }
+
+  get inputType(): InputType | 'text' {
+    if (this.canTogglePassword) {
+      return this.isPasswordVisible ? 'text' : 'password';
+    }
+
+    return this.type;
+  }
+
+  get canTogglePassword(): boolean {
+    return this.showPasswordToggle && this.type === 'password';
   }
 
   get errorMessage(): string {
@@ -54,13 +71,25 @@ export class InputComponent implements ControlValueAccessor {
 
   get isRequired(): boolean {
     const control = this.ngControl?.control;
+
     if (!control) {
       return false;
     }
 
-    return (
-      control.hasValidator(Validators.required) || control.hasValidator(Validators.requiredTrue)
-    );
+    if (
+      control.hasValidator(Validators.required) ||
+      control.hasValidator(Validators.requiredTrue)
+    ) {
+      return true;
+    }
+
+    const validator = control.validator;
+    if (!validator) {
+      return false;
+    }
+
+    const errors = validator(new FormControl(''));
+    return Boolean(errors?.['required'] || errors?.['requiredTrue']);
   }
 
   writeValue(value: string | null): void {
@@ -87,6 +116,14 @@ export class InputComponent implements ControlValueAccessor {
 
   handleBlur(): void {
     this.onTouched();
+  }
+
+  togglePasswordVisibility(): void {
+    if (this.disabled || !this.canTogglePassword) {
+      return;
+    }
+
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   private formatErrorMessage(key: string, errorValue: ValidationErrors[string]): string {
