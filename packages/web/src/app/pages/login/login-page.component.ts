@@ -1,8 +1,8 @@
 import { AuthService } from '../../core/auth/auth.service.js';
-import { ButtonComponent } from '../../components/button.component.js';
+import { ButtonComponent } from '../../components/button/button.component.js';
 import { Component, inject } from '@angular/core';
 import { finalize } from 'rxjs';
-import { InputComponent } from '../../components/input.component.js';
+import { InputComponent } from '../../components/input/input.component.js';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { validationHelpers } from '../../shared/index.js';
@@ -20,6 +20,7 @@ import {
   selector: 'app-login-page',
   imports: [InputComponent, ReactiveFormsModule, ButtonComponent],
   templateUrl: './login-page.component.html',
+  styleUrls: ['./login-page.component.css'],
 })
 export class LoginPageComponent {
   private readonly authService = inject(AuthService);

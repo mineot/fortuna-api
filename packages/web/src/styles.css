@@ -1,8 +1,5 @@
-@import 'tailwindcss';
+@import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
-@import './theme.css';
-@import './assets/styles/input.css';
-@import './assets/styles/button.css';
 
 * {
   box-sizing: border-box;
@@ -17,9 +14,6 @@ body {
   overflow: hidden;
   padding: 0;
   width: 100%;
-
-  background-color: var(--color-background);
-  color: var(--color-foreground);
 
   app-root {
     display: flex;
