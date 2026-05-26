@@ -10,6 +10,47 @@ Follow the roadmap below exactly.
 
 ---
 
+# Implementation Status (Updated: 2026-05-26)
+
+## Completed
+
+- [x] Step 1 — Base AdonisJS project created (TypeScript, EdgeJS, Vite, Lucid, SQLite).
+- [x] Step 2 — Bootstrap, Bootstrap Icons, AlpineJS installed and configured.
+- [x] Step 3 — Base layout/navigation files created (`layouts/app.edge`, `partials/navbar.edge`, `partials/sidebar.edge`, `partials/flash.edge`, `pages/dashboard.edge`).
+- [x] Step 4 — `users` and `settings` migrations/models/relations created.
+- [x] Step 5 — `account_types` and `accounts` migrations/models/relations created + account types seeder created.
+- [x] Step 6 — `category_groups` and `categories` migrations/models/relations created.
+- [x] Step 7 — `payees` migration/model/relations created.
+- [x] Step 8 — `transactions` migration/model/relations created.
+- [x] Step 9 — `transfers` migration/model/relations created + `app/services/transfer_service.ts` created for linked source/destination transactions in DB transaction.
+- [x] Step 10 — `recurring_transactions` migration/model/relations created.
+- [x] Step 11 — `budgets` and `budget_categories` migrations/models/relations created.
+- [x] Step 12 — `credit_cards` migration/model/relations created.
+- [x] Step 13 — `credit_card_invoices` migration/model/relations created.
+- [x] Step 14 — `credit_card_purchases` and `credit_card_installments` migrations/models/relations created.
+- [x] Step 15 — `credit_card_invoice_payments` migration/model/relations created.
+- [x] Step 16 — `shopping_lists` and `shopping_list_items` migrations/models/relations created.
+- [x] Step 17 — `purchases` and `purchase_items` migrations/models/relations created.
+
+## Pending (Next Roadmap Scope)
+
+- [ ] Step 18 — Internationalize project (i18n base and language structure).
+- [ ] Step 19 — Internationalize database terms (translation terms table and integration strategy).
+- [ ] Controllers and Routes Roadmap (section 14), module by module.
+- [ ] UI Pages Roadmap (section 15), module by module.
+- [ ] Validation Strategy (section 16) for all forms/ownership checks.
+- [ ] Authentication/Authorization rollout after base structure stabilization (section 17 refinement).
+- [ ] Business services completion for remaining modules (section 18).
+
+## Important Notes Applied
+
+- SQLite path is now configurable via environment variable:
+  - `DB_DATABASE=tmp/db.sqlite3` in `.env` and `.env.example`.
+  - `config/database.ts` reads `env.get('DB_DATABASE')`.
+- Project is currently using Bootstrap dark theme (`data-bs-theme="dark"`).
+
+---
+
 # Fortuna — AdonisJS Implementation Roadmap
 
 ## 1. Project Overview
@@ -2006,6 +2047,47 @@ Models:
 Purchase
 PurchaseItem
 ```
+
+Ask before implementing.
+
+---
+
+### 18. Internationalize project
+
+Deliverables:
+
+```text
+Configure i18n base for AdonisJS application
+Define default locale and fallback locale
+Create translation file structure for UI terms/messages
+Prepare helper usage pattern for EdgeJS/views/controllers
+```
+
+Important:
+
+- Keep existing `resources` setup in JavaScript as requested.
+- Do not implement business translations yet; only baseline infrastructure.
+
+Ask before implementing.
+
+---
+
+### 19. Internationalize database terms
+
+Deliverables:
+
+```text
+Create translation terms table(s) for database-driven labels/texts
+Define locale-key-value strategy (or equivalent normalized structure)
+Create Lucid model(s) and ownership/consistency constraints
+Document usage pattern for modules that will consume term translations
+```
+
+Important:
+
+- Use Lucid ORM notation for migrations/models/queries.
+- Avoid raw SQL for domain implementation unless strictly necessary.
+- Final behavior details will be provided by user before implementation.
 
 Ask before implementing.
 
