@@ -1,6 +1,7 @@
 @let(variant = $props.get('variant') || 'default')
 @inject({ variant, autoDismiss: $props.get('autoDismiss') })
-@let(classes = ['alert', `alert-${variant}`])
+@let(mappedVariant = variant === 'destructive' ? 'danger' : variant)
+@let(classes = ['alert', `alert-${mappedVariant}`, 'shadow-sm'])
 
 <div {{ $props
   .except(['variant', 'autoDismiss'])

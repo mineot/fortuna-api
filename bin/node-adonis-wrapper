@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+filtered=()
+for arg in "$@"; do
+  if [[ "$arg" == "--js-flags=--nodecommit_pooled_pages" ]]; then
+    continue
+  fi
+  filtered+=("$arg")
+done
+
+exec node "${filtered[@]}"

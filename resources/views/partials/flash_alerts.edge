@@ -1,4 +1,4 @@
-<div class="flash-container">
+<div class="position-fixed top-0 start-50 translate-middle-x mt-3 z-3 d-flex flex-column gap-2" style="min-width: 320px;">
   @if(flashMessages.has('error'))
     @alert.root({ variant: 'destructive', autoDismiss: true })
       @!alert.description({ text: flashMessages.get('error') })

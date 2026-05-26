@@ -3,7 +3,7 @@
   ? $context.oldValue || $props.get('value') || ''
   : $props.get('value') || ''
 )
-@let(classes = [])
+@let(classes = [$context.hasErrors ? 'form-control is-invalid' : 'form-control'])
 
 <input {{ $props
   .except(['value'])

@@ -10,7 +10,7 @@
     )
     : undefined
 )
-@let(activeClass = request.url() === linkHref ? 'current' : '')
+@let(activeClass = request.url() === linkHref ? 'active fw-semibold' : '')
 @let(classes = [activeClass])
 
 <a {{ $props
