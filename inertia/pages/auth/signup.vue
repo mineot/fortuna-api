@@ -3,65 +3,71 @@ import { Form } from '@adonisjs/inertia/vue'
 </script>
 
 <template>
-  <div class="form-container">
-    <div>
-      <h1>Signup</h1>
-      <p>Enter your details below to create your account</p>
-    </div>
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-5">
+      <div class="card bg-body border-secondary-subtle">
+        <div class="card-body p-4 p-md-5">
+          <h1 class="h3 mb-2">Signup</h1>
+          <p class="text-secondary mb-4">Enter your details to create your account.</p>
 
-    <div>
-      <Form route="new_account.store" #default="{ processing, errors }">
-        <div>
-          <label for="fullName">Full name</label>
+          <Form route="new_account.store" #default="{ processing, errors }" class="d-grid gap-3">
+            <div>
+              <label for="fullName" class="form-label">Full name</label>
           <input
             type="text"
             name="fullName"
             id="fullName"
-            :data-invalid="errors.fullName ? 'true' : undefined"
+            :class="['form-control', { 'is-invalid': errors.fullName }]"
           />
-          <div v-if="errors.fullName">{{ errors.fullName }}</div>
-        </div>
+              <div v-if="errors.fullName" class="invalid-feedback d-block">{{ errors.fullName }}</div>
+            </div>
 
-        <div>
-          <label for="email">Email</label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            autocomplete="email"
-            :data-invalid="errors.email ? 'true' : undefined"
-          />
-          <div v-if="errors.email">{{ errors.email }}</div>
-        </div>
+            <div>
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                autocomplete="email"
+                :class="['form-control', { 'is-invalid': errors.email }]"
+              />
+              <div v-if="errors.email" class="invalid-feedback d-block">{{ errors.email }}</div>
+            </div>
 
-        <div>
-          <label for="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            autocomplete="new-password"
-            :data-invalid="errors.password ? 'true' : undefined"
-          />
-          <div v-if="errors.password">{{ errors.password }}</div>
-        </div>
+            <div>
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                autocomplete="new-password"
+                :class="['form-control', { 'is-invalid': errors.password }]"
+              />
+              <div v-if="errors.password" class="invalid-feedback d-block">{{ errors.password }}</div>
+            </div>
 
-        <div>
-          <label for="passwordConfirmation">Confirm password</label>
-          <input
-            type="password"
-            name="passwordConfirmation"
-            id="passwordConfirmation"
-            autocomplete="new-password"
-            :data-invalid="errors.passwordConfirmation ? 'true' : undefined"
-          />
-          <div v-if="errors.passwordConfirmation">{{ errors.passwordConfirmation }}</div>
-        </div>
+            <div>
+              <label for="passwordConfirmation" class="form-label">Confirm password</label>
+              <input
+                type="password"
+                name="passwordConfirmation"
+                id="passwordConfirmation"
+                autocomplete="new-password"
+                :class="['form-control', { 'is-invalid': errors.passwordConfirmation }]"
+              />
+              <div v-if="errors.passwordConfirmation" class="invalid-feedback d-block">
+                {{ errors.passwordConfirmation }}
+              </div>
+            </div>
 
-        <div>
-          <button type="submit" class="button" :disabled="processing">Sign up</button>
+            <div class="d-grid mt-2">
+              <button type="submit" class="btn btn-primary" :disabled="processing">
+                {{ processing ? 'Creating account...' : 'Sign up' }}
+              </button>
+            </div>
+          </Form>
         </div>
-      </Form>
+      </div>
     </div>
   </div>
 </template>

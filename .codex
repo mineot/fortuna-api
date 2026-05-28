@@ -1,0 +1,2432 @@
+You are implementing the Fortuna project.
+
+Fortuna is a personal planning and personal finance application built with AdonisJS, InertiaJS, Vue 3, SQLite, Lucid ORM, and TypeScript.
+
+You must work one step at a time. Before implementing each step, explain what you are about to do and ask: “Do you authorize me to implement this step now?”
+
+Never implement multiple phases at once. Never create all migrations, models, controllers, or views at once. Always wait for explicit user approval before continuing.
+
+Follow the roadmap below exactly.
+
+---
+
+# Implementation Status (Updated: 2026-05-28)
+
+## Completed
+
+- [x] Step 1 — Base AdonisJS project created (TypeScript, Vite, Lucid, SQLite, InertiaJS + Vue configured).
+- [x] Step 2 — Frontend dependencies configured for InertiaJS + Vue + Bootstrap + Bootstrap Icons.
+- [x] Step 3 — Base application layout/navigation structure created in Inertia + Vue.
+
+## Pending (Next Roadmap Scope)
+
+- [ ] Step 4 — Create users and settings migrations/models/relations.
+- [ ] Step 5 — Create account types and accounts migrations/models/relations.
+- [ ] Step 6 — Create category groups and categories migrations/models/relations.
+- [ ] Step 7 — Create payees migration/model/relations.
+- [ ] Step 8 — Create transactions migration/model/relations.
+- [ ] Step 9 — Create transfers migration/model/relations + transfer service behavior.
+- [ ] Step 10 — Create recurring transactions migration/model/relations.
+- [ ] Step 11 — Create budgets and budget categories migrations/models/relations.
+- [ ] Step 12 — Create credit cards migration/model/relations.
+- [ ] Step 13 — Create credit card invoices migration/model/relations.
+- [ ] Step 14 — Create credit card purchases and installments migrations/models/relations.
+- [ ] Step 15 — Create credit card invoice payments migration/model/relations.
+- [ ] Step 16 — Create shopping lists and shopping list items migrations/models/relations.
+- [ ] Step 17 — Create purchases and purchase items migrations/models/relations.
+- [ ] Step 18 — Internationalize project (i18n base and language structure).
+- [ ] Step 19 — Internationalize database terms (translation terms table and integration strategy).
+- [ ] Controllers and Routes Roadmap (section 14), module by module.
+- [ ] UI Pages Roadmap (section 15), module by module.
+- [ ] Validation Strategy (section 16) for all forms/ownership checks.
+- [ ] Authentication/Authorization rollout after base structure stabilization (section 17 refinement).
+- [ ] Business services completion for remaining modules (section 18).
+
+## Important Notes Applied
+
+- Frontend currently uses InertiaJS + Vue 3 (`@adonisjs/inertia`, `@inertiajs/vue3`, `vue`).
+- Bootstrap and Bootstrap Icons are installed and imported globally in `inertia/app.ts`.
+- Dark theme is enforced globally with Bootstrap (`data-bs-theme="dark"` in `resources/views/inertia_layout.edge`).
+- SQLite is configured in `config/database.ts` with `filename: app.tmpPath('db.sqlite3')`.
+- Authentication base is present with `signup`, `login`, and `logout` routes/controllers.
+
+---
+
+# Fortuna — AdonisJS Implementation Roadmap
+
+## 1. Project Overview
+
+**Project name:** Fortuna
+**Project type:** Personal planning and personal finance web application
+**Main stack:**
+
+- **Backend:** AdonisJS
+- **Database ORM:** Lucid ORM
+- **Database:** SQLite for the initial version
+- **Frontend architecture:** InertiaJS + Vue 3
+- **Language:** TypeScript
+
+AdonisJS should be used as a full-stack MVC framework with InertiaJS + Vue 3 in the frontend layer. Lucid ORM must be used for models, migrations, relationships, and database access. AdonisJS documentation describes Lucid as the official SQL ORM, supporting models, migrations, query builder, relationships, transactions, and hooks. ([AdonisJS Docs][1])
+
+The frontend assets should be managed using the AdonisJS Vite integration, which is the official frontend asset pipeline documented by AdonisJS. ([AdonisJS Docs][2])
+
+---
+
+# 2. Mandatory Working Rule for Codex
+
+## Critical instruction
+
+Codex must **not implement the whole project at once**.
+
+Codex must work using the following workflow:
+
+1. Read the entire specification.
+2. Choose only the **first pending item**.
+3. Explain what will be implemented.
+4. Ask the user for authorization.
+5. Wait for explicit approval.
+6. Implement only that approved item.
+7. Show what was changed.
+8. Ask for authorization before moving to the next item.
+
+## Approval phrase
+
+Before each implementation step, Codex must ask:
+
+```text
+Do you authorize me to implement this step now?
+```
+
+Codex must only continue if the user explicitly answers something equivalent to:
+
+```text
+Yes, proceed.
+```
+
+---
+
+# 3. Development Philosophy
+
+Fortuna must start as a **simple, practical, personal planning and finance app**.
+
+The application should not become overly complex in the first version. However, the database must be designed carefully enough to support future expansion.
+
+The MVP should focus on:
+
+- Personal accounts
+- Financial categories
+- Payees
+- Transactions
+- Transfers
+- Recurring transactions
+- Budgets
+- Credit cards
+- Credit card invoices
+- Basic shopping lists
+- Simple dashboard
+- User authentication
+
+The system should be built in a modular way, but not over-engineered.
+
+---
+
+# 4. Initial Technical Decisions
+
+## 4.1 Framework
+
+Use **AdonisJS** as the main framework.
+
+The application should be created as a standard full-stack AdonisJS application, not an API-only project, because the frontend uses InertiaJS with Vue pages.
+
+## 4.2 Frontend
+
+Use:
+
+- **InertiaJS + Vue 3** for pages and layouts
+- **Vite** for frontend build and HMR
+
+Keep frontend behavior component-driven with Vue and avoid unnecessary complexity in the initial version.
+
+## 4.3 Database
+
+Use **SQLite** for the first version.
+
+The database must be structured using AdonisJS migrations and Lucid models.
+
+All tables must have:
+
+```text
+id
+created_at
+updated_at
+```
+
+Most business tables should also support soft archival using:
+
+```text
+archived
+archived_at
+```
+
+Instead of deleting records, the system should prefer archiving whenever possible.
+
+---
+
+# 5. Project Setup Roadmap
+
+## Step 1 — Create the AdonisJS project
+
+Codex must create the base project.
+
+Expected result:
+
+- AdonisJS project created
+- TypeScript enabled
+- InertiaJS + Vue enabled
+- Vite enabled
+- SQLite configured
+- Lucid ORM configured
+- Basic project boots successfully
+
+Codex must not start creating domain tables yet.
+
+Before implementing, Codex must ask:
+
+```text
+Do you authorize me to create the base AdonisJS project structure?
+```
+
+---
+
+## Step 2 — Install frontend dependencies
+
+Install and configure frontend dependencies for Inertia + Vue + Bootstrap.
+
+Expected result:
+
+- InertiaJS integrated in AdonisJS
+- Vue 3 pages rendering correctly
+- Vite entrypoint for Inertia/Vue configured
+- Bootstrap and Bootstrap Icons available globally
+- Bootstrap dark theme configured as default
+
+Before implementing, Codex must ask:
+
+```text
+Do you authorize me to install and configure InertiaJS, Vue, Bootstrap, and Bootstrap Icons frontend dependencies?
+```
+
+---
+
+# 6. Application Layout
+
+## Step 3 — Create the base Inertia/Vue layout
+
+Create a base app layout structure for Inertia and Vue pages.
+
+The layout must include:
+
+- HTML5 document structure
+- Responsive viewport
+- Dynamic page title
+- App layout with reusable navigation components
+- Sidebar or top navbar
+- Main content area
+- Flash messages area
+- Vite asset loading
+
+Suggested structure:
+
+```text
+inertia/
+  layouts/
+    default.vue
+  pages/
+    home.vue
+```
+
+The visual style should be clean and practical.
+
+Suggested navigation items:
+
+- Dashboard
+- Accounts
+- Categories
+- Payees
+- Transactions
+- Transfers
+- Recurring
+- Budgets
+- Credit Cards
+- Shopping Lists
+- Settings
+
+Before implementing, Codex must ask:
+
+```text
+Do you authorize me to create the base Inertia/Vue layout and navigation structure?
+```
+
+---
+
+# 7. Database Design Principles
+
+## 7.1 Naming convention
+
+Use English table names in snake_case.
+
+Examples:
+
+```text
+users
+settings
+account_types
+accounts
+category_groups
+categories
+payees
+transactions
+transfers
+recurring_transactions
+budgets
+budget_categories
+credit_cards
+credit_card_invoices
+credit_card_purchases
+credit_card_installments
+credit_card_invoice_payments
+shopping_lists
+shopping_list_items
+purchases
+purchase_items
+```
+
+## 7.2 Primary keys
+
+All tables must use:
+
+```text
+id integer primary key
+```
+
+## 7.3 Timestamps
+
+All tables must use:
+
+```text
+created_at
+updated_at
+```
+
+## 7.4 Archival fields
+
+Most user-created entities must include:
+
+```text
+archived boolean default false
+archived_at timestamp nullable
+```
+
+Use archival for:
+
+- Accounts
+- Categories
+- Payees
+- Transactions
+- Recurring transactions
+- Budgets
+- Credit cards
+- Shopping lists
+- Purchases
+
+Do not archive purely relational join tables unless necessary.
+
+## 7.5 Money fields
+
+All money values must be stored as integer cents.
+
+Example:
+
+```text
+amount_cents integer not null
+```
+
+Do not store money as floating point.
+
+## 7.6 Dates
+
+Use clear date fields:
+
+```text
+transaction_date
+due_date
+closing_date
+payment_date
+start_date
+end_date
+```
+
+For SQLite, store dates as ISO strings using AdonisJS/Lucid conventions.
+
+## 7.7 Currency
+
+For the MVP, use a default currency from settings, probably:
+
+```text
+BRL
+```
+
+Future multi-currency support can be added later.
+
+---
+
+# 8. Database Schema Specification
+
+---
+
+## 8.1 Users
+
+### Table: `users`
+
+Purpose:
+
+Stores application users.
+
+Even if Fortuna starts as a personal app for one user, the database should support multiple users from the beginning.
+
+Fields:
+
+```text
+id
+full_name
+email
+password
+created_at
+updated_at
+```
+
+Suggested columns:
+
+```ts
+table.increments("id");
+table.string("full_name").notNullable();
+table.string("email").notNullable().unique();
+table.string("password").notNullable();
+table.timestamp("created_at");
+table.timestamp("updated_at");
+```
+
+Relationships:
+
+```text
+User has one Settings
+User has many Accounts
+User has many Categories
+User has many Transactions
+User has many Budgets
+User has many CreditCards
+User has many ShoppingLists
+```
+
+Implementation notes:
+
+- Password must be hashed.
+- Email must be unique.
+- Authentication should be implemented after the core project structure is stable.
+
+---
+
+## 8.2 Settings
+
+### Table: `settings`
+
+Purpose:
+
+Stores user-specific configuration for locale, currency, and financial period rules.
+
+Fields:
+
+```text
+id
+user_id
+locale
+currency
+fiscal_year_start_day
+fiscal_year_start_month
+created_at
+updated_at
+```
+
+Suggested defaults:
+
+```text
+locale: pt-BR
+currency: BRL
+fiscal_year_start_day: 1
+fiscal_year_start_month: 1
+```
+
+Important:
+
+The fiscal year settings allow the user to define a custom financial year.
+
+Example:
+
+```text
+fiscal_year_start_day = 25
+fiscal_year_start_month = 12
+```
+
+This means the user can later generate financial reports using custom periods.
+
+Relationships:
+
+```text
+Settings belongs to User
+```
+
+Validation rules:
+
+- `locale` required
+- `currency` required
+- `fiscal_year_start_day` between 1 and 31
+- `fiscal_year_start_month` between 1 and 12
+
+---
+
+## 8.3 Account Types
+
+### Table: `account_types`
+
+Purpose:
+
+Defines types of financial accounts.
+
+Examples:
+
+```text
+Checking account
+Savings account
+Cash wallet
+Investment account
+Digital wallet
+Other
+```
+
+Fields:
+
+```text
+id
+name
+slug
+description
+created_at
+updated_at
+```
+
+Suggested columns:
+
+```ts
+table.increments("id");
+table.string("name").notNullable();
+table.string("slug").notNullable().unique();
+table.text("description").nullable();
+table.timestamp("created_at");
+table.timestamp("updated_at");
+```
+
+Relationships:
+
+```text
+AccountType has many Accounts
+```
+
+Seed data:
+
+```text
+checking
+savings
+cash
+investment
+digital_wallet
+other
+```
+
+---
+
+## 8.4 Accounts
+
+### Table: `accounts`
+
+Purpose:
+
+Stores financial accounts owned by the user.
+
+Examples:
+
+```text
+Main bank account
+Cash wallet
+Savings account
+Investment account
+Digital wallet
+```
+
+Fields:
+
+```text
+id
+user_id
+account_type_id
+name
+description
+initial_balance_cents
+current_balance_cents
+currency
+color
+icon
+archived
+archived_at
+created_at
+updated_at
+```
+
+Business rules:
+
+- `initial_balance_cents` is the amount available when the account is created.
+- `current_balance_cents` can be updated from transactions or calculated later.
+- For the first version, it is acceptable to store `current_balance_cents`.
+- Every transaction linked to an account affects its balance.
+- Archived accounts should not appear in default lists.
+
+Relationships:
+
+```text
+Account belongs to User
+Account belongs to AccountType
+Account has many Transactions
+Account has many Transfers as source account
+Account has many Transfers as destination account
+Account has many CreditCards
+```
+
+---
+
+## 8.5 Category Groups
+
+### Table: `category_groups`
+
+Purpose:
+
+Groups categories into broader sections.
+
+Examples:
+
+```text
+Income
+Housing
+Food
+Transport
+Health
+Education
+Leisure
+Debt
+Investments
+Other
+```
+
+Fields:
+
+```text
+id
+user_id
+name
+type
+description
+color
+icon
+sort_order
+archived
+archived_at
+created_at
+updated_at
+```
+
+`type` should identify the general group direction:
+
+```text
+income
+expense
+transfer
+```
+
+Business rules:
+
+- Category groups help organize reports.
+- A category group can contain many categories.
+- Category groups can be user-specific.
+- Some default groups can be seeded for each user.
+
+Relationships:
+
+```text
+CategoryGroup belongs to User
+CategoryGroup has many Categories
+```
+
+---
+
+## 8.6 Categories
+
+### Table: `categories`
+
+Purpose:
+
+Classifies transactions.
+
+Examples:
+
+```text
+Salary
+Groceries
+Rent
+Fuel
+Internet
+School
+Restaurant
+Pharmacy
+Credit card payment
+Transfer
+```
+
+Fields:
+
+```text
+id
+user_id
+category_group_id
+parent_id
+name
+type
+description
+color
+icon
+sort_order
+archived
+archived_at
+created_at
+updated_at
+```
+
+`type` values:
+
+```text
+income
+expense
+transfer
+```
+
+Important:
+
+A category can optionally have a parent category.
+
+Example:
+
+```text
+Food
+  Groceries
+  Restaurant
+  Coffee
+```
+
+Relationships:
+
+```text
+Category belongs to User
+Category belongs to CategoryGroup
+Category belongs to ParentCategory
+Category has many ChildCategories
+Category has many Transactions
+Category has many BudgetCategories
+```
+
+Business rules:
+
+- Income transactions should use income categories.
+- Expense transactions should use expense categories.
+- Transfers may use a special transfer category if needed.
+- Archived categories should not appear in default selection fields.
+- Existing transactions should keep their category even if the category is archived.
+
+---
+
+## 8.7 Payees
+
+### Table: `payees`
+
+Purpose:
+
+Stores people, companies, stores, institutions, or entities involved in transactions.
+
+Examples:
+
+```text
+Employer
+Supermarket
+Pharmacy
+Electric company
+Internet provider
+School
+Restaurant
+```
+
+Fields:
+
+```text
+id
+user_id
+name
+document
+email
+phone
+notes
+archived
+archived_at
+created_at
+updated_at
+```
+
+Relationships:
+
+```text
+Payee belongs to User
+Payee has many Transactions
+Payee has many CreditCardPurchases
+Payee has many Purchases
+```
+
+Business rules:
+
+- Payee is optional in transactions.
+- Payees improve filtering, reports, and transaction history.
+- A payee should not be deleted if linked to existing records.
+
+---
+
+# 9. Core Financial Tables
+
+---
+
+## 9.1 Transactions
+
+### Table: `transactions`
+
+Purpose:
+
+Stores financial movements in accounts.
+
+Transaction types:
+
+```text
+income
+expense
+transfer
+credit_card_payment
+invoice_payment
+adjustment
+```
+
+Fields:
+
+```text
+id
+user_id
+account_id
+category_id
+payee_id
+type
+description
+notes
+amount_cents
+transaction_date
+due_date
+paid_at
+status
+payment_method
+reference
+archived
+archived_at
+created_at
+updated_at
+```
+
+`status` values:
+
+```text
+pending
+paid
+cancelled
+scheduled
+```
+
+`payment_method` examples:
+
+```text
+cash
+debit_card
+credit_card
+pix
+bank_transfer
+boleto
+other
+```
+
+Business rules:
+
+- Income increases account balance.
+- Expense decreases account balance.
+- Pending transactions should not affect current balance unless explicitly configured later.
+- Paid transactions affect the balance.
+- Transactions should support future filtering by:
+  - Period
+  - Account
+  - Category
+  - Payee
+  - Type
+  - Status
+
+Relationships:
+
+```text
+Transaction belongs to User
+Transaction belongs to Account
+Transaction belongs to Category
+Transaction belongs to Payee
+Transaction may belong to Transfer
+Transaction may belong to CreditCardInvoicePayment
+Transaction may belong to Purchase
+```
+
+Important:
+
+For MVP, transaction records are the central financial table.
+
+---
+
+## 9.2 Transfers
+
+### Table: `transfers`
+
+Purpose:
+
+Represents money movement between two accounts owned by the same user.
+
+Fields:
+
+```text
+id
+user_id
+source_account_id
+destination_account_id
+source_transaction_id
+destination_transaction_id
+amount_cents
+transfer_date
+description
+notes
+status
+archived
+archived_at
+created_at
+updated_at
+```
+
+Business rules:
+
+A transfer should generate two linked transactions:
+
+1. Expense-like transaction from source account
+2. Income-like transaction into destination account
+
+Example:
+
+```text
+Transfer R$ 500 from Checking Account to Savings Account.
+```
+
+Effects:
+
+```text
+Checking Account: -50000 cents
+Savings Account: +50000 cents
+```
+
+Relationships:
+
+```text
+Transfer belongs to User
+Transfer belongs to SourceAccount
+Transfer belongs to DestinationAccount
+Transfer belongs to SourceTransaction
+Transfer belongs to DestinationTransaction
+```
+
+Validation rules:
+
+- Source account and destination account must be different.
+- Amount must be greater than zero.
+- Both accounts must belong to the same user.
+
+---
+
+## 9.3 Recurring Transactions
+
+### Table: `recurring_transactions`
+
+Purpose:
+
+Stores repeated financial events.
+
+Examples:
+
+```text
+Salary
+Rent
+Internet bill
+Streaming subscription
+School payment
+Insurance
+```
+
+Fields:
+
+```text
+id
+user_id
+account_id
+category_id
+payee_id
+type
+description
+amount_cents
+frequency
+interval
+start_date
+end_date
+next_occurrence_date
+last_generated_at
+status
+auto_create
+notes
+archived
+archived_at
+created_at
+updated_at
+```
+
+`frequency` values:
+
+```text
+daily
+weekly
+monthly
+yearly
+custom
+```
+
+`status` values:
+
+```text
+active
+paused
+finished
+cancelled
+```
+
+Business rules:
+
+- Recurring transactions should generate normal transactions.
+- Generation can be manual in the first version.
+- Automatic scheduling can be added later.
+- `next_occurrence_date` must be updated after each generation.
+- `auto_create` controls whether the system should create transactions automatically in future versions.
+
+Relationships:
+
+```text
+RecurringTransaction belongs to User
+RecurringTransaction belongs to Account
+RecurringTransaction belongs to Category
+RecurringTransaction belongs to Payee
+RecurringTransaction has many Transactions in future version
+```
+
+MVP behavior:
+
+- Show recurring transactions.
+- Allow manual generation of the next transaction.
+- Do not implement background jobs in the first step unless explicitly approved.
+
+---
+
+# 10. Budget Tables
+
+---
+
+## 10.1 Budgets
+
+### Table: `budgets`
+
+Purpose:
+
+Stores planned financial limits or goals for a period.
+
+Examples:
+
+```text
+Monthly grocery budget
+Monthly transport budget
+Family leisure budget
+Annual education budget
+```
+
+Fields:
+
+```text
+id
+user_id
+name
+description
+period_type
+start_date
+end_date
+amount_cents
+alert_percentage
+status
+archived
+archived_at
+created_at
+updated_at
+```
+
+`period_type` values:
+
+```text
+monthly
+yearly
+custom
+```
+
+`status` values:
+
+```text
+active
+closed
+cancelled
+```
+
+Business rules:
+
+- A budget can apply to one or more categories.
+- Budget usage is calculated from transactions.
+- Expenses should reduce available budget.
+- Income budgets can be supported later, but MVP should focus on expense budgets.
+- `alert_percentage` can be used later to warn the user when spending reaches a threshold.
+
+Relationships:
+
+```text
+Budget belongs to User
+Budget has many BudgetCategories
+Budget belongs to many Categories through BudgetCategories
+```
+
+---
+
+## 10.2 Budget Categories
+
+### Table: `budget_categories`
+
+Purpose:
+
+Join table between budgets and categories.
+
+Fields:
+
+```text
+id
+budget_id
+category_id
+assigned_amount_cents
+created_at
+updated_at
+```
+
+Business rules:
+
+- A budget may be split across multiple categories.
+- `assigned_amount_cents` is optional if the budget has one global amount.
+- If used, the sum of assigned amounts should not exceed the total budget amount.
+
+Relationships:
+
+```text
+BudgetCategory belongs to Budget
+BudgetCategory belongs to Category
+```
+
+---
+
+# 11. Credit Card Tables
+
+---
+
+## 11.1 Credit Cards
+
+### Table: `credit_cards`
+
+Purpose:
+
+Stores credit cards owned by the user.
+
+Fields:
+
+```text
+id
+user_id
+account_id
+name
+brand
+last_four_digits
+credit_limit_cents
+closing_day
+due_day
+color
+icon
+archived
+archived_at
+created_at
+updated_at
+```
+
+Examples of brand:
+
+```text
+visa
+mastercard
+elo
+amex
+hipercard
+other
+```
+
+Business rules:
+
+- A credit card belongs to a payment account.
+- The account is used when paying the invoice.
+- `closing_day` defines when the invoice closes.
+- `due_day` defines when the invoice should be paid.
+- Credit card purchases do not immediately affect account balance.
+- Account balance is affected when the invoice is paid.
+
+Relationships:
+
+```text
+CreditCard belongs to User
+CreditCard belongs to Account
+CreditCard has many CreditCardInvoices
+CreditCard has many CreditCardPurchases
+```
+
+---
+
+## 11.2 Credit Card Invoices
+
+### Table: `credit_card_invoices`
+
+Purpose:
+
+Represents a monthly invoice for a credit card.
+
+Fields:
+
+```text
+id
+user_id
+credit_card_id
+reference_month
+reference_year
+opening_date
+closing_date
+due_date
+total_amount_cents
+paid_amount_cents
+status
+closed_at
+paid_at
+created_at
+updated_at
+```
+
+`status` values:
+
+```text
+open
+closed
+partially_paid
+paid
+overdue
+cancelled
+```
+
+Business rules:
+
+- Purchases are attached to invoices.
+- An invoice can be open, closed, partially paid, or paid.
+- Closing an invoice should calculate its total.
+- Paying an invoice should generate a transaction in the linked account.
+- Invoice payment should reduce account balance.
+
+Relationships:
+
+```text
+CreditCardInvoice belongs to User
+CreditCardInvoice belongs to CreditCard
+CreditCardInvoice has many CreditCardPurchases
+CreditCardInvoice has many CreditCardInvoicePayments
+```
+
+---
+
+## 11.3 Credit Card Purchases
+
+### Table: `credit_card_purchases`
+
+Purpose:
+
+Stores purchases made with credit cards.
+
+Fields:
+
+```text
+id
+user_id
+credit_card_id
+credit_card_invoice_id
+category_id
+payee_id
+description
+notes
+purchase_date
+amount_cents
+installments_count
+status
+archived
+archived_at
+created_at
+updated_at
+```
+
+`status` values:
+
+```text
+active
+cancelled
+refunded
+```
+
+Business rules:
+
+- A single purchase may have one or many installments.
+- For a one-time purchase, `installments_count = 1`.
+- For an installment purchase, generate records in `credit_card_installments`.
+- Purchase must be linked to a credit card.
+- Purchase should be assigned to an invoice according to purchase date and card closing rules.
+
+Relationships:
+
+```text
+CreditCardPurchase belongs to User
+CreditCardPurchase belongs to CreditCard
+CreditCardPurchase belongs to CreditCardInvoice
+CreditCardPurchase belongs to Category
+CreditCardPurchase belongs to Payee
+CreditCardPurchase has many CreditCardInstallments
+```
+
+---
+
+## 11.4 Credit Card Installments
+
+### Table: `credit_card_installments`
+
+Purpose:
+
+Stores each installment of a credit card purchase.
+
+Fields:
+
+```text
+id
+user_id
+credit_card_purchase_id
+credit_card_invoice_id
+installment_number
+total_installments
+amount_cents
+due_date
+status
+created_at
+updated_at
+```
+
+`status` values:
+
+```text
+pending
+invoiced
+paid
+cancelled
+```
+
+Business rules:
+
+- Installments are linked to invoices.
+- Each installment belongs to one purchase.
+- Each installment should have its own amount.
+- The sum of installments should match the original purchase amount.
+- If the amount cannot be divided equally, distribute the remaining cents in the first installment or last installment.
+
+Relationships:
+
+```text
+CreditCardInstallment belongs to User
+CreditCardInstallment belongs to CreditCardPurchase
+CreditCardInstallment belongs to CreditCardInvoice
+```
+
+---
+
+## 11.5 Credit Card Invoice Payments
+
+### Table: `credit_card_invoice_payments`
+
+Purpose:
+
+Stores payments made toward credit card invoices.
+
+Fields:
+
+```text
+id
+user_id
+credit_card_invoice_id
+account_id
+transaction_id
+amount_cents
+payment_date
+notes
+created_at
+updated_at
+```
+
+Business rules:
+
+- Paying an invoice creates a transaction.
+- The transaction should be an expense or invoice payment type.
+- Full payment sets invoice status to `paid`.
+- Partial payment sets invoice status to `partially_paid`.
+- Payment amount cannot exceed remaining invoice balance.
+
+Relationships:
+
+```text
+CreditCardInvoicePayment belongs to User
+CreditCardInvoicePayment belongs to CreditCardInvoice
+CreditCardInvoicePayment belongs to Account
+CreditCardInvoicePayment belongs to Transaction
+```
+
+---
+
+# 12. Shopping Tables
+
+---
+
+## 12.1 Shopping Lists
+
+### Table: `shopping_lists`
+
+Purpose:
+
+Stores reusable shopping lists.
+
+Examples:
+
+```text
+Monthly groceries
+Weekly groceries
+Cleaning products
+School supplies
+```
+
+Fields:
+
+```text
+id
+user_id
+name
+description
+archived
+archived_at
+created_at
+updated_at
+```
+
+Business rules:
+
+- A shopping list can be reused.
+- A shopping list does not directly affect finances.
+- It can later be converted into one or more purchases.
+
+Relationships:
+
+```text
+ShoppingList belongs to User
+ShoppingList has many ShoppingListItems
+```
+
+---
+
+## 12.2 Shopping List Items
+
+### Table: `shopping_list_items`
+
+Purpose:
+
+Stores planned items inside a shopping list.
+
+Fields:
+
+```text
+id
+shopping_list_id
+name
+quantity
+unit
+estimated_price_cents
+notes
+checked
+sort_order
+created_at
+updated_at
+```
+
+Business rules:
+
+- Items can be checked or unchecked.
+- Estimated price is optional.
+- These items represent planning, not actual spending.
+
+Relationships:
+
+```text
+ShoppingListItem belongs to ShoppingList
+```
+
+---
+
+## 12.3 Purchases
+
+### Table: `purchases`
+
+Purpose:
+
+Stores actual purchases made by the user.
+
+Examples:
+
+```text
+Grocery purchase at supermarket
+Pharmacy purchase
+School supplies purchase
+```
+
+Fields:
+
+```text
+id
+user_id
+account_id
+category_id
+payee_id
+shopping_list_id
+transaction_id
+description
+purchase_date
+total_amount_cents
+payment_method
+notes
+archived
+archived_at
+created_at
+updated_at
+```
+
+Business rules:
+
+- A purchase can generate a transaction.
+- A purchase can optionally originate from a shopping list.
+- A purchase can have many purchase items.
+- The purchase total should match the sum of purchase items, unless manually adjusted.
+
+Relationships:
+
+```text
+Purchase belongs to User
+Purchase belongs to Account
+Purchase belongs to Category
+Purchase belongs to Payee
+Purchase belongs to ShoppingList
+Purchase belongs to Transaction
+Purchase has many PurchaseItems
+```
+
+---
+
+## 12.4 Purchase Items
+
+### Table: `purchase_items`
+
+Purpose:
+
+Stores actual purchased items.
+
+Fields:
+
+```text
+id
+purchase_id
+name
+quantity
+unit
+unit_price_cents
+total_price_cents
+notes
+created_at
+updated_at
+```
+
+Business rules:
+
+- `total_price_cents` should usually equal `quantity * unit_price_cents`.
+- Quantity can be decimal if needed, but MVP may store it as string or decimal-compatible value.
+- Items are useful for analyzing grocery spending later.
+
+Relationships:
+
+```text
+PurchaseItem belongs to Purchase
+```
+
+---
+
+# 13. Implementation Order
+
+Codex must follow this exact order.
+
+---
+
+## Phase 1 — Foundation
+
+### 1. Create AdonisJS project
+
+Deliverables:
+
+- Base project
+- TypeScript
+- InertiaJS + Vue
+- Vite
+- SQLite
+- Lucid configured
+
+Ask before implementing.
+
+---
+
+### 2. Configure InertiaJS + Vue frontend
+
+Deliverables:
+
+- Frontend dependencies installed
+- Main frontend entrypoint configured
+- InertiaJS configured
+- Vue pages configured
+- SSR/client entrypoints configured
+
+Ask before implementing.
+
+---
+
+### 3. Create base layout
+
+Deliverables:
+
+```text
+inertia/layouts/default.vue
+inertia/pages/home.vue
+resources/views/inertia_layout.edge
+```
+
+Ask before implementing.
+
+---
+
+## Phase 2 — Database Foundation
+
+### 4. Create users and settings migrations/models
+
+Deliverables:
+
+```text
+users
+settings
+```
+
+Models:
+
+```text
+User
+Setting
+```
+
+Relationships:
+
+```text
+User has one Setting
+Setting belongs to User
+```
+
+Ask before implementing.
+
+---
+
+### 5. Create account types and accounts
+
+Deliverables:
+
+```text
+account_types
+accounts
+```
+
+Models:
+
+```text
+AccountType
+Account
+```
+
+Relationships:
+
+```text
+AccountType has many Accounts
+Account belongs to AccountType
+Account belongs to User
+```
+
+Seeds:
+
+```text
+Checking
+Savings
+Cash
+Investment
+Digital Wallet
+Other
+```
+
+Ask before implementing.
+
+---
+
+### 6. Create category groups and categories
+
+Deliverables:
+
+```text
+category_groups
+categories
+```
+
+Models:
+
+```text
+CategoryGroup
+Category
+```
+
+Relationships:
+
+```text
+CategoryGroup has many Categories
+Category belongs to CategoryGroup
+Category belongs to User
+Category belongs to ParentCategory
+Category has many ChildCategories
+```
+
+Ask before implementing.
+
+---
+
+### 7. Create payees
+
+Deliverables:
+
+```text
+payees
+```
+
+Model:
+
+```text
+Payee
+```
+
+Ask before implementing.
+
+---
+
+## Phase 3 — Core Finance
+
+### 8. Create transactions
+
+Deliverables:
+
+```text
+transactions
+```
+
+Model:
+
+```text
+Transaction
+```
+
+Relationships:
+
+```text
+Transaction belongs to User
+Transaction belongs to Account
+Transaction belongs to Category
+Transaction belongs to Payee
+```
+
+Ask before implementing.
+
+---
+
+### 9. Create transfers
+
+Deliverables:
+
+```text
+transfers
+```
+
+Model:
+
+```text
+Transfer
+```
+
+Business behavior:
+
+- Create two linked transactions for each transfer.
+
+Ask before implementing.
+
+---
+
+### 10. Create recurring transactions
+
+Deliverables:
+
+```text
+recurring_transactions
+```
+
+Model:
+
+```text
+RecurringTransaction
+```
+
+MVP behavior:
+
+- CRUD only
+- Manual generation later
+
+Ask before implementing.
+
+---
+
+## Phase 4 — Budgets
+
+### 11. Create budgets and budget categories
+
+Deliverables:
+
+```text
+budgets
+budget_categories
+```
+
+Models:
+
+```text
+Budget
+BudgetCategory
+```
+
+Ask before implementing.
+
+---
+
+## Phase 5 — Credit Cards
+
+### 12. Create credit cards
+
+Deliverables:
+
+```text
+credit_cards
+```
+
+Model:
+
+```text
+CreditCard
+```
+
+Ask before implementing.
+
+---
+
+### 13. Create credit card invoices
+
+Deliverables:
+
+```text
+credit_card_invoices
+```
+
+Model:
+
+```text
+CreditCardInvoice
+```
+
+Ask before implementing.
+
+---
+
+### 14. Create credit card purchases and installments
+
+Deliverables:
+
+```text
+credit_card_purchases
+credit_card_installments
+```
+
+Models:
+
+```text
+CreditCardPurchase
+CreditCardInstallment
+```
+
+Ask before implementing.
+
+---
+
+### 15. Create credit card invoice payments
+
+Deliverables:
+
+```text
+credit_card_invoice_payments
+```
+
+Model:
+
+```text
+CreditCardInvoicePayment
+```
+
+Ask before implementing.
+
+---
+
+## Phase 6 — Shopping Planning
+
+### 16. Create shopping lists and shopping list items
+
+Deliverables:
+
+```text
+shopping_lists
+shopping_list_items
+```
+
+Models:
+
+```text
+ShoppingList
+ShoppingListItem
+```
+
+Ask before implementing.
+
+---
+
+### 17. Create purchases and purchase items
+
+Deliverables:
+
+```text
+purchases
+purchase_items
+```
+
+Models:
+
+```text
+Purchase
+PurchaseItem
+```
+
+Ask before implementing.
+
+---
+
+### 18. Internationalize project
+
+Deliverables:
+
+```text
+Configure i18n base for AdonisJS application
+Define default locale and fallback locale
+Create translation file structure for UI terms/messages
+Prepare helper usage pattern for Inertia/Vue pages and controllers
+```
+
+Important:
+
+- Keep existing `resources` setup in JavaScript as requested.
+- Do not implement business translations yet; only baseline infrastructure.
+
+Ask before implementing.
+
+---
+
+### 19. Internationalize database terms
+
+Deliverables:
+
+```text
+Create translation terms table(s) for database-driven labels/texts
+Define locale-key-value strategy (or equivalent normalized structure)
+Create Lucid model(s) and ownership/consistency constraints
+Document usage pattern for modules that will consume term translations
+```
+
+Important:
+
+- Use Lucid ORM notation for migrations/models/queries.
+- Avoid raw SQL for domain implementation unless strictly necessary.
+- Final behavior details will be provided by user before implementation.
+
+Ask before implementing.
+
+---
+
+# 14. Controllers and Routes Roadmap
+
+After all database foundations are ready, Codex must implement controllers one module at a time.
+
+Suggested route groups:
+
+```text
+/dashboard
+
+/accounts
+/account-types
+
+/category-groups
+/categories
+
+/payees
+
+/transactions
+/transfers
+/recurring-transactions
+
+/budgets
+
+/credit-cards
+/credit-card-invoices
+/credit-card-purchases
+
+/shopping-lists
+/purchases
+
+/settings
+```
+
+Each module should include:
+
+```text
+index
+create
+store
+show
+edit
+update
+destroy/archive
+restore
+```
+
+Important:
+
+The destroy action should usually archive the record instead of deleting it.
+
+---
+
+# 15. UI Pages Roadmap
+
+Each page should follow the project frontend conventions (Inertia + Vue).
+
+## 15.1 Dashboard
+
+The dashboard should show:
+
+- Total balance
+- Account balances
+- Monthly income
+- Monthly expenses
+- Current month result
+- Pending transactions
+- Upcoming recurring transactions
+- Open credit card invoices
+- Budget alerts
+
+## 15.2 Accounts page
+
+Should include:
+
+- Account list
+- Account type
+- Current balance
+- Archived status
+- Create/edit form
+
+## 15.3 Transactions page
+
+Should include:
+
+- Filters by period
+- Filters by account
+- Filters by category
+- Filters by type
+- Filters by status
+- Transaction table
+- Create transaction button
+
+## 15.4 Credit cards page
+
+Should include:
+
+- Card list
+- Limit
+- Current invoice
+- Due date
+- Invoice status
+
+## 15.5 Budgets page
+
+Should include:
+
+- Budget list
+- Used amount
+- Remaining amount
+- Usage percentage
+- Alert indicator
+
+## 15.6 Shopping lists page
+
+Should include:
+
+- List of shopping lists
+- Items
+- Estimated total
+- Checked/unchecked items using Vue state
+
+---
+
+# 16. Validation Strategy
+
+Use AdonisJS validators or request validation classes.
+
+Every form must validate:
+
+- Required fields
+- Numeric values
+- Dates
+- Enum values
+- Ownership of related records
+
+Important ownership rule:
+
+A user must never be able to link records belonging to another user.
+
+Example:
+
+A transaction cannot be created using another user’s account.
+
+---
+
+# 17. Authorization and Authentication
+
+Authentication base is already implemented and must be refined after the base database structure.
+
+Required features:
+
+- Register
+- Login
+- Logout
+- Protected routes
+- Current authenticated user scope
+
+All user-owned queries must be scoped by:
+
+```text
+user_id
+```
+
+Example:
+
+```ts
+.where('user_id', auth.user.id)
+```
+
+---
+
+# 18. Business Logic Services
+
+Codex should avoid placing all business logic inside controllers.
+
+Create services when needed.
+
+Suggested services:
+
+```text
+app/services/transaction_service.ts
+app/services/transfer_service.ts
+app/services/recurring_transaction_service.ts
+app/services/budget_service.ts
+app/services/credit_card_invoice_service.ts
+app/services/credit_card_payment_service.ts
+app/services/shopping_purchase_service.ts
+```
+
+## 18.1 TransactionService
+
+Responsibilities:
+
+- Create income transaction
+- Create expense transaction
+- Update account balance
+- Cancel transaction
+- Archive transaction
+- Recalculate account balance if needed
+
+## 18.2 TransferService
+
+Responsibilities:
+
+- Create transfer
+- Create source transaction
+- Create destination transaction
+- Validate source and destination accounts
+- Keep transfer atomic using database transaction
+
+## 18.3 CreditCardInvoiceService
+
+Responsibilities:
+
+- Create or find invoice by card and date
+- Attach purchases to invoices
+- Close invoice
+- Calculate invoice total
+- Mark invoice as paid or partially paid
+
+## 18.4 CreditCardPaymentService
+
+Responsibilities:
+
+- Pay invoice
+- Create invoice payment record
+- Create account transaction
+- Update invoice paid amount
+- Update invoice status
+
+## 18.5 BudgetService
+
+Responsibilities:
+
+- Calculate budget usage
+- Calculate remaining amount
+- Detect warning threshold
+- Filter transactions by budget period and categories
+
+---
+
+# 19. Atomic Operations
+
+The following operations must use database transactions:
+
+```text
+Creating a transfer
+Paying a credit card invoice
+Creating an installment purchase
+Closing an invoice
+Creating a purchase with purchase items and transaction
+Deleting or archiving records that affect balances
+```
+
+Reason:
+
+These operations affect multiple tables and must not leave the database inconsistent.
+
+---
+
+# 20. MVP Scope
+
+The first usable MVP should include:
+
+```text
+Authentication
+Settings
+Accounts
+Categories
+Payees
+Transactions
+Transfers
+Basic dashboard
+Basic recurring transactions CRUD
+Basic budgets CRUD
+Basic credit card CRUD
+Basic credit card invoice listing
+Shopping lists CRUD
+```
+
+The MVP does not need:
+
+```text
+Automatic bank integration
+Pix integration
+Open Finance
+Multi-currency
+Mobile app
+PDF reports
+Complex charts
+Background jobs
+Advanced permissions
+Family sharing
+AI features
+```
+
+---
+
+# 21. Future Versions
+
+Leave these features for future versions:
+
+## 21.1 Advanced reports
+
+- Monthly reports
+- Annual reports
+- Custom period reports
+- Category comparison
+- Payee comparison
+- Account evolution
+- Net worth evolution
+
+## 21.2 Multi-currency
+
+- Multiple currencies
+- Exchange rates
+- Currency conversion
+- Reports by currency
+
+## 21.3 Bank integration
+
+- Bank statement import
+- OFX import
+- CSV import
+- Open Finance integration
+
+## 21.4 Automation
+
+- Automatic recurring transaction generation
+- Notification system
+- Budget alerts
+- Invoice due date alerts
+
+## 21.5 Family features
+
+- Multiple family members
+- Shared accounts
+- Shared budgets
+- Permission levels
+
+## 21.6 Advanced shopping
+
+- Product catalog
+- Price history
+- Store comparison
+- Shopping prediction
+
+---
+
+# 22. Final Codex Instruction
+
+Codex must continue from the first pending step in this file.
+
+Codex must not create all migrations at once.
+
+Codex must not create all models at once.
+
+Codex must not create all controllers at once.
+
+Codex must not skip approval checkpoints.
+
+Codex must proceed exactly like this:
+
+```text
+I will now implement Phase 1, Step 1: Create the base AdonisJS project structure.
+
+This step includes:
+- Creating the AdonisJS project
+- Enabling InertiaJS + Vue
+- Configuring SQLite
+- Configuring Lucid ORM
+- Ensuring the project boots successfully
+
+Do you authorize me to implement this step now?
+```
+
+Only after the user approves should Codex modify files.

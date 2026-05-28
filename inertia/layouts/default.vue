@@ -27,43 +27,37 @@ watch(
 </script>
 
 <template>
-  <header>
-    <div>
-      <div>
-        <Link route="home">
-          <svg
-            width="66"
-            height="24"
-            viewBox="0 0 105 38"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0 0h7.5v15H0ZM7.5 15h7.5v15H7.5ZM15 30h7.5v7.5H15ZM22.5 15h7.5v15H22.5ZM30 0h7.5v15H30ZM45 0h7.5v30h15v-30h7.5v37.5h-30v-37.5ZM82.5 37.5V0H105v7.5H90V15h15v7.5H90V30h15v7.5H82.5Z"
-              fill="currentColor"
-            />
-          </svg>
-        </Link>
-      </div>
-      <div>
-        <nav>
+  <header class="navbar navbar-expand-lg bg-body border-bottom border-secondary-subtle">
+    <div class="container">
+      <Link route="home" class="navbar-brand fw-semibold brand-logo">FORTUNA</Link>
+      <nav class="ms-auto d-flex align-items-center gap-3">
           <template v-if="page.props.user">
-            <span>{{ page.props.user.initials }}</span>
+            <span class="badge text-bg-secondary">{{ page.props.user.initials }}</span>
             <Form route="session.destroy">
-              <button type="submit">Logout</button>
+              <button type="submit" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-box-arrow-right me-1"></i>
+                Logout
+              </button>
             </Form>
           </template>
           <template v-else>
-            <Link route="new_account.create">Signup</Link>
-            <Link route="session.create">Login</Link>
+            <Link route="new_account.create" class="btn btn-outline-light btn-sm">
+              <i class="bi bi-person-plus me-1"></i>
+              Signup
+            </Link>
+            <Link route="session.create" class="btn btn-primary btn-sm">
+              <i class="bi bi-box-arrow-in-right me-1"></i>
+              Login
+            </Link>
           </template>
-        </nav>
-      </div>
+      </nav>
     </div>
   </header>
 
-  <main>
-    <slot />
+  <main class="app-shell py-4">
+    <div class="container">
+      <slot />
+    </div>
   </main>
 
   <Toaster position="top-center" rich-colors />

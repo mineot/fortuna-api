@@ -5,28 +5,51 @@ import { Head } from '@inertiajs/vue3'
 <template>
   <Head title="Homepage" />
 
-  <div class="hero">
-    <h1>It works — welcome to the power of a full-stack Vue app</h1>
-    <p>
-      Powered by Inertia and Vue, this setup blends server-driven routing with rich client-side
-      interactivity — seamless, fast, and cohesive.
-    </p>
-  </div>
+  <section class="p-4 p-md-5 mb-4 bg-body rounded-3 border border-secondary-subtle">
+    <div class="container-fluid py-2">
+      <h1 class="display-6 fw-semibold mb-3">Fortuna ready with Vue + Bootstrap</h1>
+      <p class="col-md-10 fs-5 text-secondary mb-0">
+        Server-driven UI with Inertia, Vue components, and Bootstrap dark theme as the global UI base.
+      </p>
+    </div>
+  </section>
 
-  <div class="cards">
-    <a href="https://insiders.adonisjs.com/docs/v7-alpha/introduction" target="_blank">
-      <h3>Official Docs &nbsp;›</h3>
-      <p>Comprehensive reference for building with AdonisJS</p>
-    </a>
-
-    <a href="https://adocasts.com/" target="_blank">
-      <h3>Adocasts &nbsp;›</h3>
-      <p>Guided video tutorials for everyday development</p>
-    </a>
-
-    <a href="https://discord.gg/vDcEjq6" target="_blank">
-      <h3>Discord &nbsp;›</h3>
-      <p>Connect with developers building with AdonisJS every day</p>
-    </a>
-  </div>
+  <section class="row g-3">
+    <div class="col-12 col-md-4">
+      <a
+        href="https://docs.adonisjs.com/"
+        target="_blank"
+        class="card h-100 text-decoration-none bg-body border-secondary-subtle"
+      >
+        <div class="card-body">
+          <h2 class="h5 card-title mb-2"><i class="bi bi-book me-2"></i>Docs</h2>
+          <p class="card-text text-secondary mb-0">Official AdonisJS reference.</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-12 col-md-4">
+      <a
+        href="https://inertiajs.com/"
+        target="_blank"
+        class="card h-100 text-decoration-none bg-body border-secondary-subtle"
+      >
+        <div class="card-body">
+          <h2 class="h5 card-title mb-2"><i class="bi bi-lightning-charge me-2"></i>Inertia</h2>
+          <p class="card-text text-secondary mb-0">Guide for server-driven navigation with Vue.</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-12 col-md-4">
+      <a
+        href="https://getbootstrap.com/docs/5.3/getting-started/introduction/"
+        target="_blank"
+        class="card h-100 text-decoration-none bg-body border-secondary-subtle"
+      >
+        <div class="card-body">
+          <h2 class="h5 card-title mb-2"><i class="bi bi-palette me-2"></i>Bootstrap</h2>
+          <p class="card-text text-secondary mb-0">Global styles and component system.</p>
+        </div>
+      </a>
+    </div>
+  </section>
 </template>
