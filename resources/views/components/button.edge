@@ -1,7 +1,0 @@
-@let(buttonTextFromSlot = await $slots.main())
-@let(buttonText = buttonTextFromSlot.trim() ? buttonTextFromSlot : $props.get('text') ?? '')
-@let(classes = ['btn', 'btn-primary'])
-
-<button {{
-  $props.except(['text']).merge({ class: classes }).toAttrs()
-}}>{{{ buttonText }}}</button>
