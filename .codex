@@ -10,30 +10,31 @@ Follow the roadmap below exactly.
 
 ---
 
-# Implementation Status (Updated: 2026-05-28)
+# Implementation Status (Updated: 2026-05-29)
 
 ## Completed
 
 - [x] Step 1 — Base AdonisJS project created (TypeScript, Vite, Lucid, SQLite, InertiaJS + Vue configured).
 - [x] Step 2 — Frontend dependencies configured for InertiaJS + Vue + Bootstrap + Bootstrap Icons.
 - [x] Step 3 — Base application layout/navigation structure created in Inertia + Vue.
+- [x] Step 4 — Create users and settings migrations/models/relations.
+- [x] Step 5 — Create account types and accounts migrations/models/relations.
+- [x] Step 6 — Create category groups and categories migrations/models/relations.
+- [x] Step 7 — Create payees migration/model/relations.
+- [x] Step 8 — Create transactions migration/model/relations.
+- [x] Step 9 — Create transfers migration/model/relations + transfer service behavior.
+- [x] Step 10 — Create recurring transactions migration/model/relations.
+- [x] Step 11 — Create budgets and budget categories migrations/models/relations.
+- [x] Step 12 — Create credit cards migration/model/relations.
+- [x] Step 13 — Create credit card invoices migration/model/relations.
+- [x] Step 14 — Create credit card purchases and installments migrations/models/relations.
+- [x] Step 15 — Create credit card invoice payments migration/model/relations.
+- [x] Step 16 — Create shopping lists and shopping list items migrations/models/relations.
+- [x] Step 17 — Create purchases and purchase items migrations/models/relations.
 
 ## Pending (Next Roadmap Scope)
 
-- [ ] Step 4 — Create users and settings migrations/models/relations.
-- [ ] Step 5 — Create account types and accounts migrations/models/relations.
-- [ ] Step 6 — Create category groups and categories migrations/models/relations.
-- [ ] Step 7 — Create payees migration/model/relations.
-- [ ] Step 8 — Create transactions migration/model/relations.
-- [ ] Step 9 — Create transfers migration/model/relations + transfer service behavior.
-- [ ] Step 10 — Create recurring transactions migration/model/relations.
-- [ ] Step 11 — Create budgets and budget categories migrations/models/relations.
-- [ ] Step 12 — Create credit cards migration/model/relations.
-- [ ] Step 13 — Create credit card invoices migration/model/relations.
-- [ ] Step 14 — Create credit card purchases and installments migrations/models/relations.
-- [ ] Step 15 — Create credit card invoice payments migration/model/relations.
-- [ ] Step 16 — Create shopping lists and shopping list items migrations/models/relations.
-- [ ] Step 17 — Create purchases and purchase items migrations/models/relations.
+- [ ] Step 17.1 — Review and refactor business-logic placement to align with AdonisJS conventions (controllers/services/models), including transfer flow.
 - [ ] Step 18 — Internationalize project (i18n base and language structure).
 - [ ] Step 19 — Internationalize database terms (translation terms table and integration strategy).
 - [ ] Controllers and Routes Roadmap (section 14), module by module.
