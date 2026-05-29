@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3';
 </script>
 
 <template>
@@ -9,7 +9,8 @@ import { Head } from '@inertiajs/vue3'
     <div class="container-fluid py-2">
       <h1 class="display-6 fw-semibold mb-3">Fortuna ready with Vue + Bootstrap</h1>
       <p class="col-md-10 fs-5 text-secondary mb-0">
-        Server-driven UI with Inertia, Vue components, and Bootstrap dark theme as the global UI base.
+        Server-driven UI with Inertia, Vue components, and Bootstrap dark theme as the global UI
+        base.
       </p>
     </div>
   </section>

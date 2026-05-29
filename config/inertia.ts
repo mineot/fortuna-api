@@ -1,4 +1,4 @@
-import { defineConfig } from '@adonisjs/inertia'
+import { defineConfig } from '@adonisjs/inertia';
 
 const inertiaConfig = defineConfig({
   /**
@@ -15,6 +15,6 @@ const inertiaConfig = defineConfig({
      */
     entrypoint: 'inertia/ssr.ts',
   },
-})
+});
 
-export default inertiaConfig
+export default inertiaConfig;

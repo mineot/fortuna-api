@@ -1,16 +1,16 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap-icons/font/bootstrap-icons.css'
-import 'bootstrap'
-import './css/app.css'
-import 'vue-sonner/style.css'
-import { client } from '~/client'
-import Layout from '~/layouts/default.vue'
-import { createInertiaApp } from '@inertiajs/vue3'
-import { TuyauProvider } from '@adonisjs/inertia/vue'
-import { createApp, type DefineComponent, h } from 'vue'
-import { resolvePageComponent } from '@adonisjs/inertia/helpers'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'bootstrap';
+import './css/app.css';
+import 'vue-sonner/style.css';
+import { client } from '~/client';
+import Layout from '~/layouts/default.vue';
+import { createInertiaApp } from '@inertiajs/vue3';
+import { TuyauProvider } from '@adonisjs/inertia/vue';
+import { createApp, type DefineComponent, h } from 'vue';
+import { resolvePageComponent } from '@adonisjs/inertia/helpers';
 
-const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS'
+const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS';
 
 createInertiaApp({
   title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -18,15 +18,15 @@ createInertiaApp({
     return resolvePageComponent(
       `./pages/${name}.vue`,
       import.meta.glob<DefineComponent>('./pages/**/*.vue'),
-      Layout
-    )
+      Layout,
+    );
   },
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(TuyauProvider, { client }, { default: () => h(App, props) }) })
       .use(plugin)
-      .mount(el)
+      .mount(el);
   },
   progress: {
     color: '#4B5563',
   },
-})
+});

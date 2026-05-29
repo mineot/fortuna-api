@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Form } from '@adonisjs/inertia/vue'
+import { Form } from '@adonisjs/inertia/vue';
 </script>
 
 <template>
@@ -13,13 +13,15 @@ import { Form } from '@adonisjs/inertia/vue'
           <Form route="new_account.store" #default="{ processing, errors }" class="d-grid gap-3">
             <div>
               <label for="fullName" class="form-label">Full name</label>
-          <input
-            type="text"
-            name="fullName"
-            id="fullName"
-            :class="['form-control', { 'is-invalid': errors.fullName }]"
-          />
-              <div v-if="errors.fullName" class="invalid-feedback d-block">{{ errors.fullName }}</div>
+              <input
+                type="text"
+                name="fullName"
+                id="fullName"
+                :class="['form-control', { 'is-invalid': errors.fullName }]"
+              />
+              <div v-if="errors.fullName" class="invalid-feedback d-block">
+                {{ errors.fullName }}
+              </div>
             </div>
 
             <div>
@@ -43,7 +45,9 @@ import { Form } from '@adonisjs/inertia/vue'
                 autocomplete="new-password"
                 :class="['form-control', { 'is-invalid': errors.password }]"
               />
-              <div v-if="errors.password" class="invalid-feedback d-block">{{ errors.password }}</div>
+              <div v-if="errors.password" class="invalid-feedback d-block">
+                {{ errors.password }}
+              </div>
             </div>
 
             <div>

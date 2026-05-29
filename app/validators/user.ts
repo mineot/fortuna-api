@@ -1,7 +1,7 @@
-import vine from '@vinejs/vine'
+import vine from '@vinejs/vine';
 
-const email = () => vine.string().email().maxLength(254)
-const password = () => vine.string().minLength(8).maxLength(32)
+const email = () => vine.string().email().maxLength(254);
+const password = () => vine.string().minLength(8).maxLength(32);
 
 export const signupValidator = vine.create({
   fullName: vine.string().nullable(),
@@ -9,4 +9,4 @@ export const signupValidator = vine.create({
   password: password().confirmed({
     confirmationField: 'passwordConfirmation',
   }),
-})
+});

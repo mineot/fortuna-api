@@ -9,7 +9,7 @@
 |
 */
 
-import { Env } from '@adonisjs/core/env'
+import { Env } from '@adonisjs/core/env';
 
 export default await Env.create(new URL('../', import.meta.url), {
   // Node
@@ -23,4 +23,9 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   // Session
   SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
-})
+
+  // Database
+
+  DB_CONNECTION: Env.schema.string(),
+  DB_FILENAME: Env.schema.string(),
+});

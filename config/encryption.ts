@@ -1,5 +1,5 @@
-import env from '#start/env'
-import { defineConfig, drivers } from '@adonisjs/core/encryption'
+import env from '#start/env';
+import { defineConfig, drivers } from '@adonisjs/core/encryption';
 
 const encryptionConfig = defineConfig({
   /**
@@ -21,9 +21,9 @@ const encryptionConfig = defineConfig({
       id: 'gcm',
     }),
   },
-})
+});
 
-export default encryptionConfig
+export default encryptionConfig;
 
 /**
  * Inferring types for the list of encryptors you have configured

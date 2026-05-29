@@ -1,40 +1,19 @@
-import app from '@adonisjs/core/services/app'
-import { defineConfig } from '@adonisjs/lucid'
+import app from '@adonisjs/core/services/app';
+import { defineConfig } from '@adonisjs/lucid';
+import env from '#start/env';
 
 const dbConfig = defineConfig({
-  /**
-   * Default connection used for all queries.
-   */
-  connection: 'sqlite',
+  connection: env.get('DB_CONNECTION'),
 
   connections: {
-    /**
-     * SQLite connection (default).
-     */
     sqlite: {
       client: 'better-sqlite3',
-
       connection: {
-        /**
-         * Database file location.
-         */
-        filename: app.tmpPath('db.sqlite3'),
+        filename: app.tmpPath(env.get('DB_FILENAME')),
       },
-
-      /**
-       * Required by Knex for SQLite defaults.
-       */
       useNullAsDefault: true,
-
       migrations: {
-        /**
-         * Sort migration files naturally by filename.
-         */
         naturalSort: true,
-
-        /**
-         * Paths containing migration files.
-         */
         paths: ['database/migrations'],
       },
     },
@@ -117,6 +96,6 @@ const dbConfig = defineConfig({
     //   debug: app.inDev,
     // },
   },
-})
+});
 
-export default dbConfig
+export default dbConfig;
