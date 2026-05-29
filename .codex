@@ -31,10 +31,10 @@ Follow the roadmap below exactly.
 - [x] Step 15 — Create credit card invoice payments migration/model/relations.
 - [x] Step 16 — Create shopping lists and shopping list items migrations/models/relations.
 - [x] Step 17 — Create purchases and purchase items migrations/models/relations.
+- [x] Step 17.1 — Review and refactor business-logic placement to align with AdonisJS conventions (controllers/services/models), including transfer flow.
 
 ## Pending (Next Roadmap Scope)
 
-- [ ] Step 17.1 — Review and refactor business-logic placement to align with AdonisJS conventions (controllers/services/models), including transfer flow.
 - [ ] Step 18 — Internationalize project (i18n base and language structure).
 - [ ] Step 19 — Internationalize database terms (translation terms table and integration strategy).
 - [ ] Controllers and Routes Roadmap (section 14), module by module.
@@ -50,6 +50,8 @@ Follow the roadmap below exactly.
 - Dark theme is enforced globally with Bootstrap (`data-bs-theme="dark"` in `resources/views/inertia_layout.edge`).
 - SQLite is configured in `config/database.ts` with `filename: app.tmpPath('db.sqlite3')`.
 - Authentication base is present with `signup`, `login`, and `logout` routes/controllers.
+- Transfer domain logic was moved to `Transfer.createTransfer(...)` in the model to keep controllers thin and business rules near the Lucid domain entity.
+- `TransferService` wrapper was removed; transfer flows should call `Transfer.createTransfer(...)` directly.
 
 ---
 
