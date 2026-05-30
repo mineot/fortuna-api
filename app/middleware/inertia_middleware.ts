@@ -1,36 +1,33 @@
 import type { HttpContext } from '@adonisjs/core/http';
 import type { NextFn } from '@adonisjs/core/types/http';
+import i18nManager from '@adonisjs/i18n/services/main';
 import UserTransformer from '#transformers/user_transformer';
 import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware';
 
+function pickUiMessages(messages: Record<string, string>) {
+  return Object.fromEntries(Object.entries(messages).filter(([key]) => key.startsWith('app.')));
+}
+
 export default class InertiaMiddleware extends BaseInertiaMiddleware {
   share(ctx: HttpContext) {
-    /**
-     * The share method is called everytime an Inertia page is rendered. In
-     * certain cases, a page may get rendered before the session middleware
-     * or the auth middleware are executed. For example: During a 404 request.
-     *
-     * In that case, we must always assume that HttpContext is not fully hydrated
-     * with all the properties
-     */
     const { session, auth } = ctx as Partial<HttpContext>;
 
-    /**
-     * Fetching the first error from the flash messages
-     */
     const error = session?.flashMessages.get('error') as string;
     const success = session?.flashMessages.get('success') as string;
 
-    /**
-     * Data shared with all Inertia pages. Make sure you are using
-     * transformers for rich data-types like Models.
-     */
+    const i18n =
+      'i18n' in ctx && ctx.i18n ? ctx.i18n : i18nManager.locale(i18nManager.defaultLocale);
+
     return {
       errors: ctx.inertia.always(this.getValidationErrors(ctx)),
       flash: ctx.inertia.always({
         error,
         success,
       }),
+      locale: ctx.inertia.always(i18n.locale),
+      messages: ctx.inertia.always(
+        pickUiMessages(i18n.localeTranslations as Record<string, string>),
+      ),
       user: ctx.inertia.always(auth?.user ? UserTransformer.transform(auth.user) : undefined),
     };
   }

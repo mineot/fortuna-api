@@ -32,10 +32,10 @@ Follow the roadmap below exactly.
 - [x] Step 16 — Create shopping lists and shopping list items migrations/models/relations.
 - [x] Step 17 — Create purchases and purchase items migrations/models/relations.
 - [x] Step 17.1 — Review and refactor business-logic placement to align with AdonisJS conventions (controllers/services/models), including transfer flow.
+- [x] Step 18 — Internationalize project (i18n base and language structure).
 
 ## Pending (Next Roadmap Scope)
 
-- [ ] Step 18 — Internationalize project (i18n base and language structure).
 - [ ] Step 19 — Internationalize database terms (translation terms table and integration strategy).
 - [ ] Controllers and Routes Roadmap (section 14), module by module.
 - [ ] UI Pages Roadmap (section 15), module by module.
@@ -52,6 +52,7 @@ Follow the roadmap below exactly.
 - Authentication base is present with `signup`, `login`, and `logout` routes/controllers.
 - Transfer domain logic was moved to `Transfer.createTransfer(...)` in the model to keep controllers thin and business rules near the Lucid domain entity.
 - `TransferService` wrapper was removed; transfer flows should call `Transfer.createTransfer(...)` directly.
+- Baseline i18n uses official `@adonisjs/i18n` setup (`i18n_provider`, `config/i18n.ts`, `detect_user_locale_middleware`), with `en-US`/`pt-BR` dictionaries and UI hardcoded texts migrated to translation keys.
 
 ---
 

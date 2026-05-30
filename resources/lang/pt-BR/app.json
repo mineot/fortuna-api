@@ -1,0 +1,33 @@
+{
+  "brand": "FORTUNA",
+  "auth": {
+    "login": "Entrar",
+    "logout": "Sair",
+    "signup": "Criar conta",
+    "email": "E-mail",
+    "password": "Senha",
+    "fullName": "Nome completo",
+    "passwordConfirmation": "Confirmar senha",
+    "loginSubtitle": "Informe seus dados para acessar sua conta.",
+    "signupSubtitle": "Informe seus dados para criar sua conta.",
+    "signingIn": "Entrando...",
+    "creatingAccount": "Criando conta..."
+  },
+  "home": {
+    "title": "Inicio",
+    "heroTitle": "Fortuna pronto com Vue + Bootstrap",
+    "heroDescription": "UI orientada pelo servidor com Inertia, componentes Vue e tema escuro do Bootstrap como base global.",
+    "docs": "Documentacao",
+    "docsDescription": "Referencia oficial do AdonisJS.",
+    "inertia": "Inertia",
+    "inertiaDescription": "Guia de navegacao orientada pelo servidor com Vue.",
+    "bootstrap": "Bootstrap",
+    "bootstrapDescription": "Estilos globais e sistema de componentes."
+  },
+  "errors": {
+    "notFoundTitle": "Pagina nao encontrada",
+    "notFoundDescription": "A pagina solicitada nao existe ou foi movida.",
+    "serverErrorTitle": "Algo deu errado.",
+    "serverErrorDescription": "Ocorreu um erro inesperado ao processar sua solicitacao."
+  }
+}

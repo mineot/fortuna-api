@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import { useI18n } from '../lib/i18n';
+
+const { t } = useI18n();
 </script>
 
 <template>
-  <Head title="Homepage" />
+  <Head :title="t('app.home.title')" />
 
   <section class="p-4 p-md-5 mb-4 bg-body rounded-3 border border-secondary-subtle">
     <div class="container-fluid py-2">
-      <h1 class="display-6 fw-semibold mb-3">Fortuna ready with Vue + Bootstrap</h1>
+      <h1 class="display-6 fw-semibold mb-3">{{ t('app.home.heroTitle') }}</h1>
       <p class="col-md-10 fs-5 text-secondary mb-0">
-        Server-driven UI with Inertia, Vue components, and Bootstrap dark theme as the global UI
-        base.
+        {{ t('app.home.heroDescription') }}
       </p>
     </div>
   </section>
@@ -23,8 +25,10 @@ import { Head } from '@inertiajs/vue3';
         class="card h-100 text-decoration-none bg-body border-secondary-subtle"
       >
         <div class="card-body">
-          <h2 class="h5 card-title mb-2"><i class="bi bi-book me-2"></i>Docs</h2>
-          <p class="card-text text-secondary mb-0">Official AdonisJS reference.</p>
+          <h2 class="h5 card-title mb-2">
+            <i class="bi bi-book me-2"></i>{{ t('app.home.docs') }}
+          </h2>
+          <p class="card-text text-secondary mb-0">{{ t('app.home.docsDescription') }}</p>
         </div>
       </a>
     </div>
@@ -35,8 +39,10 @@ import { Head } from '@inertiajs/vue3';
         class="card h-100 text-decoration-none bg-body border-secondary-subtle"
       >
         <div class="card-body">
-          <h2 class="h5 card-title mb-2"><i class="bi bi-lightning-charge me-2"></i>Inertia</h2>
-          <p class="card-text text-secondary mb-0">Guide for server-driven navigation with Vue.</p>
+          <h2 class="h5 card-title mb-2">
+            <i class="bi bi-lightning-charge me-2"></i>{{ t('app.home.inertia') }}
+          </h2>
+          <p class="card-text text-secondary mb-0">{{ t('app.home.inertiaDescription') }}</p>
         </div>
       </a>
     </div>
@@ -47,8 +53,10 @@ import { Head } from '@inertiajs/vue3';
         class="card h-100 text-decoration-none bg-body border-secondary-subtle"
       >
         <div class="card-body">
-          <h2 class="h5 card-title mb-2"><i class="bi bi-palette me-2"></i>Bootstrap</h2>
-          <p class="card-text text-secondary mb-0">Global styles and component system.</p>
+          <h2 class="h5 card-title mb-2">
+            <i class="bi bi-palette me-2"></i>{{ t('app.home.bootstrap') }}
+          </h2>
+          <p class="card-text text-secondary mb-0">{{ t('app.home.bootstrapDescription') }}</p>
         </div>
       </a>
     </div>

@@ -1,0 +1,6 @@
+{
+  "transfer": {
+    "sameAccount": "Origin and destination accounts must be different",
+    "invalidAmount": "Transfer amount must be greater than zero"
+  }
+}

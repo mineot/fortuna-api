@@ -1,0 +1,33 @@
+{
+  "brand": "FORTUNA",
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "passwordConfirmation": "Confirm password",
+    "loginSubtitle": "Enter your details to access your account.",
+    "signupSubtitle": "Enter your details to create your account.",
+    "signingIn": "Signing in...",
+    "creatingAccount": "Creating account..."
+  },
+  "home": {
+    "title": "Homepage",
+    "heroTitle": "Fortuna ready with Vue + Bootstrap",
+    "heroDescription": "Server-driven UI with Inertia, Vue components, and Bootstrap dark theme as the global UI base.",
+    "docs": "Docs",
+    "docsDescription": "Official AdonisJS reference.",
+    "inertia": "Inertia",
+    "inertiaDescription": "Guide for server-driven navigation with Vue.",
+    "bootstrap": "Bootstrap",
+    "bootstrapDescription": "Global styles and component system."
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundDescription": "The page you requested does not exist or has been moved.",
+    "serverErrorTitle": "Something went wrong.",
+    "serverErrorDescription": "An unexpected error occurred while processing your request."
+  }
+}

@@ -2,8 +2,10 @@ import Account from '#models/account';
 import Transaction from '#models/transaction';
 import User from '#models/user';
 import db from '@adonisjs/lucid/services/db';
+import i18nManager from '@adonisjs/i18n/services/main';
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm';
 import type { BelongsTo } from '@adonisjs/lucid/types/relations';
+import type { I18n } from '@adonisjs/i18n';
 import { DateTime } from 'luxon';
 
 export type CreateTransferInput = {
@@ -15,6 +17,8 @@ export type CreateTransferInput = {
   description?: string | null;
   notes?: string | null;
   status?: string;
+  locale?: string | null;
+  i18n?: I18n;
 };
 
 export default class Transfer extends BaseModel {
@@ -79,8 +83,14 @@ export default class Transfer extends BaseModel {
   declare inTransaction: BelongsTo<typeof Transaction>;
 
   static async createTransfer(input: CreateTransferInput) {
+    const resolvedLocale = input.locale
+      ? i18nManager.getSupportedLocaleFor([input.locale]) || i18nManager.defaultLocale
+      : i18nManager.defaultLocale;
+
+    const i18n = input.i18n || i18nManager.locale(resolvedLocale);
+
     if (input.fromAccountId === input.toAccountId) {
-      throw new Error('Origin and destination accounts must be different');
+      throw new Error(i18n.t('domain.transfer.sameAccount'));
     }
 
     const trx = await db.transaction();
@@ -98,8 +108,9 @@ export default class Transfer extends BaseModel {
       ]);
 
       const transferAmount = Number(input.amount);
+
       if (!Number.isFinite(transferAmount) || transferAmount <= 0) {
-        throw new Error('Transfer amount must be greater than zero');
+        throw new Error(i18n.t('domain.transfer.invalidAmount'));
       }
 
       const outTransaction = await Transaction.create(
