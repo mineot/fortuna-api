@@ -1,8 +1,9 @@
-import Account from '#models/account';
-import User from '#models/user';
 import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
+import { translatedNameSelect } from '#services/translated_term_select';
+import Account from '#models/account';
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
+import User from '#models/user';
 
 export default class AccountType extends BaseModel {
   @column({ isPrimary: true })
@@ -11,8 +12,8 @@ export default class AccountType extends BaseModel {
   @column()
   declare userId: number;
 
-  @column()
-  declare name: string;
+  @column({ columnName: 'term_key' })
+  declare termKey: string;
 
   @column()
   declare description: string | null;
@@ -34,4 +35,18 @@ export default class AccountType extends BaseModel {
 
   @hasMany(() => Account)
   declare accounts: HasMany<typeof Account>;
+
+  static queryTranslated(locale: string, fallbackLocale: string, userId?: number | null) {
+    return this.query()
+      .select('account_types.*')
+      .select(
+        translatedNameSelect({
+          tableName: 'account_types',
+          namespace: 'account_types',
+          locale,
+          fallbackLocale,
+          userId,
+        }),
+      );
+  }
 }

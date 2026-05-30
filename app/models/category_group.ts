@@ -1,8 +1,9 @@
-import Category from '#models/category';
-import User from '#models/user';
 import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
 import { DateTime } from 'luxon';
+import { translatedNameSelect } from '#services/translated_term_select';
+import Category from '#models/category';
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations';
+import User from '#models/user';
 
 export default class CategoryGroup extends BaseModel {
   @column({ isPrimary: true })
@@ -11,8 +12,8 @@ export default class CategoryGroup extends BaseModel {
   @column()
   declare userId: number;
 
-  @column()
-  declare name: string;
+  @column({ columnName: 'term_key' })
+  declare termKey: string;
 
   @column()
   declare position: number;
@@ -34,4 +35,18 @@ export default class CategoryGroup extends BaseModel {
 
   @hasMany(() => Category)
   declare categories: HasMany<typeof Category>;
+
+  static queryTranslated(locale: string, fallbackLocale: string, userId?: number | null) {
+    return this.query()
+      .select('category_groups.*')
+      .select(
+        translatedNameSelect({
+          tableName: 'category_groups',
+          namespace: 'category_groups',
+          locale,
+          fallbackLocale,
+          userId,
+        }),
+      );
+  }
 }
