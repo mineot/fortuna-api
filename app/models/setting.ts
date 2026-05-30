@@ -19,6 +19,9 @@ export default class Setting extends BaseModel {
   @column()
   declare timezone: string;
 
+  @column.dateTime()
+  declare localeInitializedAt: DateTime | null;
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime;
 

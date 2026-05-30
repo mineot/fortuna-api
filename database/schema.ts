@@ -4,643 +4,925 @@
  * Run "node ace migration:run" command to re-generate this file
  */
 
-import { BaseModel, column } from '@adonisjs/lucid/orm'
-import { DateTime } from 'luxon'
+import { BaseModel, column } from '@adonisjs/lucid/orm';
+import { DateTime } from 'luxon';
 
 export class AccountTypeSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'createdAt', 'description', 'id', 'termKey', 'updatedAt', 'userId'] as const
-  $columns = AccountTypeSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'description',
+    'id',
+    'termKey',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = AccountTypeSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare description: string | null
+  declare description: string | null;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare termKey: string | null
+  declare termKey: string | null;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class AccountSchema extends BaseModel {
-  static $columns = ['accountTypeId', 'archived', 'archivedAt', 'createdAt', 'currency', 'currentBalance', 'id', 'initialBalance', 'name', 'notes', 'updatedAt', 'userId'] as const
-  $columns = AccountSchema.$columns
+  static $columns = [
+    'accountTypeId',
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'currency',
+    'currentBalance',
+    'id',
+    'initialBalance',
+    'name',
+    'notes',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = AccountSchema.$columns;
   @column()
-  declare accountTypeId: number
+  declare accountTypeId: number;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare currency: string
+  declare currency: string;
   @column()
-  declare currentBalance: number
+  declare currentBalance: number;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare initialBalance: number
+  declare initialBalance: number;
   @column()
-  declare name: string
+  declare name: string;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class BudgetCategorySchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'budgetId', 'carryoverAmount', 'categoryId', 'createdAt', 'id', 'notes', 'plannedAmount', 'updatedAt', 'userId'] as const
-  $columns = BudgetCategorySchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'budgetId',
+    'carryoverAmount',
+    'categoryId',
+    'createdAt',
+    'id',
+    'notes',
+    'plannedAmount',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = BudgetCategorySchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column()
-  declare budgetId: number
+  declare budgetId: number;
   @column()
-  declare carryoverAmount: number
+  declare carryoverAmount: number;
   @column()
-  declare categoryId: number
+  declare categoryId: number;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare plannedAmount: number
+  declare plannedAmount: number;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class BudgetSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'createdAt', 'id', 'name', 'notes', 'periodEnd', 'periodStart', 'status', 'updatedAt', 'userId'] as const
-  $columns = BudgetSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'id',
+    'name',
+    'notes',
+    'periodEnd',
+    'periodStart',
+    'status',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = BudgetSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare name: string
+  declare name: string;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column.date()
-  declare periodEnd: DateTime
+  declare periodEnd: DateTime;
   @column.date()
-  declare periodStart: DateTime
+  declare periodStart: DateTime;
   @column()
-  declare status: string
+  declare status: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class CategorySchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'categoryGroupId', 'color', 'createdAt', 'icon', 'id', 'position', 'termKey', 'type', 'updatedAt', 'userId'] as const
-  $columns = CategorySchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'categoryGroupId',
+    'color',
+    'createdAt',
+    'icon',
+    'id',
+    'position',
+    'termKey',
+    'type',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = CategorySchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column()
-  declare categoryGroupId: number
+  declare categoryGroupId: number;
   @column()
-  declare color: string | null
+  declare color: string | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare icon: string | null
+  declare icon: string | null;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare position: number
+  declare position: number;
   @column()
-  declare termKey: string | null
+  declare termKey: string | null;
   @column()
-  declare type: string
+  declare type: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class CategoryGroupSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'createdAt', 'id', 'position', 'termKey', 'updatedAt', 'userId'] as const
-  $columns = CategoryGroupSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'id',
+    'position',
+    'termKey',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = CategoryGroupSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare position: number
+  declare position: number;
   @column()
-  declare termKey: string | null
+  declare termKey: string | null;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class CreditCardInstallmentSchema extends BaseModel {
-  static $columns = ['amount', 'archived', 'archivedAt', 'createdAt', 'creditCardInvoiceId', 'creditCardPurchaseId', 'dueDate', 'id', 'installmentNumber', 'notes', 'status', 'updatedAt', 'userId'] as const
-  $columns = CreditCardInstallmentSchema.$columns
+  static $columns = [
+    'amount',
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'creditCardInvoiceId',
+    'creditCardPurchaseId',
+    'dueDate',
+    'id',
+    'installmentNumber',
+    'notes',
+    'status',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = CreditCardInstallmentSchema.$columns;
   @column()
-  declare amount: number
+  declare amount: number;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare creditCardInvoiceId: number | null
+  declare creditCardInvoiceId: number | null;
   @column()
-  declare creditCardPurchaseId: number
+  declare creditCardPurchaseId: number;
   @column.date()
-  declare dueDate: DateTime
+  declare dueDate: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare installmentNumber: number
+  declare installmentNumber: number;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare status: string
+  declare status: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class CreditCardInvoicePaymentSchema extends BaseModel {
-  static $columns = ['accountId', 'amount', 'archived', 'archivedAt', 'createdAt', 'creditCardInvoiceId', 'id', 'notes', 'paymentDate', 'status', 'transactionId', 'updatedAt', 'userId'] as const
-  $columns = CreditCardInvoicePaymentSchema.$columns
+  static $columns = [
+    'accountId',
+    'amount',
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'creditCardInvoiceId',
+    'id',
+    'notes',
+    'paymentDate',
+    'status',
+    'transactionId',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = CreditCardInvoicePaymentSchema.$columns;
   @column()
-  declare accountId: number
+  declare accountId: number;
   @column()
-  declare amount: number
+  declare amount: number;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare creditCardInvoiceId: number
+  declare creditCardInvoiceId: number;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column.date()
-  declare paymentDate: DateTime
+  declare paymentDate: DateTime;
   @column()
-  declare status: string
+  declare status: string;
   @column()
-  declare transactionId: number | null
+  declare transactionId: number | null;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class CreditCardInvoiceSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'createdAt', 'creditCardId', 'dueDate', 'id', 'minimumAmount', 'notes', 'paidAmount', 'periodEnd', 'periodStart', 'referenceMonth', 'status', 'totalAmount', 'updatedAt', 'userId'] as const
-  $columns = CreditCardInvoiceSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'creditCardId',
+    'dueDate',
+    'id',
+    'minimumAmount',
+    'notes',
+    'paidAmount',
+    'periodEnd',
+    'periodStart',
+    'referenceMonth',
+    'status',
+    'totalAmount',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = CreditCardInvoiceSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare creditCardId: number
+  declare creditCardId: number;
   @column.date()
-  declare dueDate: DateTime
+  declare dueDate: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare minimumAmount: number
+  declare minimumAmount: number;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare paidAmount: number
+  declare paidAmount: number;
   @column.date()
-  declare periodEnd: DateTime
+  declare periodEnd: DateTime;
   @column.date()
-  declare periodStart: DateTime
+  declare periodStart: DateTime;
   @column()
-  declare referenceMonth: string
+  declare referenceMonth: string;
   @column()
-  declare status: string
+  declare status: string;
   @column()
-  declare totalAmount: number
+  declare totalAmount: number;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class CreditCardPurchaseSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'categoryId', 'createdAt', 'creditCardId', 'description', 'id', 'installmentsCount', 'notes', 'payeeId', 'purchaseDate', 'status', 'totalAmount', 'updatedAt', 'userId'] as const
-  $columns = CreditCardPurchaseSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'categoryId',
+    'createdAt',
+    'creditCardId',
+    'description',
+    'id',
+    'installmentsCount',
+    'notes',
+    'payeeId',
+    'purchaseDate',
+    'status',
+    'totalAmount',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = CreditCardPurchaseSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column()
-  declare categoryId: number | null
+  declare categoryId: number | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare creditCardId: number
+  declare creditCardId: number;
   @column()
-  declare description: string
+  declare description: string;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare installmentsCount: number
+  declare installmentsCount: number;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare payeeId: number | null
+  declare payeeId: number | null;
   @column.date()
-  declare purchaseDate: DateTime
+  declare purchaseDate: DateTime;
   @column()
-  declare status: string
+  declare status: string;
   @column()
-  declare totalAmount: number
+  declare totalAmount: number;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class CreditCardSchema extends BaseModel {
-  static $columns = ['accountId', 'archived', 'archivedAt', 'brand', 'closingDay', 'createdAt', 'creditLimit', 'dueDay', 'id', 'lastFourDigits', 'name', 'notes', 'status', 'updatedAt', 'userId'] as const
-  $columns = CreditCardSchema.$columns
+  static $columns = [
+    'accountId',
+    'archived',
+    'archivedAt',
+    'brand',
+    'closingDay',
+    'createdAt',
+    'creditLimit',
+    'dueDay',
+    'id',
+    'lastFourDigits',
+    'name',
+    'notes',
+    'status',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = CreditCardSchema.$columns;
   @column()
-  declare accountId: number | null
+  declare accountId: number | null;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column()
-  declare brand: string | null
+  declare brand: string | null;
   @column()
-  declare closingDay: number
+  declare closingDay: number;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare creditLimit: number
+  declare creditLimit: number;
   @column()
-  declare dueDay: number
+  declare dueDay: number;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare lastFourDigits: string | null
+  declare lastFourDigits: string | null;
   @column()
-  declare name: string
+  declare name: string;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare status: string
+  declare status: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class PayeeSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'createdAt', 'id', 'name', 'notes', 'updatedAt', 'userId'] as const
-  $columns = PayeeSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'id',
+    'name',
+    'notes',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = PayeeSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare name: string
+  declare name: string;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class PurchaseItemSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'categoryId', 'createdAt', 'id', 'name', 'notes', 'payeeId', 'purchaseId', 'quantity', 'shoppingListItemId', 'totalPrice', 'unitPrice', 'updatedAt', 'userId'] as const
-  $columns = PurchaseItemSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'categoryId',
+    'createdAt',
+    'id',
+    'name',
+    'notes',
+    'payeeId',
+    'purchaseId',
+    'quantity',
+    'shoppingListItemId',
+    'totalPrice',
+    'unitPrice',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = PurchaseItemSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column()
-  declare categoryId: number | null
+  declare categoryId: number | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare name: string
+  declare name: string;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare payeeId: number | null
+  declare payeeId: number | null;
   @column()
-  declare purchaseId: number
+  declare purchaseId: number;
   @column()
-  declare quantity: number
+  declare quantity: number;
   @column()
-  declare shoppingListItemId: number | null
+  declare shoppingListItemId: number | null;
   @column()
-  declare totalPrice: number
+  declare totalPrice: number;
   @column()
-  declare unitPrice: number
+  declare unitPrice: number;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class PurchaseSchema extends BaseModel {
-  static $columns = ['accountId', 'archived', 'archivedAt', 'createdAt', 'id', 'notes', 'purchaseDate', 'shoppingListId', 'status', 'title', 'totalAmount', 'updatedAt', 'userId'] as const
-  $columns = PurchaseSchema.$columns
+  static $columns = [
+    'accountId',
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'id',
+    'notes',
+    'purchaseDate',
+    'shoppingListId',
+    'status',
+    'title',
+    'totalAmount',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = PurchaseSchema.$columns;
   @column()
-  declare accountId: number | null
+  declare accountId: number | null;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column.date()
-  declare purchaseDate: DateTime
+  declare purchaseDate: DateTime;
   @column()
-  declare shoppingListId: number | null
+  declare shoppingListId: number | null;
   @column()
-  declare status: string
+  declare status: string;
   @column()
-  declare title: string
+  declare title: string;
   @column()
-  declare totalAmount: number
+  declare totalAmount: number;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class RecurringTransactionSchema extends BaseModel {
-  static $columns = ['accountId', 'amount', 'archived', 'archivedAt', 'categoryId', 'createdAt', 'description', 'endDate', 'frequency', 'id', 'interval', 'nextOccurrenceDate', 'notes', 'payeeId', 'startDate', 'status', 'type', 'updatedAt', 'userId'] as const
-  $columns = RecurringTransactionSchema.$columns
+  static $columns = [
+    'accountId',
+    'amount',
+    'archived',
+    'archivedAt',
+    'categoryId',
+    'createdAt',
+    'description',
+    'endDate',
+    'frequency',
+    'id',
+    'interval',
+    'nextOccurrenceDate',
+    'notes',
+    'payeeId',
+    'startDate',
+    'status',
+    'type',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = RecurringTransactionSchema.$columns;
   @column()
-  declare accountId: number
+  declare accountId: number;
   @column()
-  declare amount: number
+  declare amount: number;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column()
-  declare categoryId: number | null
+  declare categoryId: number | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare description: string | null
+  declare description: string | null;
   @column.date()
-  declare endDate: DateTime | null
+  declare endDate: DateTime | null;
   @column()
-  declare frequency: string
+  declare frequency: string;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare interval: number
+  declare interval: number;
   @column.date()
-  declare nextOccurrenceDate: DateTime
+  declare nextOccurrenceDate: DateTime;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare payeeId: number | null
+  declare payeeId: number | null;
   @column.date()
-  declare startDate: DateTime
+  declare startDate: DateTime;
   @column()
-  declare status: string
+  declare status: string;
   @column()
-  declare type: string
+  declare type: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class SettingSchema extends BaseModel {
-  static $columns = ['createdAt', 'currency', 'id', 'locale', 'timezone', 'updatedAt', 'userId'] as const
-  $columns = SettingSchema.$columns
+  static $columns = [
+    'createdAt',
+    'currency',
+    'id',
+    'locale',
+    'localeInitializedAt',
+    'timezone',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = SettingSchema.$columns;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare currency: string
+  declare currency: string;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare locale: string
+  declare locale: string;
+  @column.dateTime()
+  declare localeInitializedAt: DateTime | null;
   @column()
-  declare timezone: string
+  declare timezone: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class ShoppingListItemSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'checked', 'createdAt', 'estimatedPrice', 'id', 'name', 'notes', 'position', 'quantity', 'shoppingListId', 'unit', 'updatedAt', 'userId'] as const
-  $columns = ShoppingListItemSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'checked',
+    'createdAt',
+    'estimatedPrice',
+    'id',
+    'name',
+    'notes',
+    'position',
+    'quantity',
+    'shoppingListId',
+    'unit',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = ShoppingListItemSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column()
-  declare checked: boolean
+  declare checked: boolean;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare estimatedPrice: number | null
+  declare estimatedPrice: number | null;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare name: string
+  declare name: string;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare position: number
+  declare position: number;
   @column()
-  declare quantity: number
+  declare quantity: number;
   @column()
-  declare shoppingListId: number
+  declare shoppingListId: number;
   @column()
-  declare unit: string | null
+  declare unit: string | null;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class ShoppingListSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'createdAt', 'id', 'name', 'notes', 'status', 'targetDate', 'updatedAt', 'userId'] as const
-  $columns = ShoppingListSchema.$columns
+  static $columns = [
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'id',
+    'name',
+    'notes',
+    'status',
+    'targetDate',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = ShoppingListSchema.$columns;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare name: string
+  declare name: string;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare status: string
+  declare status: string;
   @column.date()
-  declare targetDate: DateTime | null
+  declare targetDate: DateTime | null;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class TransactionSchema extends BaseModel {
-  static $columns = ['accountId', 'amount', 'archived', 'archivedAt', 'categoryId', 'createdAt', 'description', 'id', 'notes', 'payeeId', 'status', 'transactionDate', 'type', 'updatedAt', 'userId'] as const
-  $columns = TransactionSchema.$columns
+  static $columns = [
+    'accountId',
+    'amount',
+    'archived',
+    'archivedAt',
+    'categoryId',
+    'createdAt',
+    'description',
+    'id',
+    'notes',
+    'payeeId',
+    'status',
+    'transactionDate',
+    'type',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = TransactionSchema.$columns;
   @column()
-  declare accountId: number
+  declare accountId: number;
   @column()
-  declare amount: number
+  declare amount: number;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column()
-  declare categoryId: number | null
+  declare categoryId: number | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare description: string | null
+  declare description: string | null;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare payeeId: number | null
+  declare payeeId: number | null;
   @column()
-  declare status: string
+  declare status: string;
   @column.date()
-  declare transactionDate: DateTime
+  declare transactionDate: DateTime;
   @column()
-  declare type: string
+  declare type: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class TransferSchema extends BaseModel {
-  static $columns = ['amount', 'archived', 'archivedAt', 'createdAt', 'description', 'fromAccountId', 'id', 'inTransactionId', 'notes', 'outTransactionId', 'status', 'toAccountId', 'transferDate', 'updatedAt', 'userId'] as const
-  $columns = TransferSchema.$columns
+  static $columns = [
+    'amount',
+    'archived',
+    'archivedAt',
+    'createdAt',
+    'description',
+    'fromAccountId',
+    'id',
+    'inTransactionId',
+    'notes',
+    'outTransactionId',
+    'status',
+    'toAccountId',
+    'transferDate',
+    'updatedAt',
+    'userId',
+  ] as const;
+  $columns = TransferSchema.$columns;
   @column()
-  declare amount: number
+  declare amount: number;
   @column()
-  declare archived: boolean
+  declare archived: boolean;
   @column.dateTime()
-  declare archivedAt: DateTime | null
+  declare archivedAt: DateTime | null;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare description: string | null
+  declare description: string | null;
   @column()
-  declare fromAccountId: number
+  declare fromAccountId: number;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare inTransactionId: number | null
+  declare inTransactionId: number | null;
   @column()
-  declare notes: string | null
+  declare notes: string | null;
   @column()
-  declare outTransactionId: number | null
+  declare outTransactionId: number | null;
   @column()
-  declare status: string
+  declare status: string;
   @column()
-  declare toAccountId: number
+  declare toAccountId: number;
   @column.date()
-  declare transferDate: DateTime
+  declare transferDate: DateTime;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number
+  declare userId: number;
 }
 
 export class TranslationTermSchema extends BaseModel {
-  static $columns = ['createdAt', 'id', 'locale', 'namespace', 'termKey', 'updatedAt', 'userId', 'value'] as const
-  $columns = TranslationTermSchema.$columns
+  static $columns = [
+    'createdAt',
+    'id',
+    'locale',
+    'namespace',
+    'termKey',
+    'updatedAt',
+    'userId',
+    'value',
+  ] as const;
+  $columns = TranslationTermSchema.$columns;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column()
-  declare locale: string
+  declare locale: string;
   @column()
-  declare namespace: string
+  declare namespace: string;
   @column()
-  declare termKey: string
+  declare termKey: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
   @column()
-  declare userId: number | null
+  declare userId: number | null;
   @column()
-  declare value: string
+  declare value: string;
 }
 
 export class UserSchema extends BaseModel {
-  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
-  $columns = UserSchema.$columns
+  static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const;
+  $columns = UserSchema.$columns;
   @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  declare createdAt: DateTime;
   @column()
-  declare email: string
+  declare email: string;
   @column()
-  declare fullName: string | null
+  declare fullName: string | null;
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
   @column({ serializeAs: null })
-  declare password: string
+  declare password: string;
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
+  declare updatedAt: DateTime | null;
 }

@@ -1,3 +1,4 @@
+import Setting from '#models/setting';
 import { I18n } from '@adonisjs/i18n';
 import i18nManager from '@adonisjs/i18n/services/main';
 import type { NextFn } from '@adonisjs/core/types/http';
@@ -30,16 +31,42 @@ export default class DetectUserLocaleMiddleware {
     return i18nManager.getSupportedLocaleFor(userLanguages);
   }
 
+  protected normalizeLocale(locale?: string | null) {
+    if (!locale) return i18nManager.defaultLocale;
+    return i18nManager.getSupportedLocaleFor([locale]) || i18nManager.defaultLocale;
+  }
+
   async handle(ctx: HttpContext, next: NextFn) {
-    /**
-     * Finding user language
-     */
-    const language = this.getRequestLocale(ctx);
+    let language = this.getRequestLocale(ctx) || i18nManager.defaultLocale;
+    const authUser = ctx.auth.user;
+
+    if (authUser) {
+      const setting =
+        (await Setting.query().where('user_id', authUser.id).first()) ||
+        (await Setting.create({
+          userId: authUser.id,
+          currency: 'USD',
+          locale: 'en-US',
+          timezone: 'UTC',
+          localeInitializedAt: null,
+        }));
+
+      if (!setting.localeInitializedAt) {
+        const detected = this.normalizeLocale(language);
+        await Setting.query()
+          .where('id', setting.id)
+          .whereNull('locale_initialized_at')
+          .update({ locale: detected, locale_initialized_at: new Date() });
+        language = detected;
+      } else {
+        language = this.normalizeLocale(setting.locale);
+      }
+    }
 
     /**
      * Assigning i18n property to the HTTP context
      */
-    ctx.i18n = i18nManager.locale(language || i18nManager.defaultLocale);
+    ctx.i18n = i18nManager.locale(this.normalizeLocale(language));
 
     /**
      * Binding I18n class to the request specific instance of it.
