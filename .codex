@@ -37,11 +37,29 @@ Follow the roadmap below exactly.
 
 ## Pending (Next Roadmap Scope)
 
-- [ ] Controllers and Routes Roadmap (section 14), module by module.
-- [ ] UI Pages Roadmap (section 15), module by module.
-- [ ] Validation Strategy (section 16) for all forms/ownership checks.
-- [ ] Authentication/Authorization rollout after base structure stabilization (section 17 refinement).
-- [ ] Business services completion for remaining modules (section 18).
+- [ ] Step 20.1 — Controllers/Routes/Validation: `AccountTypes` module (`index`, `store`, `update`, `archive`) with ownership checks.
+- [ ] Step 20.2 — Controllers/Routes/Validation: `Accounts` module (`index`, `store`, `update`, `archive`) with ownership checks and account-type linkage.
+- [ ] Step 20.3 — Controllers/Routes/Validation: `CategoryGroups` module (`index`, `store`, `update`, `archive`) with ownership checks.
+- [ ] Step 20.4 — Controllers/Routes/Validation: `Categories` module (`index`, `store`, `update`, `archive`) with ownership checks and category-group linkage.
+- [ ] Step 20.5 — Controllers/Routes/Validation: `Payees` module (`index`, `store`, `update`, `archive`) with ownership checks.
+- [ ] Step 20.6 — Controllers/Routes/Validation: `Transactions` module (`index`, `store`, `update`, `archive`) with ownership checks and account/category/payee validation.
+- [ ] Step 20.7 — Controllers/Routes/Validation: `Transfers` module (`store`, `show`, `archive`) integrated with `TransferService` and ownership checks.
+- [ ] Step 20.8 — Controllers/Routes/Validation: `RecurringTransactions` module (`index`, `store`, `update`, `archive`) with ownership checks.
+- [ ] Step 20.9 — Controllers/Routes/Validation: `Budgets` and `BudgetCategories` modules with ownership checks and category linkage.
+- [ ] Step 20.10 — Controllers/Routes/Validation: `CreditCards` module with ownership checks.
+- [ ] Step 20.11 — Controllers/Routes/Validation: `CreditCardInvoices` module with ownership checks and credit-card linkage.
+- [ ] Step 20.12 — Controllers/Routes/Validation: `CreditCardPurchases` and `CreditCardInstallments` modules with ownership checks and invoice/category linkage.
+- [ ] Step 20.13 — Controllers/Routes/Validation: `CreditCardInvoicePayments` module with ownership checks and account/invoice/transaction linkage.
+- [ ] Step 20.14 — Controllers/Routes/Validation: `ShoppingLists` and `ShoppingListItems` modules with ownership checks.
+- [ ] Step 20.15 — Controllers/Routes/Validation: `Purchases` and `PurchaseItems` modules with ownership checks and category linkage.
+- [ ] Step 21.1 — UI Pages: `AccountTypes` and `Accounts` (list/create/edit/archive) with i18n and server-side validation feedback.
+- [ ] Step 21.2 — UI Pages: `CategoryGroups`, `Categories`, `Payees` (list/create/edit/archive) with i18n and validation feedback.
+- [ ] Step 21.3 — UI Pages: `Transactions`, `Transfers`, `RecurringTransactions` with i18n and validation feedback.
+- [ ] Step 21.4 — UI Pages: `Budgets` and `BudgetCategories` with i18n and validation feedback.
+- [ ] Step 21.5 — UI Pages: `CreditCards`, `Invoices`, `Purchases`, `Installments`, `Payments` with i18n and validation feedback.
+- [ ] Step 21.6 — UI Pages: `ShoppingLists`, `ShoppingListItems`, `Purchases`, `PurchaseItems` with i18n and validation feedback.
+- [ ] Step 22 — Authentication/Authorization refinement (policies/abilities + route protection hardening).
+- [ ] Step 23 — Remaining business services completion and integration tests for critical finance workflows.
 
 ## Important Notes Applied
 
@@ -58,6 +76,14 @@ Follow the roadmap below exactly.
 - Modules should resolve business labels via `TranslationTermResolver` and keep UI fixed-copy translation in file-based `resources/lang/*`.
 - User locale bootstrap strategy: `settings.locale` is the persistent source of truth after first authenticated access. On first authenticated request (`settings.locale_initialized_at` is null), locale is detected from `Accept-Language`, normalized to supported locales, persisted to `settings.locale`, and marked with `locale_initialized_at`. Subsequent requests ignore `Accept-Language` for authenticated users and rely on `settings.locale`.
 - Settings defaults strategy: users must always have a `settings` row with defaults (`currency=USD`, `locale=en-US`, `timezone=UTC`), created on signup and backfilled via `settings` seeder for existing users without settings.
+- Seeders implemented for base local data:
+  - `database/seeders/00_users_seeder.ts` creates a default local user (`seed.user@fortuna.local`) and must execute first.
+  - `database/seeders/settings_seeder.ts` backfills missing settings (`USD`, `en-US`, `UTC`, `locale_initialized_at=null`) for existing users.
+  - `database/seeders/account_types_seeder.ts` creates default account types per user using `term_key`.
+  - `database/seeders/category_groups_seeder.ts` creates default category groups per user using `term_key`.
+  - `database/seeders/categories_seeder.ts` creates default categories per user using `term_key`, linked to seeded groups.
+  - Shared seeder helpers/catalog live outside `database/seeders` at `database/support/*` to avoid Adonis trying to execute non-seeder files.
+  - Expected one-pass execution command: `node ace db:seed`.
 
 ---
 
