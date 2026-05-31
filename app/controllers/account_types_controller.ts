@@ -1,15 +1,12 @@
 import AccountType from '#models/account_type';
 import { createAccountTypeValidator, updateAccountTypeValidator } from '#validators/account_type';
 import type { HttpContext } from '@adonisjs/core/http';
-import i18nManager from '@adonisjs/i18n/services/main';
 import { DateTime } from 'luxon';
 
 export default class AccountTypesController {
-  async index({ auth, response, i18n }: HttpContext) {
+  async index({ auth, response }: HttpContext) {
     const userId = auth.user!.id;
-    const fallbackLocale = i18nManager.getFallbackLocaleFor(i18n.locale);
-
-    const accountTypes = await AccountType.queryTranslated(i18n.locale, fallbackLocale, userId)
+    const accountTypes = await AccountType.query()
       .where('user_id', userId)
       .where('archived', false)
       .orderBy('id', 'asc');
@@ -23,17 +20,17 @@ export default class AccountTypesController {
 
     const existing = await AccountType.query()
       .where('user_id', userId)
-      .where('term_key', payload.termKey)
+      .where('name', payload.name)
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Account type term key already exists' });
+      return response.conflict({ message: 'Account type name already exists' });
     }
 
     const accountType = await AccountType.create({
       userId,
-      termKey: payload.termKey,
-      descriptionTermKey: payload.description ? `${payload.termKey}.description` : null,
+      name: payload.name,
+      description: payload.description,
       archived: false,
       archivedAt: null,
     });
@@ -54,21 +51,21 @@ export default class AccountTypesController {
 
     const payload = await request.validateUsing(updateAccountTypeValidator);
 
-    if (payload.termKey !== accountType.termKey) {
+    if (payload.name !== accountType.name) {
       const existing = await AccountType.query()
         .where('user_id', userId)
-        .where('term_key', payload.termKey)
+        .where('name', payload.name)
         .whereNot('id', accountType.id)
         .first();
 
       if (existing) {
-        return response.conflict({ message: 'Account type term key already exists' });
+        return response.conflict({ message: 'Account type name already exists' });
       }
     }
 
     accountType.merge({
-      termKey: payload.termKey,
-      descriptionTermKey: payload.description ? `${payload.termKey}.description` : null,
+      name: payload.name,
+      description: payload.description,
     });
     await accountType.save();
 
