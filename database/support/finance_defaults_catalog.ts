@@ -19,28 +19,22 @@ export const accountTypeDefaults = [
 
 export const categoryGroupDefaults = [
   {
-    termKey: 'category_group.income.name',
+    name: 'Income',
     position: 0,
-    enUS: 'Income',
-    ptBR: 'Receitas',
   },
   {
-    termKey: 'category_group.fixed_expenses.name',
+    name: 'Fixed Expenses',
     position: 1,
-    enUS: 'Fixed Expenses',
-    ptBR: 'Despesas fixas',
   },
   {
-    termKey: 'category_group.variable_expenses.name',
+    name: 'Variable Expenses',
     position: 2,
-    enUS: 'Variable Expenses',
-    ptBR: 'Despesas variáveis',
   },
 ] as const;
 
 export const categoryDefaults = [
   {
-    groupTermKey: 'category_group.income.name',
+    groupName: 'Income',
     termKey: 'category.salary.name',
     type: 'income',
     color: '#198754',
@@ -50,7 +44,7 @@ export const categoryDefaults = [
     ptBR: 'Salário',
   },
   {
-    groupTermKey: 'category_group.income.name',
+    groupName: 'Income',
     termKey: 'category.freelance.name',
     type: 'income',
     color: '#20c997',
@@ -60,7 +54,7 @@ export const categoryDefaults = [
     ptBR: 'Freelance',
   },
   {
-    groupTermKey: 'category_group.fixed_expenses.name',
+    groupName: 'Fixed Expenses',
     termKey: 'category.rent.name',
     type: 'expense',
     color: '#dc3545',
@@ -70,7 +64,7 @@ export const categoryDefaults = [
     ptBR: 'Aluguel',
   },
   {
-    groupTermKey: 'category_group.fixed_expenses.name',
+    groupName: 'Fixed Expenses',
     termKey: 'category.utilities.name',
     type: 'expense',
     color: '#fd7e14',
@@ -80,7 +74,7 @@ export const categoryDefaults = [
     ptBR: 'Contas',
   },
   {
-    groupTermKey: 'category_group.variable_expenses.name',
+    groupName: 'Variable Expenses',
     termKey: 'category.groceries.name',
     type: 'expense',
     color: '#0d6efd',
@@ -90,7 +84,7 @@ export const categoryDefaults = [
     ptBR: 'Supermercado',
   },
   {
-    groupTermKey: 'category_group.variable_expenses.name',
+    groupName: 'Variable Expenses',
     termKey: 'category.transport.name',
     type: 'expense',
     color: '#6f42c1',

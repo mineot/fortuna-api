@@ -11,13 +11,13 @@ export default class extends BaseSeeder {
     if (users.length === 0) return;
 
     for (const user of users) {
-      const groupsByTermKey = new Map<string, CategoryGroup>();
+      const groupsByName = new Map<string, CategoryGroup>();
 
       for (const groupDefault of categoryGroupDefaults) {
         const group = await CategoryGroup.firstOrCreate(
           {
             userId: user.id,
-            termKey: groupDefault.termKey,
+            name: groupDefault.name,
           },
           {
             position: groupDefault.position,
@@ -25,11 +25,11 @@ export default class extends BaseSeeder {
             archivedAt: null,
           },
         );
-        groupsByTermKey.set(group.termKey, group);
+        groupsByName.set(group.name, group);
       }
 
       for (const item of categoryDefaults) {
-        const group = groupsByTermKey.get(item.groupTermKey);
+        const group = groupsByName.get(item.groupName);
         if (!group) continue;
 
         await Category.firstOrCreate(
