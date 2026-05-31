@@ -16,6 +16,8 @@ const AccountsController = () => import('#controllers/accounts_controller');
 const CategoryGroupsController = () => import('#controllers/category_groups_controller');
 const CategoriesController = () => import('#controllers/categories_controller');
 const PayeesController = () => import('#controllers/payees_controller');
+const TransactionsController = () => import('#controllers/transactions_controller');
+const TransfersController = () => import('#controllers/transfers_controller');
 
 router.on('/').renderInertia('home', {}).as('home');
 
@@ -57,5 +59,14 @@ router
     router.post('payees', [PayeesController, 'store']);
     router.put('payees/:id', [PayeesController, 'update']);
     router.patch('payees/:id/archive', [PayeesController, 'archive']);
+
+    router.get('transactions', [TransactionsController, 'index']);
+    router.post('transactions', [TransactionsController, 'store']);
+    router.put('transactions/:id', [TransactionsController, 'update']);
+    router.patch('transactions/:id/archive', [TransactionsController, 'archive']);
+
+    router.post('transfers', [TransfersController, 'store']);
+    router.get('transfers/:id', [TransfersController, 'show']);
+    router.patch('transfers/:id/archive', [TransfersController, 'archive']);
   })
   .use(middleware.auth());
