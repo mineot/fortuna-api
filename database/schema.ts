@@ -609,27 +609,6 @@ export class TransferSchema extends BaseModel {
   declare userId: number
 }
 
-export class TranslationTermSchema extends BaseModel {
-  static $columns = ['createdAt', 'id', 'locale', 'namespace', 'termKey', 'updatedAt', 'userId', 'value'] as const
-  $columns = TranslationTermSchema.$columns
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-  @column({ isPrimary: true })
-  declare id: number
-  @column()
-  declare locale: string
-  @column()
-  declare namespace: string
-  @column()
-  declare termKey: string
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
-  @column()
-  declare userId: number | null
-  @column()
-  declare value: string
-}
-
 export class UserSchema extends BaseModel {
   static $columns = ['createdAt', 'email', 'fullName', 'id', 'password', 'updatedAt'] as const
   $columns = UserSchema.$columns

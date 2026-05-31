@@ -17,7 +17,6 @@ import ShoppingList from '#models/shopping_list';
 import ShoppingListItem from '#models/shopping_list_item';
 import Transaction from '#models/transaction';
 import Transfer from '#models/transfer';
-import TranslationTerm from '#models/translation_term';
 import { UserSchema } from '#database/schema';
 import Setting from '#models/setting';
 import hash from '@adonisjs/core/services/hash';
@@ -67,8 +66,6 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
   declare purchases: HasMany<typeof Purchase>;
   @hasMany(() => PurchaseItem)
   declare purchaseItems: HasMany<typeof PurchaseItem>;
-  @hasMany(() => TranslationTerm)
-  declare translationTerms: HasMany<typeof TranslationTerm>;
 
   get initials() {
     const [first, last] = this.fullName ? this.fullName.split(' ') : this.email.split('@');
