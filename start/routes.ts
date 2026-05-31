@@ -18,6 +18,9 @@ const CategoriesController = () => import('#controllers/categories_controller');
 const PayeesController = () => import('#controllers/payees_controller');
 const TransactionsController = () => import('#controllers/transactions_controller');
 const TransfersController = () => import('#controllers/transfers_controller');
+const RecurringTransactionsController = () => import('#controllers/recurring_transactions_controller');
+const BudgetsController = () => import('#controllers/budgets_controller');
+const BudgetCategoriesController = () => import('#controllers/budget_categories_controller');
 
 router.on('/').renderInertia('home', {}).as('home');
 
@@ -68,5 +71,20 @@ router
     router.post('transfers', [TransfersController, 'store']);
     router.get('transfers/:id', [TransfersController, 'show']);
     router.patch('transfers/:id/archive', [TransfersController, 'archive']);
+
+    router.get('recurring-transactions', [RecurringTransactionsController, 'index']);
+    router.post('recurring-transactions', [RecurringTransactionsController, 'store']);
+    router.put('recurring-transactions/:id', [RecurringTransactionsController, 'update']);
+    router.patch('recurring-transactions/:id/archive', [RecurringTransactionsController, 'archive']);
+
+    router.get('budgets', [BudgetsController, 'index']);
+    router.post('budgets', [BudgetsController, 'store']);
+    router.put('budgets/:id', [BudgetsController, 'update']);
+    router.patch('budgets/:id/archive', [BudgetsController, 'archive']);
+
+    router.get('budget-categories', [BudgetCategoriesController, 'index']);
+    router.post('budget-categories', [BudgetCategoriesController, 'store']);
+    router.put('budget-categories/:id', [BudgetCategoriesController, 'update']);
+    router.patch('budget-categories/:id/archive', [BudgetCategoriesController, 'archive']);
   })
   .use(middleware.auth());
