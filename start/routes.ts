@@ -12,6 +12,8 @@ import { controllers } from '#generated/controllers';
 import router from '@adonisjs/core/services/router';
 
 const AccountTypesController = () => import('#controllers/account_types_controller');
+const AccountsController = () => import('#controllers/accounts_controller');
+const CategoryGroupsController = () => import('#controllers/category_groups_controller');
 
 router.on('/').renderInertia('home', {}).as('home');
 
@@ -33,5 +35,15 @@ router
     router.post('account-types', [AccountTypesController, 'store']);
     router.put('account-types/:id', [AccountTypesController, 'update']);
     router.patch('account-types/:id/archive', [AccountTypesController, 'archive']);
+
+    router.get('accounts', [AccountsController, 'index']);
+    router.post('accounts', [AccountsController, 'store']);
+    router.put('accounts/:id', [AccountsController, 'update']);
+    router.patch('accounts/:id/archive', [AccountsController, 'archive']);
+
+    router.get('category-groups', [CategoryGroupsController, 'index']);
+    router.post('category-groups', [CategoryGroupsController, 'store']);
+    router.put('category-groups/:id', [CategoryGroupsController, 'update']);
+    router.patch('category-groups/:id/archive', [CategoryGroupsController, 'archive']);
   })
   .use(middleware.auth());
