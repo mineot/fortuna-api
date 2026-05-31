@@ -112,7 +112,7 @@ export class BudgetSchema extends BaseModel {
 }
 
 export class CategorySchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'categoryGroupId', 'color', 'createdAt', 'icon', 'id', 'position', 'termKey', 'type', 'updatedAt', 'userId'] as const
+  static $columns = ['archived', 'archivedAt', 'categoryGroupId', 'color', 'createdAt', 'icon', 'id', 'name', 'position', 'type', 'updatedAt', 'userId'] as const
   $columns = CategorySchema.$columns
   @column()
   declare archived: boolean
@@ -129,9 +129,9 @@ export class CategorySchema extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
   @column()
-  declare position: number
+  declare name: string
   @column()
-  declare termKey: string | null
+  declare position: number
   @column()
   declare type: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })

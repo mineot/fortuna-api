@@ -3,7 +3,6 @@ import CategoryGroup from '#models/category_group';
 import User from '#models/user';
 import { BaseSeeder } from '@adonisjs/lucid/seeders';
 import { categoryDefaults, categoryGroupDefaults } from '../support/finance_defaults_catalog.js';
-import { seedTerms } from '../support/seed_i18n_terms.js';
 
 export default class extends BaseSeeder {
   async run() {
@@ -35,10 +34,10 @@ export default class extends BaseSeeder {
         await Category.firstOrCreate(
           {
             userId: user.id,
-            termKey: item.termKey,
+            categoryGroupId: group.id,
+            name: item.name,
           },
           {
-            categoryGroupId: group.id,
             type: item.type,
             color: item.color,
             icon: item.icon,
@@ -47,14 +46,6 @@ export default class extends BaseSeeder {
             archivedAt: null,
           },
         );
-
-        await seedTerms({
-          userId: user.id,
-          namespace: 'categories',
-          termKey: item.termKey,
-          enUS: item.enUS,
-          ptBR: item.ptBR,
-        });
       }
     }
   }

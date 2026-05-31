@@ -1,6 +1,5 @@
 import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
-import { translatedNameSelect } from '#services/translated_term_select';
 import BudgetCategory from '#models/budget_category';
 import CategoryGroup from '#models/category_group';
 import CreditCardPurchase from '#models/credit_card_purchase';
@@ -20,8 +19,8 @@ export default class Category extends BaseModel {
   @column()
   declare categoryGroupId: number;
 
-  @column({ columnName: 'term_key' })
-  declare termKey: string;
+  @column()
+  declare name: string;
 
   @column()
   declare type: string;
@@ -67,18 +66,4 @@ export default class Category extends BaseModel {
 
   @hasMany(() => PurchaseItem)
   declare purchaseItems: HasMany<typeof PurchaseItem>;
-
-  static queryTranslated(locale: string, fallbackLocale: string, userId?: number | null) {
-    return this.query()
-      .select('categories.*')
-      .select(
-        translatedNameSelect({
-          tableName: 'categories',
-          namespace: 'categories',
-          locale,
-          fallbackLocale,
-          userId,
-        }),
-      );
-  }
 }

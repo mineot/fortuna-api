@@ -74,6 +74,8 @@ Follow the roadmap below exactly.
 - Transfer i18n in business workflow supports injected request `i18n` instance and normalizes explicit locale input through `i18nManager.getSupportedLocaleFor(...)`.
 - Database terms i18n is based on `translation_terms` (locale-key-value) with optional `user_id` override and resolver order: user+locale -> global+locale -> user+fallback -> global+fallback -> `namespace.term_key`.
 - `account_types` no longer uses database-term i18n (`translation_terms`) and now persists direct columns `name` and `description`.
+- `category_groups` no longer use `translation_terms` and now persist direct `name`.
+- `categories` no longer use `translation_terms` and now persist direct `name`.
 - Modules should resolve business labels via `TranslationTermResolver` and keep UI fixed-copy translation in file-based `resources/lang/*`.
 - User locale bootstrap strategy: `settings.locale` is the persistent source of truth after first authenticated access. On first authenticated request (`settings.locale_initialized_at` is null), locale is detected from `Accept-Language`, normalized to supported locales, persisted to `settings.locale`, and marked with `locale_initialized_at`. Subsequent requests ignore `Accept-Language` for authenticated users and rely on `settings.locale`.
 - Settings defaults strategy: users must always have a `settings` row with defaults (`currency=USD`, `locale=en-US`, `timezone=UTC`), created on signup and backfilled via `settings` seeder for existing users without settings.
@@ -81,8 +83,8 @@ Follow the roadmap below exactly.
   - `database/seeders/00_users_seeder.ts` creates a default local user (`seed.user@fortuna.local`) and must execute first.
   - `database/seeders/settings_seeder.ts` backfills missing settings (`USD`, `en-US`, `UTC`, `locale_initialized_at=null`) for existing users.
   - `database/seeders/account_types_seeder.ts` creates default account types per user using direct `name` and `description`.
-  - `database/seeders/category_groups_seeder.ts` creates default category groups per user using `term_key`.
-  - `database/seeders/categories_seeder.ts` creates default categories per user using `term_key`, linked to seeded groups.
+  - `database/seeders/category_groups_seeder.ts` creates default category groups per user using direct `name`.
+  - `database/seeders/categories_seeder.ts` creates default categories per user using direct `name`, linked to seeded groups.
   - Shared seeder helpers/catalog live outside `database/seeders` at `database/support/*` to avoid Adonis trying to execute non-seeder files.
   - Expected one-pass execution command: `node ace db:seed`.
 
