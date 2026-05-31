@@ -1,4 +1,4 @@
-import TranslationTerm from '#models/translation_term';
+import Database from '@adonisjs/lucid/services/db';
 
 type UpsertTermInput = {
   userId: number;
@@ -9,27 +9,37 @@ type UpsertTermInput = {
 };
 
 export async function seedTerms(input: UpsertTermInput) {
-  await TranslationTerm.firstOrCreate(
-    {
-      userId: input.userId,
-      namespace: input.namespace,
-      termKey: input.termKey,
-      locale: 'en-US',
-    },
-    {
-      value: input.enUS,
-    },
-  );
+  const now = new Date();
 
-  await TranslationTerm.firstOrCreate(
-    {
-      userId: input.userId,
+  await Database.table('translation_terms')
+    .insert({
+      user_id: input.userId,
       namespace: input.namespace,
-      termKey: input.termKey,
+      term_key: input.termKey,
+      locale: 'en-US',
+      value: input.enUS,
+      created_at: now,
+      updated_at: now,
+    })
+    .onConflict(['user_id', 'namespace', 'term_key', 'locale'])
+    .merge({
+      value: input.enUS,
+      updated_at: now,
+    });
+
+  await Database.table('translation_terms')
+    .insert({
+      user_id: input.userId,
+      namespace: input.namespace,
+      term_key: input.termKey,
       locale: 'pt-BR',
-    },
-    {
       value: input.ptBR,
-    },
-  );
+      created_at: now,
+      updated_at: now,
+    })
+    .onConflict(['user_id', 'namespace', 'term_key', 'locale'])
+    .merge({
+      value: input.ptBR,
+      updated_at: now,
+    });
 }

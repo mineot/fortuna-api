@@ -15,8 +15,8 @@ export default class AccountType extends BaseModel {
   @column({ columnName: 'term_key' })
   declare termKey: string;
 
-  @column()
-  declare description: string | null;
+  @column({ columnName: 'description_term_key' })
+  declare descriptionTermKey: string | null;
 
   @column()
   declare archived: boolean;
@@ -45,6 +45,18 @@ export default class AccountType extends BaseModel {
           namespace: 'account_types',
           locale,
           fallbackLocale,
+          userId,
+        }),
+      )
+      .select(
+        translatedNameSelect({
+          tableName: 'account_types',
+          namespace: 'account_types',
+          locale,
+          fallbackLocale,
+          termKeyColumn: 'description_term_key',
+          outputAlias: 'description',
+          fallbackToTermKey: false,
           userId,
         }),
       );

@@ -1,25 +1,29 @@
 export const accountTypeDefaults = [
   {
     termKey: 'account_type.cash.name',
-    description: 'Physical cash wallet',
+    descriptionEnUS: 'Physical cash wallet',
+    descriptionPtBR: 'Carteira de dinheiro físico',
     enUS: 'Cash',
     ptBR: 'Dinheiro',
   },
   {
     termKey: 'account_type.checking.name',
-    description: 'Bank checking account',
+    descriptionEnUS: 'Bank checking account',
+    descriptionPtBR: 'Conta corrente bancária',
     enUS: 'Checking',
     ptBR: 'Conta corrente',
   },
   {
     termKey: 'account_type.savings.name',
-    description: 'Bank savings account',
+    descriptionEnUS: 'Bank savings account',
+    descriptionPtBR: 'Conta poupança bancária',
     enUS: 'Savings',
     ptBR: 'Poupança',
   },
   {
     termKey: 'account_type.credit.name',
-    description: 'Credit card account',
+    descriptionEnUS: 'Credit card account',
+    descriptionPtBR: 'Conta de cartão de crédito',
     enUS: 'Credit Card',
     ptBR: 'Cartão de crédito',
   },

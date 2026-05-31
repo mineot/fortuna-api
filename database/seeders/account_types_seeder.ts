@@ -11,17 +11,22 @@ export default class extends BaseSeeder {
 
     for (const user of users) {
       for (const item of accountTypeDefaults) {
-        await AccountType.firstOrCreate(
+        const accountType = await AccountType.firstOrCreate(
           {
             userId: user.id,
             termKey: item.termKey,
           },
           {
-            description: item.description,
+            descriptionTermKey: `${item.termKey}.description`,
             archived: false,
             archivedAt: null,
           },
         );
+
+        if (!accountType.descriptionTermKey) {
+          accountType.descriptionTermKey = `${item.termKey}.description`;
+          await accountType.save();
+        }
 
         await seedTerms({
           userId: user.id,
@@ -29,6 +34,14 @@ export default class extends BaseSeeder {
           termKey: item.termKey,
           enUS: item.enUS,
           ptBR: item.ptBR,
+        });
+
+        await seedTerms({
+          userId: user.id,
+          namespace: 'account_types',
+          termKey: `${item.termKey}.description`,
+          enUS: item.descriptionEnUS,
+          ptBR: item.descriptionPtBR,
         });
       }
     }

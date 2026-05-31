@@ -8,7 +8,7 @@ import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
 export class AccountTypeSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'createdAt', 'description', 'id', 'termKey', 'updatedAt', 'userId'] as const
+  static $columns = ['archived', 'archivedAt', 'createdAt', 'descriptionTermKey', 'id', 'termKey', 'updatedAt', 'userId'] as const
   $columns = AccountTypeSchema.$columns
   @column()
   declare archived: boolean
@@ -17,7 +17,7 @@ export class AccountTypeSchema extends BaseModel {
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()
-  declare description: string | null
+  declare descriptionTermKey: string | null
   @column({ isPrimary: true })
   declare id: number
   @column()

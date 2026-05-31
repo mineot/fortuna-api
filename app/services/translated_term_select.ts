@@ -5,11 +5,17 @@ type TranslatedNameSelectInput = {
   namespace: string;
   locale: string;
   fallbackLocale: string;
+  termKeyColumn?: string;
+  outputAlias?: string;
+  fallbackToTermKey?: boolean;
   userId?: number | null;
 };
 
 export function translatedNameSelect(input: TranslatedNameSelectInput) {
   const table = input.tableName;
+  const termKeyColumn = input.termKeyColumn || 'term_key';
+  const outputAlias = input.outputAlias || 'name';
+  const fallbackToTermKey = input.fallbackToTermKey !== false;
   const userSpecificEnabled = input.userId !== undefined && input.userId !== null;
 
   const userLocaleClause = userSpecificEnabled
@@ -26,28 +32,28 @@ export function translatedNameSelect(input: TranslatedNameSelectInput) {
       (SELECT tt.value
        FROM translation_terms tt
        WHERE tt.namespace = ?
-         AND tt.term_key = ${table}.term_key
+         AND tt.term_key = ${table}.${termKeyColumn}
          AND ${userLocaleClause}
        LIMIT 1),
       (SELECT tt.value
        FROM translation_terms tt
        WHERE tt.namespace = ?
-         AND tt.term_key = ${table}.term_key
+         AND tt.term_key = ${table}.${termKeyColumn}
          AND ${globalLocaleClause}
        LIMIT 1),
       (SELECT tt.value
        FROM translation_terms tt
        WHERE tt.namespace = ?
-         AND tt.term_key = ${table}.term_key
+         AND tt.term_key = ${table}.${termKeyColumn}
          AND ${userFallbackClause}
        LIMIT 1),
       (SELECT tt.value
        FROM translation_terms tt
        WHERE tt.namespace = ?
-         AND tt.term_key = ${table}.term_key
+         AND tt.term_key = ${table}.${termKeyColumn}
          AND ${globalFallbackClause}
        LIMIT 1),
-      ${table}.term_key
+      ${fallbackToTermKey ? `${table}.${termKeyColumn}` : 'null'}
     )
   `;
 
@@ -63,5 +69,5 @@ export function translatedNameSelect(input: TranslatedNameSelectInput) {
 
   bindings.push(input.namespace, input.fallbackLocale);
 
-  return Database.raw(`${sql} as name`, bindings);
+  return Database.raw(`${sql} as ${outputAlias}`, bindings);
 }

@@ -37,7 +37,7 @@ Follow the roadmap below exactly.
 
 ## Pending (Next Roadmap Scope)
 
-- [ ] Step 20.1 — Controllers/Routes/Validation: `AccountTypes` module (`index`, `store`, `update`, `archive`) with ownership checks.
+- [x] Step 20.1 — Controllers/Routes/Validation: `AccountTypes` module (`index`, `store`, `update`, `archive`) with ownership checks.
 - [ ] Step 20.2 — Controllers/Routes/Validation: `Accounts` module (`index`, `store`, `update`, `archive`) with ownership checks and account-type linkage.
 - [ ] Step 20.3 — Controllers/Routes/Validation: `CategoryGroups` module (`index`, `store`, `update`, `archive`) with ownership checks.
 - [ ] Step 20.4 — Controllers/Routes/Validation: `Categories` module (`index`, `store`, `update`, `archive`) with ownership checks and category-group linkage.
@@ -73,6 +73,7 @@ Follow the roadmap below exactly.
 - Inertia shared props now guard locale resolution when `ctx.i18n` is unavailable (early/error rendering paths), and frontend receives only `app.*` translation keys to reduce payload.
 - Transfer i18n in business workflow supports injected request `i18n` instance and normalizes explicit locale input through `i18nManager.getSupportedLocaleFor(...)`.
 - Database terms i18n is based on `translation_terms` (locale-key-value) with optional `user_id` override and resolver order: user+locale -> global+locale -> user+fallback -> global+fallback -> `namespace.term_key`.
+- `account_types.description` is transitioning to database-term i18n via `description_term_key` (same namespace `account_types`), with migration backfill from legacy `description` text to translation terms.
 - Modules should resolve business labels via `TranslationTermResolver` and keep UI fixed-copy translation in file-based `resources/lang/*`.
 - User locale bootstrap strategy: `settings.locale` is the persistent source of truth after first authenticated access. On first authenticated request (`settings.locale_initialized_at` is null), locale is detected from `Accept-Language`, normalized to supported locales, persisted to `settings.locale`, and marked with `locale_initialized_at`. Subsequent requests ignore `Accept-Language` for authenticated users and rely on `settings.locale`.
 - Settings defaults strategy: users must always have a `settings` row with defaults (`currency=USD`, `locale=en-US`, `timezone=UTC`), created on signup and backfilled via `settings` seeder for existing users without settings.
