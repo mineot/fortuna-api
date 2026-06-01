@@ -3,7 +3,10 @@ import Payee from '#models/payee';
 import Purchase from '#models/purchase';
 import PurchaseItem from '#models/purchase_item';
 import ShoppingListItem from '#models/shopping_list_item';
-import { createPurchaseItemValidator, updatePurchaseItemValidator } from '#validators/purchase_item';
+import {
+  createPurchaseItemValidator,
+  updatePurchaseItemValidator,
+} from '#validators/purchase_item';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
 
@@ -23,7 +26,11 @@ export default class PurchaseItemsController {
     categoryId?: number | null,
     payeeId?: number | null,
   ) {
-    const purchase = await Purchase.query().where('id', purchaseId).where('user_id', userId).where('archived', false).first();
+    const purchase = await Purchase.query()
+      .where('id', purchaseId)
+      .where('user_id', userId)
+      .where('archived', false)
+      .first();
     if (!purchase) return 'Purchase not found for this user';
 
     if (shoppingListItemId !== undefined && shoppingListItemId !== null) {
@@ -36,12 +43,20 @@ export default class PurchaseItemsController {
     }
 
     if (categoryId !== undefined && categoryId !== null) {
-      const category = await Category.query().where('id', categoryId).where('user_id', userId).where('archived', false).first();
+      const category = await Category.query()
+        .where('id', categoryId)
+        .where('user_id', userId)
+        .where('archived', false)
+        .first();
       if (!category) return 'Category not found for this user';
     }
 
     if (payeeId !== undefined && payeeId !== null) {
-      const payee = await Payee.query().where('id', payeeId).where('user_id', userId).where('archived', false).first();
+      const payee = await Payee.query()
+        .where('id', payeeId)
+        .where('user_id', userId)
+        .where('archived', false)
+        .first();
       if (!payee) return 'Payee not found for this user';
     }
 
@@ -99,7 +114,11 @@ export default class PurchaseItemsController {
 
   async update({ auth, params, request, response }: HttpContext) {
     const userId = auth.user!.id;
-    const item = await PurchaseItem.query().where('id', params.id).where('user_id', userId).where('archived', false).first();
+    const item = await PurchaseItem.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .where('archived', false)
+      .first();
     if (!item) return response.notFound({ message: 'Purchase item not found' });
 
     const payload = await request.validateUsing(updatePurchaseItemValidator);

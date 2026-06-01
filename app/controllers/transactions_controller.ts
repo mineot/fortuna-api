@@ -163,7 +163,10 @@ export default class TransactionsController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const transaction = await Transaction.query().where('id', params.id).where('user_id', userId).first();
+    const transaction = await Transaction.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!transaction) {
       return response.notFound({ message: 'Transaction not found' });

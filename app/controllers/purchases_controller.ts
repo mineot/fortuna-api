@@ -15,9 +15,17 @@ export default class PurchasesController {
     return value.toFixed(2);
   }
 
-  private async validateLinks(userId: number, accountId?: number | null, shoppingListId?: number | null) {
+  private async validateLinks(
+    userId: number,
+    accountId?: number | null,
+    shoppingListId?: number | null,
+  ) {
     if (accountId !== undefined && accountId !== null) {
-      const account = await Account.query().where('id', accountId).where('user_id', userId).where('archived', false).first();
+      const account = await Account.query()
+        .where('id', accountId)
+        .where('user_id', userId)
+        .where('archived', false)
+        .first();
       if (!account) return 'Account not found for this user';
     }
 
@@ -74,7 +82,11 @@ export default class PurchasesController {
 
   async update({ auth, params, request, response }: HttpContext) {
     const userId = auth.user!.id;
-    const purchase = await Purchase.query().where('id', params.id).where('user_id', userId).where('archived', false).first();
+    const purchase = await Purchase.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .where('archived', false)
+      .first();
     if (!purchase) return response.notFound({ message: 'Purchase not found' });
 
     const payload = await request.validateUsing(updatePurchaseValidator);

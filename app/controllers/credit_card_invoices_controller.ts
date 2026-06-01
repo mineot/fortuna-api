@@ -57,7 +57,9 @@ export default class CreditCardInvoicesController {
     }
 
     if (periodEnd < periodStart) {
-      return response.unprocessableEntity({ message: 'Period end must be greater than or equal to period start' });
+      return response.unprocessableEntity({
+        message: 'Period end must be greater than or equal to period start',
+      });
     }
 
     const existing = await CreditCardInvoice.query()
@@ -66,7 +68,9 @@ export default class CreditCardInvoicesController {
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Invoice already exists for this credit card and reference month' });
+      return response.conflict({
+        message: 'Invoice already exists for this credit card and reference month',
+      });
     }
 
     const invoice = await CreditCardInvoice.create({
@@ -114,7 +118,9 @@ export default class CreditCardInvoicesController {
     }
 
     if (periodEnd < periodStart) {
-      return response.unprocessableEntity({ message: 'Period end must be greater than or equal to period start' });
+      return response.unprocessableEntity({
+        message: 'Period end must be greater than or equal to period start',
+      });
     }
 
     const existing = await CreditCardInvoice.query()
@@ -124,7 +130,9 @@ export default class CreditCardInvoicesController {
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Invoice already exists for this credit card and reference month' });
+      return response.conflict({
+        message: 'Invoice already exists for this credit card and reference month',
+      });
     }
 
     invoice.merge({
@@ -146,7 +154,10 @@ export default class CreditCardInvoicesController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const invoice = await CreditCardInvoice.query().where('id', params.id).where('user_id', userId).first();
+    const invoice = await CreditCardInvoice.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!invoice) {
       return response.notFound({ message: 'Credit card invoice not found' });

@@ -1,7 +1,10 @@
 import Budget from '#models/budget';
 import BudgetCategory from '#models/budget_category';
 import Category from '#models/category';
-import { createBudgetCategoryValidator, updateBudgetCategoryValidator } from '#validators/budget_category';
+import {
+  createBudgetCategoryValidator,
+  updateBudgetCategoryValidator,
+} from '#validators/budget_category';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
 
@@ -11,7 +14,11 @@ export default class BudgetCategoriesController {
   }
 
   private async validateLinks(userId: number, budgetId: number, categoryId: number) {
-    const budget = await Budget.query().where('id', budgetId).where('user_id', userId).where('archived', false).first();
+    const budget = await Budget.query()
+      .where('id', budgetId)
+      .where('user_id', userId)
+      .where('archived', false)
+      .first();
     if (!budget) {
       return 'Budget not found for this user';
     }
@@ -56,7 +63,9 @@ export default class BudgetCategoriesController {
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Budget category already exists for this budget and category' });
+      return response.conflict({
+        message: 'Budget category already exists for this budget and category',
+      });
     }
 
     const budgetCategory = await BudgetCategory.create({
@@ -99,7 +108,9 @@ export default class BudgetCategoriesController {
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Budget category already exists for this budget and category' });
+      return response.conflict({
+        message: 'Budget category already exists for this budget and category',
+      });
     }
 
     budgetCategory.merge({
@@ -116,7 +127,10 @@ export default class BudgetCategoriesController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const budgetCategory = await BudgetCategory.query().where('id', params.id).where('user_id', userId).first();
+    const budgetCategory = await BudgetCategory.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!budgetCategory) {
       return response.notFound({ message: 'Budget category not found' });

@@ -5,7 +5,10 @@ const status = () => vine.enum(['open', 'closed', 'overdue'] as const);
 
 export const createCreditCardInvoiceValidator = vine.create({
   creditCardId: vine.number().withoutDecimals().positive(),
-  referenceMonth: vine.string().trim().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+  referenceMonth: vine
+    .string()
+    .trim()
+    .regex(/^\d{4}-(0[1-9]|1[0-2])$/),
   periodStart: vine.string().trim(),
   periodEnd: vine.string().trim(),
   dueDate: vine.string().trim(),
@@ -18,7 +21,10 @@ export const createCreditCardInvoiceValidator = vine.create({
 
 export const updateCreditCardInvoiceValidator = vine.create({
   creditCardId: vine.number().withoutDecimals().positive(),
-  referenceMonth: vine.string().trim().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
+  referenceMonth: vine
+    .string()
+    .trim()
+    .regex(/^\d{4}-(0[1-9]|1[0-2])$/),
   periodStart: vine.string().trim(),
   periodEnd: vine.string().trim(),
   dueDate: vine.string().trim(),

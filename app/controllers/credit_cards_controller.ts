@@ -10,7 +10,9 @@ export default class CreditCardsController {
   }
 
   private findByNormalizedName(userId: number, name: string) {
-    return CreditCard.query().where('user_id', userId).whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
+    return CreditCard.query()
+      .where('user_id', userId)
+      .whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
   }
 
   private async validateAccountLink(userId: number, accountId?: number | null) {
@@ -113,7 +115,10 @@ export default class CreditCardsController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const creditCard = await CreditCard.query().where('id', params.id).where('user_id', userId).first();
+    const creditCard = await CreditCard.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!creditCard) {
       return response.notFound({ message: 'Credit card not found' });

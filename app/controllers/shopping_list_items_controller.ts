@@ -102,7 +102,10 @@ export default class ShoppingListItemsController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const item = await ShoppingListItem.query().where('id', params.id).where('user_id', userId).first();
+    const item = await ShoppingListItem.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!item) return response.notFound({ message: 'Shopping list item not found' });
 

@@ -18,14 +18,17 @@ const CategoriesController = () => import('#controllers/categories_controller');
 const PayeesController = () => import('#controllers/payees_controller');
 const TransactionsController = () => import('#controllers/transactions_controller');
 const TransfersController = () => import('#controllers/transfers_controller');
-const RecurringTransactionsController = () => import('#controllers/recurring_transactions_controller');
+const RecurringTransactionsController = () =>
+  import('#controllers/recurring_transactions_controller');
 const BudgetsController = () => import('#controllers/budgets_controller');
 const BudgetCategoriesController = () => import('#controllers/budget_categories_controller');
 const CreditCardsController = () => import('#controllers/credit_cards_controller');
 const CreditCardInvoicesController = () => import('#controllers/credit_card_invoices_controller');
 const CreditCardPurchasesController = () => import('#controllers/credit_card_purchases_controller');
-const CreditCardInstallmentsController = () => import('#controllers/credit_card_installments_controller');
-const CreditCardInvoicePaymentsController = () => import('#controllers/credit_card_invoice_payments_controller');
+const CreditCardInstallmentsController = () =>
+  import('#controllers/credit_card_installments_controller');
+const CreditCardInvoicePaymentsController = () =>
+  import('#controllers/credit_card_invoice_payments_controller');
 const ShoppingListsController = () => import('#controllers/shopping_lists_controller');
 const ShoppingListItemsController = () => import('#controllers/shopping_list_items_controller');
 const PurchasesController = () => import('#controllers/purchases_controller');
@@ -84,7 +87,10 @@ router
     router.get('recurring-transactions', [RecurringTransactionsController, 'index']);
     router.post('recurring-transactions', [RecurringTransactionsController, 'store']);
     router.put('recurring-transactions/:id', [RecurringTransactionsController, 'update']);
-    router.patch('recurring-transactions/:id/archive', [RecurringTransactionsController, 'archive']);
+    router.patch('recurring-transactions/:id/archive', [
+      RecurringTransactionsController,
+      'archive',
+    ]);
 
     router.get('budgets', [BudgetsController, 'index']);
     router.post('budgets', [BudgetsController, 'store']);
@@ -114,12 +120,18 @@ router
     router.get('credit-card-installments', [CreditCardInstallmentsController, 'index']);
     router.post('credit-card-installments', [CreditCardInstallmentsController, 'store']);
     router.put('credit-card-installments/:id', [CreditCardInstallmentsController, 'update']);
-    router.patch('credit-card-installments/:id/archive', [CreditCardInstallmentsController, 'archive']);
+    router.patch('credit-card-installments/:id/archive', [
+      CreditCardInstallmentsController,
+      'archive',
+    ]);
 
     router.get('credit-card-invoice-payments', [CreditCardInvoicePaymentsController, 'index']);
     router.post('credit-card-invoice-payments', [CreditCardInvoicePaymentsController, 'store']);
     router.put('credit-card-invoice-payments/:id', [CreditCardInvoicePaymentsController, 'update']);
-    router.patch('credit-card-invoice-payments/:id/archive', [CreditCardInvoicePaymentsController, 'archive']);
+    router.patch('credit-card-invoice-payments/:id/archive', [
+      CreditCardInvoicePaymentsController,
+      'archive',
+    ]);
 
     router.get('shopping-lists', [ShoppingListsController, 'index']);
     router.post('shopping-lists', [ShoppingListsController, 'store']);

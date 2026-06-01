@@ -32,7 +32,11 @@ export default class CreditCardInvoicePaymentsController {
       .first();
     if (!invoice) return 'Credit card invoice not found for this user';
 
-    const account = await Account.query().where('id', accountId).where('user_id', userId).where('archived', false).first();
+    const account = await Account.query()
+      .where('id', accountId)
+      .where('user_id', userId)
+      .where('archived', false)
+      .first();
     if (!account) return 'Account not found for this user';
 
     if (transactionId !== undefined && transactionId !== null) {
@@ -136,7 +140,10 @@ export default class CreditCardInvoicePaymentsController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const payment = await CreditCardInvoicePayment.query().where('id', params.id).where('user_id', userId).first();
+    const payment = await CreditCardInvoicePayment.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!payment) return response.notFound({ message: 'Credit card invoice payment not found' });
 

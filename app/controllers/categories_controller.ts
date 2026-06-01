@@ -6,7 +6,9 @@ import { DateTime } from 'luxon';
 
 export default class CategoriesController {
   private findByNormalizedName(userId: number, name: string) {
-    return Category.query().where('user_id', userId).whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
+    return Category.query()
+      .where('user_id', userId)
+      .whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
   }
 
   async index({ auth, response }: HttpContext) {
@@ -82,7 +84,9 @@ export default class CategoriesController {
     }
 
     if (payload.name.toLocaleLowerCase() !== category.name.toLocaleLowerCase()) {
-      const existing = await this.findByNormalizedName(userId, payload.name).whereNot('id', category.id).first();
+      const existing = await this.findByNormalizedName(userId, payload.name)
+        .whereNot('id', category.id)
+        .first();
 
       if (existing) {
         return response.conflict({ message: 'Category name already exists' });

@@ -5,7 +5,9 @@ import { DateTime } from 'luxon';
 
 export default class PayeesController {
   private findByNormalizedName(userId: number, name: string) {
-    return Payee.query().where('user_id', userId).whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
+    return Payee.query()
+      .where('user_id', userId)
+      .whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
   }
 
   async index({ auth, response }: HttpContext) {
@@ -55,7 +57,9 @@ export default class PayeesController {
     const payload = await request.validateUsing(updatePayeeValidator);
 
     if (payload.name.toLocaleLowerCase() !== payee.name.toLocaleLowerCase()) {
-      const existing = await this.findByNormalizedName(userId, payload.name).whereNot('id', payee.id).first();
+      const existing = await this.findByNormalizedName(userId, payload.name)
+        .whereNot('id', payee.id)
+        .first();
 
       if (existing) {
         return response.conflict({ message: 'Payee name already exists' });

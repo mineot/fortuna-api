@@ -1,5 +1,8 @@
 import ShoppingList from '#models/shopping_list';
-import { createShoppingListValidator, updateShoppingListValidator } from '#validators/shopping_list';
+import {
+  createShoppingListValidator,
+  updateShoppingListValidator,
+} from '#validators/shopping_list';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
 
@@ -11,7 +14,9 @@ export default class ShoppingListsController {
   }
 
   private findByNormalizedName(userId: number, name: string) {
-    return ShoppingList.query().where('user_id', userId).whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
+    return ShoppingList.query()
+      .where('user_id', userId)
+      .whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
   }
 
   async index({ auth, response }: HttpContext) {
@@ -92,7 +97,10 @@ export default class ShoppingListsController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const shoppingList = await ShoppingList.query().where('id', params.id).where('user_id', userId).first();
+    const shoppingList = await ShoppingList.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!shoppingList) return response.notFound({ message: 'Shopping list not found' });
 

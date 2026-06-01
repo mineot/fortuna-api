@@ -19,7 +19,12 @@ export default class RecurringTransactionsController {
     return value.toFixed(2);
   }
 
-  private async validateLinks(userId: number, accountId: number, categoryId?: number | null, payeeId?: number | null) {
+  private async validateLinks(
+    userId: number,
+    accountId: number,
+    categoryId?: number | null,
+    payeeId?: number | null,
+  ) {
     const account = await Account.query()
       .where('id', accountId)
       .where('user_id', userId)
@@ -85,10 +90,17 @@ export default class RecurringTransactionsController {
     }
 
     if (endDate && endDate < startDate) {
-      return response.unprocessableEntity({ message: 'End date must be greater than or equal to start date' });
+      return response.unprocessableEntity({
+        message: 'End date must be greater than or equal to start date',
+      });
     }
 
-    const linkError = await this.validateLinks(userId, payload.accountId, payload.categoryId, payload.payeeId);
+    const linkError = await this.validateLinks(
+      userId,
+      payload.accountId,
+      payload.categoryId,
+      payload.payeeId,
+    );
     if (linkError) {
       return response.unprocessableEntity({ message: linkError });
     }
@@ -138,10 +150,17 @@ export default class RecurringTransactionsController {
     }
 
     if (endDate && endDate < startDate) {
-      return response.unprocessableEntity({ message: 'End date must be greater than or equal to start date' });
+      return response.unprocessableEntity({
+        message: 'End date must be greater than or equal to start date',
+      });
     }
 
-    const linkError = await this.validateLinks(userId, payload.accountId, payload.categoryId, payload.payeeId);
+    const linkError = await this.validateLinks(
+      userId,
+      payload.accountId,
+      payload.categoryId,
+      payload.payeeId,
+    );
     if (linkError) {
       return response.unprocessableEntity({ message: linkError });
     }

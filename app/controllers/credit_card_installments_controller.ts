@@ -65,7 +65,11 @@ export default class CreditCardInstallmentsController {
     const dueDate = this.parseDate(payload.dueDate);
     if (!dueDate) return response.unprocessableEntity({ message: 'Invalid installment due date' });
 
-    const linkError = await this.validateLinks(userId, payload.creditCardPurchaseId, payload.creditCardInvoiceId);
+    const linkError = await this.validateLinks(
+      userId,
+      payload.creditCardPurchaseId,
+      payload.creditCardInvoiceId,
+    );
     if (linkError) return response.unprocessableEntity({ message: linkError });
 
     const existing = await CreditCardInstallment.query()
@@ -108,7 +112,11 @@ export default class CreditCardInstallmentsController {
     const dueDate = this.parseDate(payload.dueDate);
     if (!dueDate) return response.unprocessableEntity({ message: 'Invalid installment due date' });
 
-    const linkError = await this.validateLinks(userId, payload.creditCardPurchaseId, payload.creditCardInvoiceId);
+    const linkError = await this.validateLinks(
+      userId,
+      payload.creditCardPurchaseId,
+      payload.creditCardInvoiceId,
+    );
     if (linkError) return response.unprocessableEntity({ message: linkError });
 
     const existing = await CreditCardInstallment.query()
@@ -137,7 +145,10 @@ export default class CreditCardInstallmentsController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const installment = await CreditCardInstallment.query().where('id', params.id).where('user_id', userId).first();
+    const installment = await CreditCardInstallment.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!installment) return response.notFound({ message: 'Credit card installment not found' });
 

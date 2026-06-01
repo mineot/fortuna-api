@@ -33,7 +33,9 @@ export default class BudgetsController {
     }
 
     if (periodEnd < periodStart) {
-      return response.unprocessableEntity({ message: 'Period end must be greater than or equal to period start' });
+      return response.unprocessableEntity({
+        message: 'Period end must be greater than or equal to period start',
+      });
     }
 
     const existing = await Budget.query()
@@ -62,7 +64,11 @@ export default class BudgetsController {
 
   async update({ auth, params, request, response }: HttpContext) {
     const userId = auth.user!.id;
-    const budget = await Budget.query().where('id', params.id).where('user_id', userId).where('archived', false).first();
+    const budget = await Budget.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .where('archived', false)
+      .first();
 
     if (!budget) {
       return response.notFound({ message: 'Budget not found' });
@@ -78,7 +84,9 @@ export default class BudgetsController {
     }
 
     if (periodEnd < periodStart) {
-      return response.unprocessableEntity({ message: 'Period end must be greater than or equal to period start' });
+      return response.unprocessableEntity({
+        message: 'Period end must be greater than or equal to period start',
+      });
     }
 
     const existing = await Budget.query()

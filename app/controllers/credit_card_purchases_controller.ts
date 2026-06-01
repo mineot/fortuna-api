@@ -19,7 +19,12 @@ export default class CreditCardPurchasesController {
     return value.toFixed(2);
   }
 
-  private async validateLinks(userId: number, creditCardId: number, categoryId?: number | null, payeeId?: number | null) {
+  private async validateLinks(
+    userId: number,
+    creditCardId: number,
+    categoryId?: number | null,
+    payeeId?: number | null,
+  ) {
     const creditCard = await CreditCard.query()
       .where('id', creditCardId)
       .where('user_id', userId)
@@ -37,7 +42,11 @@ export default class CreditCardPurchasesController {
     }
 
     if (payeeId !== undefined && payeeId !== null) {
-      const payee = await Payee.query().where('id', payeeId).where('user_id', userId).where('archived', false).first();
+      const payee = await Payee.query()
+        .where('id', payeeId)
+        .where('user_id', userId)
+        .where('archived', false)
+        .first();
       if (!payee) return 'Payee not found for this user';
     }
 
@@ -66,7 +75,12 @@ export default class CreditCardPurchasesController {
     const purchaseDate = this.parseDate(payload.purchaseDate);
     if (!purchaseDate) return response.unprocessableEntity({ message: 'Invalid purchase date' });
 
-    const linkError = await this.validateLinks(userId, payload.creditCardId, payload.categoryId, payload.payeeId);
+    const linkError = await this.validateLinks(
+      userId,
+      payload.creditCardId,
+      payload.categoryId,
+      payload.payeeId,
+    );
     if (linkError) return response.unprocessableEntity({ message: linkError });
 
     const purchase = await CreditCardPurchase.create({
@@ -102,7 +116,12 @@ export default class CreditCardPurchasesController {
     const purchaseDate = this.parseDate(payload.purchaseDate);
     if (!purchaseDate) return response.unprocessableEntity({ message: 'Invalid purchase date' });
 
-    const linkError = await this.validateLinks(userId, payload.creditCardId, payload.categoryId, payload.payeeId);
+    const linkError = await this.validateLinks(
+      userId,
+      payload.creditCardId,
+      payload.categoryId,
+      payload.payeeId,
+    );
     if (linkError) return response.unprocessableEntity({ message: linkError });
 
     purchase.merge({
@@ -123,7 +142,10 @@ export default class CreditCardPurchasesController {
 
   async archive({ auth, params, response }: HttpContext) {
     const userId = auth.user!.id;
-    const purchase = await CreditCardPurchase.query().where('id', params.id).where('user_id', userId).first();
+    const purchase = await CreditCardPurchase.query()
+      .where('id', params.id)
+      .where('user_id', userId)
+      .first();
 
     if (!purchase) return response.notFound({ message: 'Credit card purchase not found' });
 
