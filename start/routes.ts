@@ -21,6 +21,11 @@ const TransfersController = () => import('#controllers/transfers_controller');
 const RecurringTransactionsController = () => import('#controllers/recurring_transactions_controller');
 const BudgetsController = () => import('#controllers/budgets_controller');
 const BudgetCategoriesController = () => import('#controllers/budget_categories_controller');
+const CreditCardsController = () => import('#controllers/credit_cards_controller');
+const CreditCardInvoicesController = () => import('#controllers/credit_card_invoices_controller');
+const CreditCardPurchasesController = () => import('#controllers/credit_card_purchases_controller');
+const CreditCardInstallmentsController = () => import('#controllers/credit_card_installments_controller');
+const CreditCardInvoicePaymentsController = () => import('#controllers/credit_card_invoice_payments_controller');
 
 router.on('/').renderInertia('home', {}).as('home');
 
@@ -86,5 +91,30 @@ router
     router.post('budget-categories', [BudgetCategoriesController, 'store']);
     router.put('budget-categories/:id', [BudgetCategoriesController, 'update']);
     router.patch('budget-categories/:id/archive', [BudgetCategoriesController, 'archive']);
+
+    router.get('credit-cards', [CreditCardsController, 'index']);
+    router.post('credit-cards', [CreditCardsController, 'store']);
+    router.put('credit-cards/:id', [CreditCardsController, 'update']);
+    router.patch('credit-cards/:id/archive', [CreditCardsController, 'archive']);
+
+    router.get('credit-card-invoices', [CreditCardInvoicesController, 'index']);
+    router.post('credit-card-invoices', [CreditCardInvoicesController, 'store']);
+    router.put('credit-card-invoices/:id', [CreditCardInvoicesController, 'update']);
+    router.patch('credit-card-invoices/:id/archive', [CreditCardInvoicesController, 'archive']);
+
+    router.get('credit-card-purchases', [CreditCardPurchasesController, 'index']);
+    router.post('credit-card-purchases', [CreditCardPurchasesController, 'store']);
+    router.put('credit-card-purchases/:id', [CreditCardPurchasesController, 'update']);
+    router.patch('credit-card-purchases/:id/archive', [CreditCardPurchasesController, 'archive']);
+
+    router.get('credit-card-installments', [CreditCardInstallmentsController, 'index']);
+    router.post('credit-card-installments', [CreditCardInstallmentsController, 'store']);
+    router.put('credit-card-installments/:id', [CreditCardInstallmentsController, 'update']);
+    router.patch('credit-card-installments/:id/archive', [CreditCardInstallmentsController, 'archive']);
+
+    router.get('credit-card-invoice-payments', [CreditCardInvoicePaymentsController, 'index']);
+    router.post('credit-card-invoice-payments', [CreditCardInvoicePaymentsController, 'store']);
+    router.put('credit-card-invoice-payments/:id', [CreditCardInvoicePaymentsController, 'update']);
+    router.patch('credit-card-invoice-payments/:id/archive', [CreditCardInvoicePaymentsController, 'archive']);
   })
   .use(middleware.auth());
