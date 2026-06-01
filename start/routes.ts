@@ -26,6 +26,10 @@ const CreditCardInvoicesController = () => import('#controllers/credit_card_invo
 const CreditCardPurchasesController = () => import('#controllers/credit_card_purchases_controller');
 const CreditCardInstallmentsController = () => import('#controllers/credit_card_installments_controller');
 const CreditCardInvoicePaymentsController = () => import('#controllers/credit_card_invoice_payments_controller');
+const ShoppingListsController = () => import('#controllers/shopping_lists_controller');
+const ShoppingListItemsController = () => import('#controllers/shopping_list_items_controller');
+const PurchasesController = () => import('#controllers/purchases_controller');
+const PurchaseItemsController = () => import('#controllers/purchase_items_controller');
 
 router.on('/').renderInertia('home', {}).as('home');
 
@@ -116,5 +120,25 @@ router
     router.post('credit-card-invoice-payments', [CreditCardInvoicePaymentsController, 'store']);
     router.put('credit-card-invoice-payments/:id', [CreditCardInvoicePaymentsController, 'update']);
     router.patch('credit-card-invoice-payments/:id/archive', [CreditCardInvoicePaymentsController, 'archive']);
+
+    router.get('shopping-lists', [ShoppingListsController, 'index']);
+    router.post('shopping-lists', [ShoppingListsController, 'store']);
+    router.put('shopping-lists/:id', [ShoppingListsController, 'update']);
+    router.patch('shopping-lists/:id/archive', [ShoppingListsController, 'archive']);
+
+    router.get('shopping-list-items', [ShoppingListItemsController, 'index']);
+    router.post('shopping-list-items', [ShoppingListItemsController, 'store']);
+    router.put('shopping-list-items/:id', [ShoppingListItemsController, 'update']);
+    router.patch('shopping-list-items/:id/archive', [ShoppingListItemsController, 'archive']);
+
+    router.get('purchases', [PurchasesController, 'index']);
+    router.post('purchases', [PurchasesController, 'store']);
+    router.put('purchases/:id', [PurchasesController, 'update']);
+    router.patch('purchases/:id/archive', [PurchasesController, 'archive']);
+
+    router.get('purchase-items', [PurchaseItemsController, 'index']);
+    router.post('purchase-items', [PurchaseItemsController, 'store']);
+    router.put('purchase-items/:id', [PurchaseItemsController, 'update']);
+    router.patch('purchase-items/:id/archive', [PurchaseItemsController, 'archive']);
   })
   .use(middleware.auth());
