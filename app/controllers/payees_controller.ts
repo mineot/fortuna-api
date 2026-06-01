@@ -1,6 +1,7 @@
 import Payee from '#models/payee';
 import { createPayeeValidator, updatePayeeValidator } from '#validators/payee';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
 
 export default class PayeesController {
@@ -21,14 +22,14 @@ export default class PayeesController {
     return response.ok({ data: payees });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createPayeeValidator);
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: 'Payee name already exists' });
+      return response.conflict({ message: tHttp(i18n, 'Payee name already exists') });
     }
 
     const payee = await Payee.create({
@@ -42,7 +43,7 @@ export default class PayeesController {
     return response.created({ data: payee });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payee = await Payee.query()
       .where('id', params.id)
@@ -51,7 +52,7 @@ export default class PayeesController {
       .first();
 
     if (!payee) {
-      return response.notFound({ message: 'Payee not found' });
+      return response.notFound({ message: tHttp(i18n, 'Payee not found') });
     }
 
     const payload = await request.validateUsing(updatePayeeValidator);
@@ -62,7 +63,7 @@ export default class PayeesController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: 'Payee name already exists' });
+        return response.conflict({ message: tHttp(i18n, 'Payee name already exists') });
       }
     }
 
@@ -75,12 +76,12 @@ export default class PayeesController {
     return response.ok({ data: payee });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payee = await Payee.query().where('id', params.id).where('user_id', userId).first();
 
     if (!payee) {
-      return response.notFound({ message: 'Payee not found' });
+      return response.notFound({ message: tHttp(i18n, 'Payee not found') });
     }
 
     if (!payee.archived) {

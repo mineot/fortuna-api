@@ -1,7 +1,8 @@
 import vine from '@vinejs/vine';
+import { TRANSFER_STATUSES } from '#services/domain_enums';
 
 const amount = () => vine.number().positive().max(999999999999.99);
-const transferStatus = () => vine.enum(['posted', 'pending'] as const);
+const transferStatus = () => vine.enum(TRANSFER_STATUSES);
 
 export const createTransferValidator = vine.create({
   fromAccountId: vine.number().withoutDecimals().positive(),

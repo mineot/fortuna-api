@@ -2,7 +2,9 @@ import Account from '#models/account';
 import AccountType from '#models/account_type';
 import { createAccountValidator, updateAccountValidator } from '#validators/account';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
+import { money } from '#services/money';
 
 export default class AccountsController {
   private findByNormalizedName(userId: number, name: string) {
@@ -12,7 +14,7 @@ export default class AccountsController {
   }
 
   private formatMoney(value: number) {
-    return value.toFixed(2);
+    return money(value);
   }
 
   async index({ auth, response }: HttpContext) {
@@ -27,7 +29,7 @@ export default class AccountsController {
     return response.ok({ data: accounts });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createAccountValidator);
 
@@ -38,13 +40,15 @@ export default class AccountsController {
       .first();
 
     if (!accountType) {
-      return response.unprocessableEntity({ message: 'Account type not found for this user' });
+      return response.unprocessableEntity({
+        message: tHttp(i18n, 'Account type not found for this user'),
+      });
     }
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: 'Account name already exists' });
+      return response.conflict({ message: tHttp(i18n, 'Account name already exists') });
     }
 
     const initialBalance = this.formatMoney(payload.initialBalance ?? 0);
@@ -65,7 +69,7 @@ export default class AccountsController {
     return response.created({ data: account });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const account = await Account.query()
       .where('id', params.id)
@@ -74,7 +78,7 @@ export default class AccountsController {
       .first();
 
     if (!account) {
-      return response.notFound({ message: 'Account not found' });
+      return response.notFound({ message: tHttp(i18n, 'Account not found') });
     }
 
     const payload = await request.validateUsing(updateAccountValidator);
@@ -86,7 +90,9 @@ export default class AccountsController {
       .first();
 
     if (!accountType) {
-      return response.unprocessableEntity({ message: 'Account type not found for this user' });
+      return response.unprocessableEntity({
+        message: tHttp(i18n, 'Account type not found for this user'),
+      });
     }
 
     if (payload.name.toLocaleLowerCase() !== account.name.toLocaleLowerCase()) {
@@ -95,7 +101,7 @@ export default class AccountsController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: 'Account name already exists' });
+        return response.conflict({ message: tHttp(i18n, 'Account name already exists') });
       }
     }
 
@@ -112,12 +118,12 @@ export default class AccountsController {
     return response.ok({ data: account });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const account = await Account.query().where('id', params.id).where('user_id', userId).first();
 
     if (!account) {
-      return response.notFound({ message: 'Account not found' });
+      return response.notFound({ message: tHttp(i18n, 'Account not found') });
     }
 
     if (!account.archived) {

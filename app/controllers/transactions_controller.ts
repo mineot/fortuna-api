@@ -2,9 +2,12 @@ import Account from '#models/account';
 import Category from '#models/category';
 import Payee from '#models/payee';
 import Transaction from '#models/transaction';
+import Transfer from '#models/transfer';
 import { createTransactionValidator, updateTransactionValidator } from '#validators/transaction';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
+import { money } from '#services/money';
+import { tHttp } from '#services/http_i18n';
 
 export default class TransactionsController {
   private parseTransactionDate(value: string) {
@@ -13,7 +16,16 @@ export default class TransactionsController {
   }
 
   private formatMoney(value: number) {
-    return value.toFixed(2);
+    return money(value);
+  }
+
+  private async hasTransferLink(transactionId: number) {
+    const linked = await Transfer.query()
+      .where('out_transaction_id', transactionId)
+      .orWhere('in_transaction_id', transactionId)
+      .first();
+
+    return !!linked;
   }
 
   async index({ auth, response }: HttpContext) {
@@ -31,13 +43,13 @@ export default class TransactionsController {
     return response.ok({ data: transactions });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createTransactionValidator);
 
     const transactionDate = this.parseTransactionDate(payload.transactionDate);
     if (!transactionDate) {
-      return response.unprocessableEntity({ message: 'Invalid transaction date' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transaction date') });
     }
 
     const account = await Account.query()
@@ -47,7 +59,9 @@ export default class TransactionsController {
       .first();
 
     if (!account) {
-      return response.unprocessableEntity({ message: 'Account not found for this user' });
+      return response.unprocessableEntity({
+        message: tHttp(i18n, 'Account not found for this user'),
+      });
     }
 
     if (payload.categoryId !== undefined && payload.categoryId !== null) {
@@ -58,7 +72,9 @@ export default class TransactionsController {
         .first();
 
       if (!category) {
-        return response.unprocessableEntity({ message: 'Category not found for this user' });
+        return response.unprocessableEntity({
+          message: tHttp(i18n, 'Category not found for this user'),
+        });
       }
     }
 
@@ -70,7 +86,9 @@ export default class TransactionsController {
         .first();
 
       if (!payee) {
-        return response.unprocessableEntity({ message: 'Payee not found for this user' });
+        return response.unprocessableEntity({
+          message: tHttp(i18n, 'Payee not found for this user'),
+        });
       }
     }
 
@@ -92,7 +110,7 @@ export default class TransactionsController {
     return response.created({ data: transaction });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const transaction = await Transaction.query()
       .where('id', params.id)
@@ -101,14 +119,24 @@ export default class TransactionsController {
       .first();
 
     if (!transaction) {
-      return response.notFound({ message: 'Transaction not found' });
+      return response.notFound({ message: tHttp(i18n, 'Transaction not found') });
+    }
+
+    if (
+      transaction.type === 'transfer_out' ||
+      transaction.type === 'transfer_in' ||
+      (await this.hasTransferLink(transaction.id))
+    ) {
+      return response.conflict({
+        message: tHttp(i18n, 'Transfer transactions cannot be updated through this endpoint'),
+      });
     }
 
     const payload = await request.validateUsing(updateTransactionValidator);
 
     const transactionDate = this.parseTransactionDate(payload.transactionDate);
     if (!transactionDate) {
-      return response.unprocessableEntity({ message: 'Invalid transaction date' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transaction date') });
     }
 
     const account = await Account.query()
@@ -118,7 +146,9 @@ export default class TransactionsController {
       .first();
 
     if (!account) {
-      return response.unprocessableEntity({ message: 'Account not found for this user' });
+      return response.unprocessableEntity({
+        message: tHttp(i18n, 'Account not found for this user'),
+      });
     }
 
     if (payload.categoryId !== undefined && payload.categoryId !== null) {
@@ -129,7 +159,9 @@ export default class TransactionsController {
         .first();
 
       if (!category) {
-        return response.unprocessableEntity({ message: 'Category not found for this user' });
+        return response.unprocessableEntity({
+          message: tHttp(i18n, 'Category not found for this user'),
+        });
       }
     }
 
@@ -141,7 +173,9 @@ export default class TransactionsController {
         .first();
 
       if (!payee) {
-        return response.unprocessableEntity({ message: 'Payee not found for this user' });
+        return response.unprocessableEntity({
+          message: tHttp(i18n, 'Payee not found for this user'),
+        });
       }
     }
 
@@ -161,7 +195,7 @@ export default class TransactionsController {
     return response.ok({ data: transaction });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const transaction = await Transaction.query()
       .where('id', params.id)
@@ -169,7 +203,17 @@ export default class TransactionsController {
       .first();
 
     if (!transaction) {
-      return response.notFound({ message: 'Transaction not found' });
+      return response.notFound({ message: tHttp(i18n, 'Transaction not found') });
+    }
+
+    if (
+      transaction.type === 'transfer_out' ||
+      transaction.type === 'transfer_in' ||
+      (await this.hasTransferLink(transaction.id))
+    ) {
+      return response.conflict({
+        message: tHttp(i18n, 'Transfer transactions cannot be archived through this endpoint'),
+      });
     }
 
     if (!transaction.archived) {

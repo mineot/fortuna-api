@@ -2,11 +2,14 @@ import Account from '#models/account';
 import CreditCard from '#models/credit_card';
 import { createCreditCardValidator, updateCreditCardValidator } from '#validators/credit_card';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
+import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
+import { money } from '#services/money';
 
 export default class CreditCardsController {
   private formatMoney(value: number) {
-    return value.toFixed(2);
+    return money(value);
   }
 
   private findByNormalizedName(userId: number, name: string) {
@@ -24,7 +27,7 @@ export default class CreditCardsController {
       .where('archived', false)
       .first();
 
-    if (!account) return 'Account not found for this user';
+    if (!account) return HTTP_MESSAGES.ACCOUNT_NOT_FOUND_FOR_USER;
     return null;
   }
 
@@ -40,16 +43,16 @@ export default class CreditCardsController {
     return response.ok({ data: creditCards });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardValidator);
 
     const linkError = await this.validateAccountLink(userId, payload.accountId);
-    if (linkError) return response.unprocessableEntity({ message: linkError });
+    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
     if (existing) {
-      return response.conflict({ message: 'Credit card name already exists' });
+      return response.conflict({ message: tHttp(i18n, 'Credit card name already exists') });
     }
 
     const creditCard = await CreditCard.create({
@@ -70,7 +73,7 @@ export default class CreditCardsController {
     return response.created({ data: creditCard });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const creditCard = await CreditCard.query()
       .where('id', params.id)
@@ -79,13 +82,13 @@ export default class CreditCardsController {
       .first();
 
     if (!creditCard) {
-      return response.notFound({ message: 'Credit card not found' });
+      return response.notFound({ message: tHttp(i18n, 'Credit card not found') });
     }
 
     const payload = await request.validateUsing(updateCreditCardValidator);
 
     const linkError = await this.validateAccountLink(userId, payload.accountId);
-    if (linkError) return response.unprocessableEntity({ message: linkError });
+    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
 
     if (payload.name.toLocaleLowerCase() !== creditCard.name.toLocaleLowerCase()) {
       const existing = await this.findByNormalizedName(userId, payload.name)
@@ -93,7 +96,7 @@ export default class CreditCardsController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: 'Credit card name already exists' });
+        return response.conflict({ message: tHttp(i18n, 'Credit card name already exists') });
       }
     }
 
@@ -113,7 +116,7 @@ export default class CreditCardsController {
     return response.ok({ data: creditCard });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const creditCard = await CreditCard.query()
       .where('id', params.id)
@@ -121,7 +124,7 @@ export default class CreditCardsController {
       .first();
 
     if (!creditCard) {
-      return response.notFound({ message: 'Credit card not found' });
+      return response.notFound({ message: tHttp(i18n, 'Credit card not found') });
     }
 
     if (!creditCard.archived) {

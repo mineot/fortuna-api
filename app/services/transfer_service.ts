@@ -5,6 +5,17 @@ import db from '@adonisjs/lucid/services/db';
 import i18nManager from '@adonisjs/i18n/services/main';
 import type { I18n } from '@adonisjs/i18n';
 import type { DateTime } from 'luxon';
+import { centsToMoney, toCents } from '#services/money';
+
+export class TransferValidationError extends Error {
+  constructor(
+    public readonly code: 'same_account' | 'invalid_amount',
+    message: string,
+  ) {
+    super(message);
+    this.name = 'TransferValidationError';
+  }
+}
 
 export type CreateTransferInput = {
   userId: number;
@@ -28,7 +39,7 @@ export default class TransferService {
     const i18n = input.i18n || i18nManager.locale(resolvedLocale);
 
     if (input.fromAccountId === input.toAccountId) {
-      throw new Error(i18n.t('domain.transfer.sameAccount'));
+      throw new TransferValidationError('same_account', i18n.t('domain.transfer.sameAccount'));
     }
 
     const trx = await db.transaction();
@@ -38,17 +49,24 @@ export default class TransferService {
         Account.query({ client: trx })
           .where('id', input.fromAccountId)
           .where('user_id', input.userId)
+          .where('archived', false)
           .firstOrFail(),
         Account.query({ client: trx })
           .where('id', input.toAccountId)
           .where('user_id', input.userId)
+          .where('archived', false)
           .firstOrFail(),
       ]);
 
-      const transferAmount = Number(input.amount);
-      if (!Number.isFinite(transferAmount) || transferAmount <= 0) {
-        throw new Error(i18n.t('domain.transfer.invalidAmount'));
+      const transferCents = toCents(input.amount);
+      if (transferCents <= 0n) {
+        throw new TransferValidationError(
+          'invalid_amount',
+          i18n.t('domain.transfer.invalidAmount'),
+        );
       }
+
+      const transferAmount = centsToMoney(transferCents);
 
       const outTransaction = await Transaction.create(
         {
@@ -57,7 +75,7 @@ export default class TransferService {
           categoryId: null,
           payeeId: null,
           type: 'transfer_out',
-          amount: transferAmount.toFixed(2),
+          amount: transferAmount,
           transactionDate: input.transferDate,
           status: input.status ?? 'posted',
           description: input.description ?? null,
@@ -74,7 +92,7 @@ export default class TransferService {
           categoryId: null,
           payeeId: null,
           type: 'transfer_in',
-          amount: transferAmount.toFixed(2),
+          amount: transferAmount,
           transactionDate: input.transferDate,
           status: input.status ?? 'posted',
           description: input.description ?? null,
@@ -91,7 +109,7 @@ export default class TransferService {
           toAccountId: toAccount.id,
           outTransactionId: outTransaction.id,
           inTransactionId: inTransaction.id,
-          amount: transferAmount.toFixed(2),
+          amount: transferAmount,
           transferDate: input.transferDate,
           status: input.status ?? 'posted',
           description: input.description ?? null,
@@ -101,8 +119,10 @@ export default class TransferService {
         { client: trx },
       );
 
-      fromAccount.currentBalance = (Number(fromAccount.currentBalance) - transferAmount).toFixed(2);
-      toAccount.currentBalance = (Number(toAccount.currentBalance) + transferAmount).toFixed(2);
+      fromAccount.currentBalance = centsToMoney(
+        toCents(fromAccount.currentBalance) - transferCents,
+      );
+      toAccount.currentBalance = centsToMoney(toCents(toAccount.currentBalance) + transferCents);
 
       await fromAccount.useTransaction(trx).save();
       await toAccount.useTransaction(trx).save();

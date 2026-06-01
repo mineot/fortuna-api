@@ -1,6 +1,7 @@
 import Budget from '#models/budget';
 import { createBudgetValidator, updateBudgetValidator } from '#validators/budget';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
 
 export default class BudgetsController {
@@ -21,7 +22,7 @@ export default class BudgetsController {
     return response.ok({ data: budgets });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createBudgetValidator);
 
@@ -29,12 +30,12 @@ export default class BudgetsController {
     const periodEnd = this.parseDate(payload.periodEnd);
 
     if (!periodStart || !periodEnd) {
-      return response.unprocessableEntity({ message: 'Invalid budget period dates' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid budget period dates') });
     }
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
-        message: 'Period end must be greater than or equal to period start',
+        message: tHttp(i18n, 'Period end must be greater than or equal to period start'),
       });
     }
 
@@ -45,7 +46,9 @@ export default class BudgetsController {
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Budget already exists for this name and period start' });
+      return response.conflict({
+        message: tHttp(i18n, 'Budget already exists for this name and period start'),
+      });
     }
 
     const budget = await Budget.create({
@@ -62,7 +65,7 @@ export default class BudgetsController {
     return response.created({ data: budget });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const budget = await Budget.query()
       .where('id', params.id)
@@ -71,7 +74,7 @@ export default class BudgetsController {
       .first();
 
     if (!budget) {
-      return response.notFound({ message: 'Budget not found' });
+      return response.notFound({ message: tHttp(i18n, 'Budget not found') });
     }
 
     const payload = await request.validateUsing(updateBudgetValidator);
@@ -80,12 +83,12 @@ export default class BudgetsController {
     const periodEnd = this.parseDate(payload.periodEnd);
 
     if (!periodStart || !periodEnd) {
-      return response.unprocessableEntity({ message: 'Invalid budget period dates' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid budget period dates') });
     }
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
-        message: 'Period end must be greater than or equal to period start',
+        message: tHttp(i18n, 'Period end must be greater than or equal to period start'),
       });
     }
 
@@ -97,7 +100,9 @@ export default class BudgetsController {
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Budget already exists for this name and period start' });
+      return response.conflict({
+        message: tHttp(i18n, 'Budget already exists for this name and period start'),
+      });
     }
 
     budget.merge({
@@ -112,12 +117,12 @@ export default class BudgetsController {
     return response.ok({ data: budget });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const budget = await Budget.query().where('id', params.id).where('user_id', userId).first();
 
     if (!budget) {
-      return response.notFound({ message: 'Budget not found' });
+      return response.notFound({ message: tHttp(i18n, 'Budget not found') });
     }
 
     if (!budget.archived) {

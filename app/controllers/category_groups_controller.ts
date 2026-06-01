@@ -4,6 +4,7 @@ import {
   updateCategoryGroupValidator,
 } from '#validators/category_group';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
 
 export default class CategoryGroupsController {
@@ -25,14 +26,14 @@ export default class CategoryGroupsController {
     return response.ok({ data: categoryGroups });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCategoryGroupValidator);
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: 'Category group name already exists' });
+      return response.conflict({ message: tHttp(i18n, 'Category group name already exists') });
     }
 
     const categoryGroup = await CategoryGroup.create({
@@ -46,7 +47,7 @@ export default class CategoryGroupsController {
     return response.created({ data: categoryGroup });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const categoryGroup = await CategoryGroup.query()
       .where('id', params.id)
@@ -55,7 +56,7 @@ export default class CategoryGroupsController {
       .first();
 
     if (!categoryGroup) {
-      return response.notFound({ message: 'Category group not found' });
+      return response.notFound({ message: tHttp(i18n, 'Category group not found') });
     }
 
     const payload = await request.validateUsing(updateCategoryGroupValidator);
@@ -66,7 +67,7 @@ export default class CategoryGroupsController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: 'Category group name already exists' });
+        return response.conflict({ message: tHttp(i18n, 'Category group name already exists') });
       }
     }
 
@@ -79,7 +80,7 @@ export default class CategoryGroupsController {
     return response.ok({ data: categoryGroup });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const categoryGroup = await CategoryGroup.query()
       .where('id', params.id)
@@ -87,7 +88,7 @@ export default class CategoryGroupsController {
       .first();
 
     if (!categoryGroup) {
-      return response.notFound({ message: 'Category group not found' });
+      return response.notFound({ message: tHttp(i18n, 'Category group not found') });
     }
 
     if (!categoryGroup.archived) {

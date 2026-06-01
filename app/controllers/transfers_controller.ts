@@ -1,8 +1,9 @@
-import TransferService from '#services/transfer_service';
+import TransferService, { TransferValidationError } from '#services/transfer_service';
 import Transfer from '#models/transfer';
 import { createTransferValidator } from '#validators/transfer';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
+import { tHttp } from '#services/http_i18n';
 
 export default class TransfersController {
   private transferService = new TransferService();
@@ -18,7 +19,7 @@ export default class TransfersController {
 
     const transferDate = this.parseTransferDate(payload.transferDate);
     if (!transferDate) {
-      return response.unprocessableEntity({ message: 'Invalid transfer date' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transfer date') });
     }
 
     try {
@@ -37,12 +38,15 @@ export default class TransfersController {
 
       return response.created({ data: transfer });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Transfer could not be created';
+      const message =
+        error instanceof TransferValidationError
+          ? error.message
+          : tHttp(i18n, 'Transfer could not be created');
       return response.unprocessableEntity({ message });
     }
   }
 
-  async show({ auth, params, response }: HttpContext) {
+  async show({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
 
     const transfer = await Transfer.query()
@@ -55,18 +59,18 @@ export default class TransfersController {
       .first();
 
     if (!transfer) {
-      return response.notFound({ message: 'Transfer not found' });
+      return response.notFound({ message: tHttp(i18n, 'Transfer not found') });
     }
 
     return response.ok({ data: transfer });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const transfer = await Transfer.query().where('id', params.id).where('user_id', userId).first();
 
     if (!transfer) {
-      return response.notFound({ message: 'Transfer not found' });
+      return response.notFound({ message: tHttp(i18n, 'Transfer not found') });
     }
 
     if (!transfer.archived) {

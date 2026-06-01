@@ -1,8 +1,9 @@
 import vine from '@vinejs/vine';
+import { TRANSACTION_STATUSES, TRANSACTION_TYPES } from '#services/domain_enums';
 
 const amount = () => vine.number().positive().max(999999999999.99);
-const transactionType = () => vine.enum(['expense', 'income'] as const);
-const transactionStatus = () => vine.enum(['posted', 'pending'] as const);
+const transactionType = () => vine.enum(TRANSACTION_TYPES);
+const transactionStatus = () => vine.enum(TRANSACTION_STATUSES);
 
 export const createTransactionValidator = vine.create({
   accountId: vine.number().withoutDecimals().positive(),

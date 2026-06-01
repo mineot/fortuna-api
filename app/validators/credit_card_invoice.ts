@@ -1,7 +1,8 @@
 import vine from '@vinejs/vine';
+import { CREDIT_CARD_INVOICE_STATUSES } from '#services/domain_enums';
 
 const amount = () => vine.number().min(0).max(999999999999.99);
-const status = () => vine.enum(['open', 'closed', 'overdue'] as const);
+const status = () => vine.enum(CREDIT_CARD_INVOICE_STATUSES);
 
 export const createCreditCardInvoiceValidator = vine.create({
   creditCardId: vine.number().withoutDecimals().positive(),

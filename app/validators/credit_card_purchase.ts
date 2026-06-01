@@ -1,7 +1,8 @@
 import vine from '@vinejs/vine';
+import { CREDIT_CARD_PURCHASE_STATUSES } from '#services/domain_enums';
 
 const amount = () => vine.number().positive().max(999999999999.99);
-const status = () => vine.enum(['open', 'posted', 'cancelled'] as const);
+const status = () => vine.enum(CREDIT_CARD_PURCHASE_STATUSES);
 
 export const createCreditCardPurchaseValidator = vine.create({
   creditCardId: vine.number().withoutDecimals().positive(),

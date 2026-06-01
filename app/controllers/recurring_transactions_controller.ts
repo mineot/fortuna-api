@@ -8,6 +8,9 @@ import {
 } from '#validators/recurring_transaction';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
+import { money } from '#services/money';
+import { tHttp } from '#services/http_i18n';
+import { HTTP_MESSAGES } from '#services/http_messages';
 
 export default class RecurringTransactionsController {
   private parseDate(value: string) {
@@ -16,7 +19,7 @@ export default class RecurringTransactionsController {
   }
 
   private formatMoney(value: number) {
-    return value.toFixed(2);
+    return money(value);
   }
 
   private async validateLinks(
@@ -32,7 +35,7 @@ export default class RecurringTransactionsController {
       .first();
 
     if (!account) {
-      return 'Account not found for this user';
+      return HTTP_MESSAGES.ACCOUNT_NOT_FOUND_FOR_USER;
     }
 
     if (categoryId !== undefined && categoryId !== null) {
@@ -43,7 +46,7 @@ export default class RecurringTransactionsController {
         .first();
 
       if (!category) {
-        return 'Category not found for this user';
+        return HTTP_MESSAGES.CATEGORY_NOT_FOUND_FOR_USER;
       }
     }
 
@@ -55,7 +58,7 @@ export default class RecurringTransactionsController {
         .first();
 
       if (!payee) {
-        return 'Payee not found for this user';
+        return HTTP_MESSAGES.PAYEE_NOT_FOUND_FOR_USER;
       }
     }
 
@@ -77,7 +80,7 @@ export default class RecurringTransactionsController {
     return response.ok({ data: recurringTransactions });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createRecurringTransactionValidator);
 
@@ -86,12 +89,14 @@ export default class RecurringTransactionsController {
     const nextOccurrenceDate = this.parseDate(payload.nextOccurrenceDate);
 
     if (!startDate || !nextOccurrenceDate || (payload.endDate && !endDate)) {
-      return response.unprocessableEntity({ message: 'Invalid recurring transaction dates' });
+      return response.unprocessableEntity({
+        message: tHttp(i18n, 'Invalid recurring transaction dates'),
+      });
     }
 
     if (endDate && endDate < startDate) {
       return response.unprocessableEntity({
-        message: 'End date must be greater than or equal to start date',
+        message: tHttp(i18n, 'End date must be greater than or equal to start date'),
       });
     }
 
@@ -102,7 +107,7 @@ export default class RecurringTransactionsController {
       payload.payeeId,
     );
     if (linkError) {
-      return response.unprocessableEntity({ message: linkError });
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
     }
 
     const recurringTransaction = await RecurringTransaction.create({
@@ -127,7 +132,7 @@ export default class RecurringTransactionsController {
     return response.created({ data: recurringTransaction });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const recurringTransaction = await RecurringTransaction.query()
       .where('id', params.id)
@@ -136,7 +141,7 @@ export default class RecurringTransactionsController {
       .first();
 
     if (!recurringTransaction) {
-      return response.notFound({ message: 'Recurring transaction not found' });
+      return response.notFound({ message: tHttp(i18n, 'Recurring transaction not found') });
     }
 
     const payload = await request.validateUsing(updateRecurringTransactionValidator);
@@ -146,12 +151,14 @@ export default class RecurringTransactionsController {
     const nextOccurrenceDate = this.parseDate(payload.nextOccurrenceDate);
 
     if (!startDate || !nextOccurrenceDate || (payload.endDate && !endDate)) {
-      return response.unprocessableEntity({ message: 'Invalid recurring transaction dates' });
+      return response.unprocessableEntity({
+        message: tHttp(i18n, 'Invalid recurring transaction dates'),
+      });
     }
 
     if (endDate && endDate < startDate) {
       return response.unprocessableEntity({
-        message: 'End date must be greater than or equal to start date',
+        message: tHttp(i18n, 'End date must be greater than or equal to start date'),
       });
     }
 
@@ -162,7 +169,7 @@ export default class RecurringTransactionsController {
       payload.payeeId,
     );
     if (linkError) {
-      return response.unprocessableEntity({ message: linkError });
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
     }
 
     recurringTransaction.merge({
@@ -185,7 +192,7 @@ export default class RecurringTransactionsController {
     return response.ok({ data: recurringTransaction });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const recurringTransaction = await RecurringTransaction.query()
       .where('id', params.id)
@@ -193,7 +200,7 @@ export default class RecurringTransactionsController {
       .first();
 
     if (!recurringTransaction) {
-      return response.notFound({ message: 'Recurring transaction not found' });
+      return response.notFound({ message: tHttp(i18n, 'Recurring transaction not found') });
     }
 
     if (!recurringTransaction.archived) {

@@ -1,6 +1,7 @@
 import vine from '@vinejs/vine';
+import { SHOPPING_LIST_STATUSES } from '#services/domain_enums';
 
-const status = () => vine.enum(['open', 'done', 'cancelled'] as const);
+const status = () => vine.enum(SHOPPING_LIST_STATUSES);
 
 export const createShoppingListValidator = vine.create({
   name: vine.string().trim().minLength(2).maxLength(140),

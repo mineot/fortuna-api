@@ -5,7 +5,10 @@ import {
   updateCreditCardInvoiceValidator,
 } from '#validators/credit_card_invoice';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
+import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
+import { money } from '#services/money';
 
 export default class CreditCardInvoicesController {
   private parseDate(value: string) {
@@ -14,7 +17,7 @@ export default class CreditCardInvoicesController {
   }
 
   private formatMoney(value: number) {
-    return value.toFixed(2);
+    return money(value);
   }
 
   private async validateCreditCardLink(userId: number, creditCardId: number) {
@@ -24,7 +27,7 @@ export default class CreditCardInvoicesController {
       .where('archived', false)
       .first();
 
-    if (!creditCard) return 'Credit card not found for this user';
+    if (!creditCard) return HTTP_MESSAGES.CREDIT_CARD_NOT_FOUND_FOR_USER;
     return null;
   }
 
@@ -41,24 +44,24 @@ export default class CreditCardInvoicesController {
     return response.ok({ data: invoices });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardInvoiceValidator);
 
     const linkError = await this.validateCreditCardLink(userId, payload.creditCardId);
-    if (linkError) return response.unprocessableEntity({ message: linkError });
+    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
 
     const periodStart = this.parseDate(payload.periodStart);
     const periodEnd = this.parseDate(payload.periodEnd);
     const dueDate = this.parseDate(payload.dueDate);
 
     if (!periodStart || !periodEnd || !dueDate) {
-      return response.unprocessableEntity({ message: 'Invalid invoice dates' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid invoice dates') });
     }
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
-        message: 'Period end must be greater than or equal to period start',
+        message: tHttp(i18n, 'Period end must be greater than or equal to period start'),
       });
     }
 
@@ -69,7 +72,7 @@ export default class CreditCardInvoicesController {
 
     if (existing) {
       return response.conflict({
-        message: 'Invoice already exists for this credit card and reference month',
+        message: tHttp(i18n, 'Invoice already exists for this credit card and reference month'),
       });
     }
 
@@ -92,7 +95,7 @@ export default class CreditCardInvoicesController {
     return response.created({ data: invoice });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const invoice = await CreditCardInvoice.query()
       .where('id', params.id)
@@ -101,25 +104,25 @@ export default class CreditCardInvoicesController {
       .first();
 
     if (!invoice) {
-      return response.notFound({ message: 'Credit card invoice not found' });
+      return response.notFound({ message: tHttp(i18n, 'Credit card invoice not found') });
     }
 
     const payload = await request.validateUsing(updateCreditCardInvoiceValidator);
 
     const linkError = await this.validateCreditCardLink(userId, payload.creditCardId);
-    if (linkError) return response.unprocessableEntity({ message: linkError });
+    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
 
     const periodStart = this.parseDate(payload.periodStart);
     const periodEnd = this.parseDate(payload.periodEnd);
     const dueDate = this.parseDate(payload.dueDate);
 
     if (!periodStart || !periodEnd || !dueDate) {
-      return response.unprocessableEntity({ message: 'Invalid invoice dates' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid invoice dates') });
     }
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
-        message: 'Period end must be greater than or equal to period start',
+        message: tHttp(i18n, 'Period end must be greater than or equal to period start'),
       });
     }
 
@@ -131,7 +134,7 @@ export default class CreditCardInvoicesController {
 
     if (existing) {
       return response.conflict({
-        message: 'Invoice already exists for this credit card and reference month',
+        message: tHttp(i18n, 'Invoice already exists for this credit card and reference month'),
       });
     }
 
@@ -152,7 +155,7 @@ export default class CreditCardInvoicesController {
     return response.ok({ data: invoice });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const invoice = await CreditCardInvoice.query()
       .where('id', params.id)
@@ -160,7 +163,7 @@ export default class CreditCardInvoicesController {
       .first();
 
     if (!invoice) {
-      return response.notFound({ message: 'Credit card invoice not found' });
+      return response.notFound({ message: tHttp(i18n, 'Credit card invoice not found') });
     }
 
     if (!invoice.archived) {

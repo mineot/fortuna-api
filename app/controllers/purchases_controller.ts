@@ -4,6 +4,9 @@ import ShoppingList from '#models/shopping_list';
 import { createPurchaseValidator, updatePurchaseValidator } from '#validators/purchase';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
+import { money } from '#services/money';
+import { tHttp } from '#services/http_i18n';
+import { HTTP_MESSAGES } from '#services/http_messages';
 
 export default class PurchasesController {
   private parseDate(value: string) {
@@ -12,7 +15,7 @@ export default class PurchasesController {
   }
 
   private formatMoney(value: number) {
-    return value.toFixed(2);
+    return money(value);
   }
 
   private async validateLinks(
@@ -26,7 +29,7 @@ export default class PurchasesController {
         .where('user_id', userId)
         .where('archived', false)
         .first();
-      if (!account) return 'Account not found for this user';
+      if (!account) return HTTP_MESSAGES.ACCOUNT_NOT_FOUND_FOR_USER;
     }
 
     if (shoppingListId !== undefined && shoppingListId !== null) {
@@ -35,7 +38,7 @@ export default class PurchasesController {
         .where('user_id', userId)
         .where('archived', false)
         .first();
-      if (!shoppingList) return 'Shopping list not found for this user';
+      if (!shoppingList) return HTTP_MESSAGES.SHOPPING_LIST_NOT_FOUND_FOR_USER;
     }
 
     return null;
@@ -54,15 +57,16 @@ export default class PurchasesController {
     return response.ok({ data: purchases });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createPurchaseValidator);
 
     const purchaseDate = this.parseDate(payload.purchaseDate);
-    if (!purchaseDate) return response.unprocessableEntity({ message: 'Invalid purchase date' });
+    if (!purchaseDate)
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid purchase date') });
 
     const linkError = await this.validateLinks(userId, payload.accountId, payload.shoppingListId);
-    if (linkError) return response.unprocessableEntity({ message: linkError });
+    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
 
     const purchase = await Purchase.create({
       userId,
@@ -80,22 +84,23 @@ export default class PurchasesController {
     return response.created({ data: purchase });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const purchase = await Purchase.query()
       .where('id', params.id)
       .where('user_id', userId)
       .where('archived', false)
       .first();
-    if (!purchase) return response.notFound({ message: 'Purchase not found' });
+    if (!purchase) return response.notFound({ message: tHttp(i18n, 'Purchase not found') });
 
     const payload = await request.validateUsing(updatePurchaseValidator);
 
     const purchaseDate = this.parseDate(payload.purchaseDate);
-    if (!purchaseDate) return response.unprocessableEntity({ message: 'Invalid purchase date' });
+    if (!purchaseDate)
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid purchase date') });
 
     const linkError = await this.validateLinks(userId, payload.accountId, payload.shoppingListId);
-    if (linkError) return response.unprocessableEntity({ message: linkError });
+    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
 
     purchase.merge({
       accountId: payload.accountId ?? null,
@@ -111,10 +116,10 @@ export default class PurchasesController {
     return response.ok({ data: purchase });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const purchase = await Purchase.query().where('id', params.id).where('user_id', userId).first();
-    if (!purchase) return response.notFound({ message: 'Purchase not found' });
+    if (!purchase) return response.notFound({ message: tHttp(i18n, 'Purchase not found') });
 
     if (!purchase.archived) {
       purchase.archived = true;

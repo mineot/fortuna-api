@@ -4,6 +4,7 @@ import {
   updateShoppingListValidator,
 } from '#validators/shopping_list';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
 
 export default class ShoppingListsController {
@@ -30,18 +31,18 @@ export default class ShoppingListsController {
     return response.ok({ data: shoppingLists });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createShoppingListValidator);
 
     const targetDate = this.parseDate(payload.targetDate);
     if (payload.targetDate && !targetDate) {
-      return response.unprocessableEntity({ message: 'Invalid target date' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid target date') });
     }
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
     if (existing) {
-      return response.conflict({ message: 'Shopping list name already exists' });
+      return response.conflict({ message: tHttp(i18n, 'Shopping list name already exists') });
     }
 
     const shoppingList = await ShoppingList.create({
@@ -57,7 +58,7 @@ export default class ShoppingListsController {
     return response.created({ data: shoppingList });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const shoppingList = await ShoppingList.query()
       .where('id', params.id)
@@ -65,13 +66,14 @@ export default class ShoppingListsController {
       .where('archived', false)
       .first();
 
-    if (!shoppingList) return response.notFound({ message: 'Shopping list not found' });
+    if (!shoppingList)
+      return response.notFound({ message: tHttp(i18n, 'Shopping list not found') });
 
     const payload = await request.validateUsing(updateShoppingListValidator);
 
     const targetDate = this.parseDate(payload.targetDate);
     if (payload.targetDate && !targetDate) {
-      return response.unprocessableEntity({ message: 'Invalid target date' });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid target date') });
     }
 
     if (payload.name.toLocaleLowerCase() !== shoppingList.name.toLocaleLowerCase()) {
@@ -80,7 +82,7 @@ export default class ShoppingListsController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: 'Shopping list name already exists' });
+        return response.conflict({ message: tHttp(i18n, 'Shopping list name already exists') });
       }
     }
 
@@ -95,14 +97,15 @@ export default class ShoppingListsController {
     return response.ok({ data: shoppingList });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const shoppingList = await ShoppingList.query()
       .where('id', params.id)
       .where('user_id', userId)
       .first();
 
-    if (!shoppingList) return response.notFound({ message: 'Shopping list not found' });
+    if (!shoppingList)
+      return response.notFound({ message: tHttp(i18n, 'Shopping list not found') });
 
     if (!shoppingList.archived) {
       shoppingList.archived = true;

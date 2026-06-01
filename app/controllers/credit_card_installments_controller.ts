@@ -6,7 +6,10 @@ import {
   updateCreditCardInstallmentValidator,
 } from '#validators/credit_card_installment';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
+import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
+import { money } from '#services/money';
 
 export default class CreditCardInstallmentsController {
   private parseDate(value: string) {
@@ -15,7 +18,7 @@ export default class CreditCardInstallmentsController {
   }
 
   private formatMoney(value: number) {
-    return value.toFixed(2);
+    return money(value);
   }
 
   private async validateLinks(userId: number, purchaseId: number, invoiceId?: number | null) {
@@ -25,7 +28,7 @@ export default class CreditCardInstallmentsController {
       .where('archived', false)
       .first();
 
-    if (!purchase) return 'Credit card purchase not found for this user';
+    if (!purchase) return HTTP_MESSAGES.CREDIT_CARD_PURCHASE_NOT_FOUND_FOR_USER;
 
     if (invoiceId !== undefined && invoiceId !== null) {
       const invoice = await CreditCardInvoice.query()
@@ -34,10 +37,10 @@ export default class CreditCardInstallmentsController {
         .where('archived', false)
         .first();
 
-      if (!invoice) return 'Credit card invoice not found for this user';
+      if (!invoice) return HTTP_MESSAGES.CREDIT_CARD_INVOICE_NOT_FOUND_FOR_USER;
 
       if (invoice.creditCardId !== purchase.creditCardId) {
-        return 'Credit card invoice does not match the purchase credit card';
+        return HTTP_MESSAGES.CREDIT_CARD_INVOICE_MISMATCH_PURCHASE;
       }
     }
 
@@ -58,19 +61,20 @@ export default class CreditCardInstallmentsController {
     return response.ok({ data: installments });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardInstallmentValidator);
 
     const dueDate = this.parseDate(payload.dueDate);
-    if (!dueDate) return response.unprocessableEntity({ message: 'Invalid installment due date' });
+    if (!dueDate)
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid installment due date') });
 
     const linkError = await this.validateLinks(
       userId,
       payload.creditCardPurchaseId,
       payload.creditCardInvoiceId,
     );
-    if (linkError) return response.unprocessableEntity({ message: linkError });
+    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
 
     const existing = await CreditCardInstallment.query()
       .where('credit_card_purchase_id', payload.creditCardPurchaseId)
@@ -78,7 +82,9 @@ export default class CreditCardInstallmentsController {
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Installment number already exists for this purchase' });
+      return response.conflict({
+        message: tHttp(i18n, 'Installment number already exists for this purchase'),
+      });
     }
 
     const installment = await CreditCardInstallment.create({
@@ -97,7 +103,7 @@ export default class CreditCardInstallmentsController {
     return response.created({ data: installment });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const installment = await CreditCardInstallment.query()
       .where('id', params.id)
@@ -105,19 +111,21 @@ export default class CreditCardInstallmentsController {
       .where('archived', false)
       .first();
 
-    if (!installment) return response.notFound({ message: 'Credit card installment not found' });
+    if (!installment)
+      return response.notFound({ message: tHttp(i18n, 'Credit card installment not found') });
 
     const payload = await request.validateUsing(updateCreditCardInstallmentValidator);
 
     const dueDate = this.parseDate(payload.dueDate);
-    if (!dueDate) return response.unprocessableEntity({ message: 'Invalid installment due date' });
+    if (!dueDate)
+      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid installment due date') });
 
     const linkError = await this.validateLinks(
       userId,
       payload.creditCardPurchaseId,
       payload.creditCardInvoiceId,
     );
-    if (linkError) return response.unprocessableEntity({ message: linkError });
+    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
 
     const existing = await CreditCardInstallment.query()
       .where('credit_card_purchase_id', payload.creditCardPurchaseId)
@@ -126,7 +134,9 @@ export default class CreditCardInstallmentsController {
       .first();
 
     if (existing) {
-      return response.conflict({ message: 'Installment number already exists for this purchase' });
+      return response.conflict({
+        message: tHttp(i18n, 'Installment number already exists for this purchase'),
+      });
     }
 
     installment.merge({
@@ -143,14 +153,15 @@ export default class CreditCardInstallmentsController {
     return response.ok({ data: installment });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const installment = await CreditCardInstallment.query()
       .where('id', params.id)
       .where('user_id', userId)
       .first();
 
-    if (!installment) return response.notFound({ message: 'Credit card installment not found' });
+    if (!installment)
+      return response.notFound({ message: tHttp(i18n, 'Credit card installment not found') });
 
     if (!installment.archived) {
       installment.archived = true;

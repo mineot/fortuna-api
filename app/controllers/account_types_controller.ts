@@ -1,6 +1,7 @@
 import AccountType from '#models/account_type';
 import { createAccountTypeValidator, updateAccountTypeValidator } from '#validators/account_type';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
 
 export default class AccountTypesController {
@@ -20,14 +21,14 @@ export default class AccountTypesController {
     return response.ok({ data: accountTypes });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createAccountTypeValidator);
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: 'Account type name already exists' });
+      return response.conflict({ message: tHttp(i18n, 'Account type name already exists') });
     }
 
     const accountType = await AccountType.create({
@@ -41,7 +42,7 @@ export default class AccountTypesController {
     return response.created({ data: accountType });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const accountType = await AccountType.query()
       .where('id', params.id)
@@ -50,7 +51,7 @@ export default class AccountTypesController {
       .first();
 
     if (!accountType) {
-      return response.notFound({ message: 'Account type not found' });
+      return response.notFound({ message: tHttp(i18n, 'Account type not found') });
     }
 
     const payload = await request.validateUsing(updateAccountTypeValidator);
@@ -61,7 +62,7 @@ export default class AccountTypesController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: 'Account type name already exists' });
+        return response.conflict({ message: tHttp(i18n, 'Account type name already exists') });
       }
     }
 
@@ -74,7 +75,7 @@ export default class AccountTypesController {
     return response.ok({ data: accountType });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const accountType = await AccountType.query()
       .where('id', params.id)
@@ -82,7 +83,7 @@ export default class AccountTypesController {
       .first();
 
     if (!accountType) {
-      return response.notFound({ message: 'Account type not found' });
+      return response.notFound({ message: tHttp(i18n, 'Account type not found') });
     }
 
     if (!accountType.archived) {

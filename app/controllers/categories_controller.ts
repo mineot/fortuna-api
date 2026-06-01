@@ -2,6 +2,7 @@ import Category from '#models/category';
 import CategoryGroup from '#models/category_group';
 import { createCategoryValidator, updateCategoryValidator } from '#validators/category';
 import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
 
 export default class CategoriesController {
@@ -24,7 +25,7 @@ export default class CategoriesController {
     return response.ok({ data: categories });
   }
 
-  async store({ auth, request, response }: HttpContext) {
+  async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCategoryValidator);
 
@@ -35,13 +36,15 @@ export default class CategoriesController {
       .first();
 
     if (!categoryGroup) {
-      return response.unprocessableEntity({ message: 'Category group not found for this user' });
+      return response.unprocessableEntity({
+        message: tHttp(i18n, 'Category group not found for this user'),
+      });
     }
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: 'Category name already exists' });
+      return response.conflict({ message: tHttp(i18n, 'Category name already exists') });
     }
 
     const category = await Category.create({
@@ -59,7 +62,7 @@ export default class CategoriesController {
     return response.created({ data: category });
   }
 
-  async update({ auth, params, request, response }: HttpContext) {
+  async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const category = await Category.query()
       .where('id', params.id)
@@ -68,7 +71,7 @@ export default class CategoriesController {
       .first();
 
     if (!category) {
-      return response.notFound({ message: 'Category not found' });
+      return response.notFound({ message: tHttp(i18n, 'Category not found') });
     }
 
     const payload = await request.validateUsing(updateCategoryValidator);
@@ -80,7 +83,9 @@ export default class CategoriesController {
       .first();
 
     if (!categoryGroup) {
-      return response.unprocessableEntity({ message: 'Category group not found for this user' });
+      return response.unprocessableEntity({
+        message: tHttp(i18n, 'Category group not found for this user'),
+      });
     }
 
     if (payload.name.toLocaleLowerCase() !== category.name.toLocaleLowerCase()) {
@@ -89,7 +94,7 @@ export default class CategoriesController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: 'Category name already exists' });
+        return response.conflict({ message: tHttp(i18n, 'Category name already exists') });
       }
     }
 
@@ -106,12 +111,12 @@ export default class CategoriesController {
     return response.ok({ data: category });
   }
 
-  async archive({ auth, params, response }: HttpContext) {
+  async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const category = await Category.query().where('id', params.id).where('user_id', userId).first();
 
     if (!category) {
-      return response.notFound({ message: 'Category not found' });
+      return response.notFound({ message: tHttp(i18n, 'Category not found') });
     }
 
     if (!category.archived) {

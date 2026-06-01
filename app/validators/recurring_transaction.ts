@@ -1,9 +1,10 @@
 import vine from '@vinejs/vine';
+import { RECURRING_FREQUENCIES, RECURRING_STATUSES, RECURRING_TYPES } from '#services/domain_enums';
 
 const amount = () => vine.number().positive().max(999999999999.99);
-const frequency = () => vine.enum(['daily', 'weekly', 'monthly', 'yearly'] as const);
-const recurringType = () => vine.enum(['expense', 'income'] as const);
-const recurringStatus = () => vine.enum(['active', 'paused', 'ended'] as const);
+const frequency = () => vine.enum(RECURRING_FREQUENCIES);
+const recurringType = () => vine.enum(RECURRING_TYPES);
+const recurringStatus = () => vine.enum(RECURRING_STATUSES);
 
 export const createRecurringTransactionValidator = vine.create({
   accountId: vine.number().withoutDecimals().positive(),
