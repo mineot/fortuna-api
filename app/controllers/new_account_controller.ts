@@ -13,6 +13,7 @@ export default class NewAccountController {
     const payload = await request.validateUsing(signupValidator);
     const user = await db.transaction(async (trx) => {
       const created = await User.create({ ...payload }, { client: trx });
+
       await Setting.create(
         {
           userId: created.id,
@@ -23,10 +24,12 @@ export default class NewAccountController {
         },
         { client: trx },
       );
+
       return created;
     });
 
     await auth.use('web').login(user);
+
     response.redirect().toRoute('home');
   }
 }

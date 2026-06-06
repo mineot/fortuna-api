@@ -2,15 +2,16 @@ import Category from '#models/category';
 import CreditCard from '#models/credit_card';
 import CreditCardPurchase from '#models/credit_card_purchase';
 import Payee from '#models/payee';
-import {
-  createCreditCardPurchaseValidator,
-  updateCreditCardPurchaseValidator,
-} from '#validators/credit_card_purchase';
 import type { HttpContext } from '@adonisjs/core/http';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
+
+import {
+  createCreditCardPurchaseValidator,
+  updateCreditCardPurchaseValidator,
+} from '#validators/credit_card_purchase';
 
 export default class CreditCardPurchasesController {
   private parseDate(value: string) {
@@ -33,7 +34,10 @@ export default class CreditCardPurchasesController {
       .where('user_id', userId)
       .where('archived', false)
       .first();
-    if (!creditCard) return HTTP_MESSAGES.CREDIT_CARD_NOT_FOUND_FOR_USER;
+
+    if (!creditCard) {
+      return HTTP_MESSAGES.CREDIT_CARD_NOT_FOUND_FOR_USER;
+    }
 
     if (categoryId !== undefined && categoryId !== null) {
       const category = await Category.query()
@@ -41,7 +45,10 @@ export default class CreditCardPurchasesController {
         .where('user_id', userId)
         .where('archived', false)
         .first();
-      if (!category) return HTTP_MESSAGES.CATEGORY_NOT_FOUND_FOR_USER;
+
+      if (!category) {
+        return HTTP_MESSAGES.CATEGORY_NOT_FOUND_FOR_USER;
+      }
     }
 
     if (payeeId !== undefined && payeeId !== null) {
@@ -50,7 +57,10 @@ export default class CreditCardPurchasesController {
         .where('user_id', userId)
         .where('archived', false)
         .first();
-      if (!payee) return HTTP_MESSAGES.PAYEE_NOT_FOUND_FOR_USER;
+
+      if (!payee) {
+        return HTTP_MESSAGES.PAYEE_NOT_FOUND_FOR_USER;
+      }
     }
 
     return null;
@@ -74,10 +84,11 @@ export default class CreditCardPurchasesController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardPurchaseValidator);
-
     const purchaseDate = this.parseDate(payload.purchaseDate);
-    if (!purchaseDate)
+
+    if (!purchaseDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid purchase date') });
+    }
 
     const linkError = await this.validateLinks(
       userId,
@@ -85,7 +96,10 @@ export default class CreditCardPurchasesController {
       payload.categoryId,
       payload.payeeId,
     );
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     const purchase = await CreditCardPurchase.create({
       userId,
@@ -107,20 +121,24 @@ export default class CreditCardPurchasesController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const purchase = await CreditCardPurchase.query()
       .where('id', params.id)
       .where('user_id', userId)
       .where('archived', false)
       .first();
 
-    if (!purchase)
+    if (!purchase) {
       return response.notFound({ message: tHttp(i18n, 'Credit card purchase not found') });
+    }
 
     const payload = await request.validateUsing(updateCreditCardPurchaseValidator);
 
     const purchaseDate = this.parseDate(payload.purchaseDate);
-    if (!purchaseDate)
+
+    if (!purchaseDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid purchase date') });
+    }
 
     const linkError = await this.validateLinks(
       userId,
@@ -128,7 +146,10 @@ export default class CreditCardPurchasesController {
       payload.categoryId,
       payload.payeeId,
     );
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     purchase.merge({
       creditCardId: payload.creditCardId,
@@ -141,6 +162,7 @@ export default class CreditCardPurchasesController {
       status: payload.status,
       notes: payload.notes,
     });
+
     await purchase.save();
 
     return response.ok({ data: purchase });
@@ -148,13 +170,15 @@ export default class CreditCardPurchasesController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const purchase = await CreditCardPurchase.query()
       .where('id', params.id)
       .where('user_id', userId)
       .first();
 
-    if (!purchase)
+    if (!purchase) {
       return response.notFound({ message: tHttp(i18n, 'Credit card purchase not found') });
+    }
 
     if (!purchase.archived) {
       purchase.archived = true;

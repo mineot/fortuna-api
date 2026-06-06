@@ -25,7 +25,6 @@ export default class BudgetsController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createBudgetValidator);
-
     const periodStart = this.parseDate(payload.periodStart);
     const periodEnd = this.parseDate(payload.periodEnd);
 
@@ -67,6 +66,7 @@ export default class BudgetsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const budget = await Budget.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -78,7 +78,6 @@ export default class BudgetsController {
     }
 
     const payload = await request.validateUsing(updateBudgetValidator);
-
     const periodStart = this.parseDate(payload.periodStart);
     const periodEnd = this.parseDate(payload.periodEnd);
 
@@ -112,6 +111,7 @@ export default class BudgetsController {
       status: payload.status,
       notes: payload.notes,
     });
+
     await budget.save();
 
     return response.ok({ data: budget });

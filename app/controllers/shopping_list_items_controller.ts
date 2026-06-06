@@ -1,14 +1,15 @@
 import ShoppingList from '#models/shopping_list';
 import ShoppingListItem from '#models/shopping_list_item';
-import {
-  createShoppingListItemValidator,
-  updateShoppingListItemValidator,
-} from '#validators/shopping_list_item';
 import type { HttpContext } from '@adonisjs/core/http';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
+
+import {
+  createShoppingListItemValidator,
+  updateShoppingListItemValidator,
+} from '#validators/shopping_list_item';
 
 export default class ShoppingListItemsController {
   private formatDecimal(value: number, scale = 3) {
@@ -26,7 +27,10 @@ export default class ShoppingListItemsController {
       .where('archived', false)
       .first();
 
-    if (!shoppingList) return HTTP_MESSAGES.SHOPPING_LIST_NOT_FOUND_FOR_USER;
+    if (!shoppingList) {
+      return HTTP_MESSAGES.SHOPPING_LIST_NOT_FOUND_FOR_USER;
+    }
+
     return null;
   }
 
@@ -47,9 +51,11 @@ export default class ShoppingListItemsController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createShoppingListItemValidator);
-
     const linkError = await this.validateShoppingListLink(userId, payload.shoppingListId);
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     const item = await ShoppingListItem.create({
       userId,
@@ -73,18 +79,23 @@ export default class ShoppingListItemsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const item = await ShoppingListItem.query()
       .where('id', params.id)
       .where('user_id', userId)
       .where('archived', false)
       .first();
 
-    if (!item) return response.notFound({ message: tHttp(i18n, 'Shopping list item not found') });
+    if (!item) {
+      return response.notFound({ message: tHttp(i18n, 'Shopping list item not found') });
+    }
 
     const payload = await request.validateUsing(updateShoppingListItemValidator);
-
     const linkError = await this.validateShoppingListLink(userId, payload.shoppingListId);
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     item.merge({
       shoppingListId: payload.shoppingListId,
@@ -99,6 +110,7 @@ export default class ShoppingListItemsController {
       position: payload.position,
       notes: payload.notes,
     });
+
     await item.save();
 
     return response.ok({ data: item });
@@ -111,7 +123,9 @@ export default class ShoppingListItemsController {
       .where('user_id', userId)
       .first();
 
-    if (!item) return response.notFound({ message: tHttp(i18n, 'Shopping list item not found') });
+    if (!item) {
+      return response.notFound({ message: tHttp(i18n, 'Shopping list item not found') });
+    }
 
     if (!item.archived) {
       item.archived = true;

@@ -6,6 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').notNullable();
+
       table
         .integer('user_id')
         .unsigned()
@@ -13,6 +14,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE');
+
       table
         .integer('account_id')
         .unsigned()
@@ -20,6 +22,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('accounts')
         .onDelete('SET NULL');
+
       table
         .integer('shopping_list_id')
         .unsigned()
@@ -27,6 +30,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('shopping_lists')
         .onDelete('SET NULL');
+
       table.string('title', 160).notNullable();
       table.date('purchase_date').notNullable();
       table.decimal('total_amount', 14, 2).notNullable().defaultTo(0);
@@ -36,6 +40,7 @@ export default class extends BaseSchema {
       table.timestamp('archived_at').nullable();
       table.timestamp('created_at').notNullable();
       table.timestamp('updated_at').nullable();
+
       table.index(['user_id', 'purchase_date']);
       table.index(['user_id', 'status']);
     });

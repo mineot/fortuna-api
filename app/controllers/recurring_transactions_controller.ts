@@ -2,15 +2,16 @@ import Account from '#models/account';
 import Category from '#models/category';
 import Payee from '#models/payee';
 import RecurringTransaction from '#models/recurring_transaction';
-import {
-  createRecurringTransactionValidator,
-  updateRecurringTransactionValidator,
-} from '#validators/recurring_transaction';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
+
+import {
+  createRecurringTransactionValidator,
+  updateRecurringTransactionValidator,
+} from '#validators/recurring_transaction';
 
 export default class RecurringTransactionsController {
   private parseDate(value: string) {
@@ -83,7 +84,6 @@ export default class RecurringTransactionsController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createRecurringTransactionValidator);
-
     const startDate = this.parseDate(payload.startDate);
     const endDate = payload.endDate ? this.parseDate(payload.endDate) : null;
     const nextOccurrenceDate = this.parseDate(payload.nextOccurrenceDate);
@@ -106,6 +106,7 @@ export default class RecurringTransactionsController {
       payload.categoryId,
       payload.payeeId,
     );
+
     if (linkError) {
       return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
     }
@@ -134,6 +135,7 @@ export default class RecurringTransactionsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const recurringTransaction = await RecurringTransaction.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -145,7 +147,6 @@ export default class RecurringTransactionsController {
     }
 
     const payload = await request.validateUsing(updateRecurringTransactionValidator);
-
     const startDate = this.parseDate(payload.startDate);
     const endDate = payload.endDate ? this.parseDate(payload.endDate) : null;
     const nextOccurrenceDate = this.parseDate(payload.nextOccurrenceDate);
@@ -168,6 +169,7 @@ export default class RecurringTransactionsController {
       payload.categoryId,
       payload.payeeId,
     );
+
     if (linkError) {
       return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
     }
@@ -187,6 +189,7 @@ export default class RecurringTransactionsController {
       description: payload.description,
       notes: payload.notes,
     });
+
     await recurringTransaction.save();
 
     return response.ok({ data: recurringTransaction });
@@ -194,6 +197,7 @@ export default class RecurringTransactionsController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const recurringTransaction = await RecurringTransaction.query()
       .where('id', params.id)
       .where('user_id', userId)

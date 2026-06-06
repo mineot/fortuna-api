@@ -14,6 +14,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE');
+
       table
         .integer('account_type_id')
         .unsigned()
@@ -27,10 +28,8 @@ export default class extends BaseSchema {
       table.decimal('current_balance', 14, 2).notNullable().defaultTo(0);
       table.string('currency', 3).notNullable().defaultTo('USD');
       table.text('notes').nullable();
-
       table.boolean('archived').notNullable().defaultTo(false);
       table.timestamp('archived_at').nullable();
-
       table.timestamp('created_at').notNullable();
       table.timestamp('updated_at').nullable();
 

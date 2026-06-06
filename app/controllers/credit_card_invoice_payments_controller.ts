@@ -2,15 +2,16 @@ import Account from '#models/account';
 import CreditCardInvoice from '#models/credit_card_invoice';
 import CreditCardInvoicePayment from '#models/credit_card_invoice_payment';
 import Transaction from '#models/transaction';
-import {
-  createCreditCardInvoicePaymentValidator,
-  updateCreditCardInvoicePaymentValidator,
-} from '#validators/credit_card_invoice_payment';
 import type { HttpContext } from '@adonisjs/core/http';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
+
+import {
+  createCreditCardInvoicePaymentValidator,
+  updateCreditCardInvoicePaymentValidator,
+} from '#validators/credit_card_invoice_payment';
 
 export default class CreditCardInvoicePaymentsController {
   private parseDate(value: string) {
@@ -33,14 +34,20 @@ export default class CreditCardInvoicePaymentsController {
       .where('user_id', userId)
       .where('archived', false)
       .first();
-    if (!invoice) return HTTP_MESSAGES.CREDIT_CARD_INVOICE_NOT_FOUND_FOR_USER;
+
+    if (!invoice) {
+      return HTTP_MESSAGES.CREDIT_CARD_INVOICE_NOT_FOUND_FOR_USER;
+    }
 
     const account = await Account.query()
       .where('id', accountId)
       .where('user_id', userId)
       .where('archived', false)
       .first();
-    if (!account) return HTTP_MESSAGES.ACCOUNT_NOT_FOUND_FOR_USER;
+
+    if (!account) {
+      return HTTP_MESSAGES.ACCOUNT_NOT_FOUND_FOR_USER;
+    }
 
     if (transactionId !== undefined && transactionId !== null) {
       const transaction = await Transaction.query()
@@ -48,7 +55,10 @@ export default class CreditCardInvoicePaymentsController {
         .where('user_id', userId)
         .where('archived', false)
         .first();
-      if (!transaction) return HTTP_MESSAGES.TRANSACTION_NOT_FOUND_FOR_USER;
+
+      if (!transaction) {
+        return HTTP_MESSAGES.TRANSACTION_NOT_FOUND_FOR_USER;
+      }
 
       if (transaction.accountId !== accountId) {
         return HTTP_MESSAGES.TRANSACTION_ACCOUNT_MISMATCH_PAYMENT;
@@ -76,8 +86,8 @@ export default class CreditCardInvoicePaymentsController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardInvoicePaymentValidator);
-
     const paymentDate = this.parseDate(payload.paymentDate);
+
     if (!paymentDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid payment date') });
     }
@@ -88,7 +98,10 @@ export default class CreditCardInvoicePaymentsController {
       payload.accountId,
       payload.transactionId,
     );
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     const payment = await CreditCardInvoicePayment.create({
       userId,
@@ -108,18 +121,20 @@ export default class CreditCardInvoicePaymentsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const payment = await CreditCardInvoicePayment.query()
       .where('id', params.id)
       .where('user_id', userId)
       .where('archived', false)
       .first();
 
-    if (!payment)
+    if (!payment) {
       return response.notFound({ message: tHttp(i18n, 'Credit card invoice payment not found') });
+    }
 
     const payload = await request.validateUsing(updateCreditCardInvoicePaymentValidator);
-
     const paymentDate = this.parseDate(payload.paymentDate);
+
     if (!paymentDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid payment date') });
     }
@@ -130,7 +145,10 @@ export default class CreditCardInvoicePaymentsController {
       payload.accountId,
       payload.transactionId,
     );
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     payment.merge({
       creditCardInvoiceId: payload.creditCardInvoiceId,
@@ -141,6 +159,7 @@ export default class CreditCardInvoicePaymentsController {
       status: payload.status,
       notes: payload.notes,
     });
+
     await payment.save();
 
     return response.ok({ data: payment });
@@ -148,13 +167,15 @@ export default class CreditCardInvoicePaymentsController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const payment = await CreditCardInvoicePayment.query()
       .where('id', params.id)
       .where('user_id', userId)
       .first();
 
-    if (!payment)
+    if (!payment) {
       return response.notFound({ message: tHttp(i18n, 'Credit card invoice payment not found') });
+    }
 
     if (!payment.archived) {
       payment.archived = true;

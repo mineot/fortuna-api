@@ -18,6 +18,7 @@ export default class TransfersController {
     const payload = await request.validateUsing(createTransferValidator);
 
     const transferDate = this.parseTransferDate(payload.transferDate);
+
     if (!transferDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transfer date') });
     }
@@ -42,6 +43,7 @@ export default class TransfersController {
         error instanceof TransferValidationError
           ? error.message
           : tHttp(i18n, 'Transfer could not be created');
+
       return response.unprocessableEntity({ message });
     }
   }

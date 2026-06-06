@@ -71,6 +71,7 @@ export default class AccountsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const account = await Account.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -113,6 +114,7 @@ export default class AccountsController {
       currency: payload.currency.toUpperCase(),
       notes: payload.notes,
     });
+
     await account.save();
 
     return response.ok({ data: account });

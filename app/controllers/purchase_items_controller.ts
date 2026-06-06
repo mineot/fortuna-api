@@ -3,15 +3,16 @@ import Payee from '#models/payee';
 import Purchase from '#models/purchase';
 import PurchaseItem from '#models/purchase_item';
 import ShoppingListItem from '#models/shopping_list_item';
-import {
-  createPurchaseItemValidator,
-  updatePurchaseItemValidator,
-} from '#validators/purchase_item';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
+
+import {
+  createPurchaseItemValidator,
+  updatePurchaseItemValidator,
+} from '#validators/purchase_item';
 
 export default class PurchaseItemsController {
   private formatQuantity(value: number) {
@@ -34,7 +35,10 @@ export default class PurchaseItemsController {
       .where('user_id', userId)
       .where('archived', false)
       .first();
-    if (!purchase) return HTTP_MESSAGES.PURCHASE_NOT_FOUND_FOR_USER;
+
+    if (!purchase) {
+      return HTTP_MESSAGES.PURCHASE_NOT_FOUND_FOR_USER;
+    }
 
     if (shoppingListItemId !== undefined && shoppingListItemId !== null) {
       const item = await ShoppingListItem.query()
@@ -42,7 +46,10 @@ export default class PurchaseItemsController {
         .where('user_id', userId)
         .where('archived', false)
         .first();
-      if (!item) return HTTP_MESSAGES.SHOPPING_LIST_ITEM_NOT_FOUND_FOR_USER;
+
+      if (!item) {
+        return HTTP_MESSAGES.SHOPPING_LIST_ITEM_NOT_FOUND_FOR_USER;
+      }
     }
 
     if (categoryId !== undefined && categoryId !== null) {
@@ -51,7 +58,10 @@ export default class PurchaseItemsController {
         .where('user_id', userId)
         .where('archived', false)
         .first();
-      if (!category) return HTTP_MESSAGES.CATEGORY_NOT_FOUND_FOR_USER;
+
+      if (!category) {
+        return HTTP_MESSAGES.CATEGORY_NOT_FOUND_FOR_USER;
+      }
     }
 
     if (payeeId !== undefined && payeeId !== null) {
@@ -60,7 +70,10 @@ export default class PurchaseItemsController {
         .where('user_id', userId)
         .where('archived', false)
         .first();
-      if (!payee) return HTTP_MESSAGES.PAYEE_NOT_FOUND_FOR_USER;
+
+      if (!payee) {
+        return HTTP_MESSAGES.PAYEE_NOT_FOUND_FOR_USER;
+      }
     }
 
     return null;
@@ -68,6 +81,7 @@ export default class PurchaseItemsController {
 
   async index({ auth, response }: HttpContext) {
     const userId = auth.user!.id;
+
     const items = await PurchaseItem.query()
       .where('user_id', userId)
       .where('archived', false)
@@ -92,7 +106,10 @@ export default class PurchaseItemsController {
       payload.categoryId,
       payload.payeeId,
     );
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     const quantity = payload.quantity ?? 1;
     const unitPrice = payload.unitPrice ?? 0;
@@ -118,12 +135,16 @@ export default class PurchaseItemsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const item = await PurchaseItem.query()
       .where('id', params.id)
       .where('user_id', userId)
       .where('archived', false)
       .first();
-    if (!item) return response.notFound({ message: tHttp(i18n, 'Purchase item not found') });
+
+    if (!item) {
+      return response.notFound({ message: tHttp(i18n, 'Purchase item not found') });
+    }
 
     const payload = await request.validateUsing(updatePurchaseItemValidator);
 
@@ -134,7 +155,10 @@ export default class PurchaseItemsController {
       payload.categoryId,
       payload.payeeId,
     );
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     item.merge({
       purchaseId: payload.purchaseId,
@@ -147,6 +171,7 @@ export default class PurchaseItemsController {
       totalPrice: this.formatMoney(payload.totalPrice),
       notes: payload.notes,
     });
+
     await item.save();
 
     return response.ok({ data: item });
@@ -155,7 +180,10 @@ export default class PurchaseItemsController {
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const item = await PurchaseItem.query().where('id', params.id).where('user_id', userId).first();
-    if (!item) return response.notFound({ message: tHttp(i18n, 'Purchase item not found') });
+
+    if (!item) {
+      return response.notFound({ message: tHttp(i18n, 'Purchase item not found') });
+    }
 
     if (!item.archived) {
       item.archived = true;

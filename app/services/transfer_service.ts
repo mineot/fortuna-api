@@ -59,6 +59,7 @@ export default class TransferService {
       ]);
 
       const transferCents = toCents(input.amount);
+
       if (transferCents <= 0n) {
         throw new TransferValidationError(
           'invalid_amount',
@@ -122,6 +123,7 @@ export default class TransferService {
       fromAccount.currentBalance = centsToMoney(
         toCents(fromAccount.currentBalance) - transferCents,
       );
+
       toAccount.currentBalance = centsToMoney(toCents(toAccount.currentBalance) + transferCents);
 
       await fromAccount.useTransaction(trx).save();

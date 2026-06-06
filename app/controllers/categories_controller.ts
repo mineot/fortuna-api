@@ -64,6 +64,7 @@ export default class CategoriesController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const category = await Category.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -106,6 +107,7 @@ export default class CategoriesController {
       icon: payload.icon,
       position: payload.position,
     });
+
     await category.save();
 
     return response.ok({ data: category });

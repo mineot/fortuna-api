@@ -14,6 +14,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE');
+
       table
         .integer('budget_id')
         .unsigned()
@@ -21,6 +22,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('budgets')
         .onDelete('CASCADE');
+
       table
         .integer('category_id')
         .unsigned()
@@ -32,10 +34,8 @@ export default class extends BaseSchema {
       table.decimal('planned_amount', 14, 2).notNullable().defaultTo(0);
       table.decimal('carryover_amount', 14, 2).notNullable().defaultTo(0);
       table.text('notes').nullable();
-
       table.boolean('archived').notNullable().defaultTo(false);
       table.timestamp('archived_at').nullable();
-
       table.timestamp('created_at').notNullable();
       table.timestamp('updated_at').nullable();
 

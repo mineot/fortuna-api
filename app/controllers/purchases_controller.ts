@@ -46,6 +46,7 @@ export default class PurchasesController {
 
   async index({ auth, response }: HttpContext) {
     const userId = auth.user!.id;
+
     const purchases = await Purchase.query()
       .where('user_id', userId)
       .where('archived', false)
@@ -62,11 +63,16 @@ export default class PurchasesController {
     const payload = await request.validateUsing(createPurchaseValidator);
 
     const purchaseDate = this.parseDate(payload.purchaseDate);
-    if (!purchaseDate)
+
+    if (!purchaseDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid purchase date') });
+    }
 
     const linkError = await this.validateLinks(userId, payload.accountId, payload.shoppingListId);
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     const purchase = await Purchase.create({
       userId,
@@ -86,21 +92,29 @@ export default class PurchasesController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const purchase = await Purchase.query()
       .where('id', params.id)
       .where('user_id', userId)
       .where('archived', false)
       .first();
-    if (!purchase) return response.notFound({ message: tHttp(i18n, 'Purchase not found') });
+
+    if (!purchase) {
+      return response.notFound({ message: tHttp(i18n, 'Purchase not found') });
+    }
 
     const payload = await request.validateUsing(updatePurchaseValidator);
-
     const purchaseDate = this.parseDate(payload.purchaseDate);
-    if (!purchaseDate)
+
+    if (!purchaseDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid purchase date') });
+    }
 
     const linkError = await this.validateLinks(userId, payload.accountId, payload.shoppingListId);
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     purchase.merge({
       accountId: payload.accountId ?? null,
@@ -111,6 +125,7 @@ export default class PurchasesController {
       status: payload.status,
       notes: payload.notes,
     });
+
     await purchase.save();
 
     return response.ok({ data: purchase });
@@ -119,7 +134,10 @@ export default class PurchasesController {
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const purchase = await Purchase.query().where('id', params.id).where('user_id', userId).first();
-    if (!purchase) return response.notFound({ message: tHttp(i18n, 'Purchase not found') });
+
+    if (!purchase) {
+      return response.notFound({ message: tHttp(i18n, 'Purchase not found') });
+    }
 
     if (!purchase.archived) {
       purchase.archived = true;

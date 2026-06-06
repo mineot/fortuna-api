@@ -4,10 +4,10 @@ import { BaseSeeder } from '@adonisjs/lucid/seeders';
 export default class extends BaseSeeder {
   async run() {
     await User.firstOrCreate(
-      { email: 'seed.user@fortuna.local' },
+      { email: 'admin@admin.com' },
       {
-        fullName: 'Seed User',
-        password: 'seed-password',
+        fullName: 'Administrator',
+        password: 'admin@123',
       },
     );
   }

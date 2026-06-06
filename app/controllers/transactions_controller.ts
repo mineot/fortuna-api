@@ -46,8 +46,8 @@ export default class TransactionsController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createTransactionValidator);
-
     const transactionDate = this.parseTransactionDate(payload.transactionDate);
+
     if (!transactionDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transaction date') });
     }
@@ -112,6 +112,7 @@ export default class TransactionsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const transaction = await Transaction.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -133,8 +134,8 @@ export default class TransactionsController {
     }
 
     const payload = await request.validateUsing(updateTransactionValidator);
-
     const transactionDate = this.parseTransactionDate(payload.transactionDate);
+
     if (!transactionDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transaction date') });
     }
@@ -190,6 +191,7 @@ export default class TransactionsController {
       description: payload.description,
       notes: payload.notes,
     });
+
     await transaction.save();
 
     return response.ok({ data: transaction });
@@ -197,6 +199,7 @@ export default class TransactionsController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const transaction = await Transaction.query()
       .where('id', params.id)
       .where('user_id', userId)

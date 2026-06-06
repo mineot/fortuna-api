@@ -1,14 +1,15 @@
 import CreditCard from '#models/credit_card';
 import CreditCardInvoice from '#models/credit_card_invoice';
-import {
-  createCreditCardInvoiceValidator,
-  updateCreditCardInvoiceValidator,
-} from '#validators/credit_card_invoice';
 import type { HttpContext } from '@adonisjs/core/http';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
+
+import {
+  createCreditCardInvoiceValidator,
+  updateCreditCardInvoiceValidator,
+} from '#validators/credit_card_invoice';
 
 export default class CreditCardInvoicesController {
   private parseDate(value: string) {
@@ -27,7 +28,10 @@ export default class CreditCardInvoicesController {
       .where('archived', false)
       .first();
 
-    if (!creditCard) return HTTP_MESSAGES.CREDIT_CARD_NOT_FOUND_FOR_USER;
+    if (!creditCard) {
+      return HTTP_MESSAGES.CREDIT_CARD_NOT_FOUND_FOR_USER;
+    }
+
     return null;
   }
 
@@ -47,9 +51,11 @@ export default class CreditCardInvoicesController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardInvoiceValidator);
-
     const linkError = await this.validateCreditCardLink(userId, payload.creditCardId);
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     const periodStart = this.parseDate(payload.periodStart);
     const periodEnd = this.parseDate(payload.periodEnd);
@@ -97,6 +103,7 @@ export default class CreditCardInvoicesController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const invoice = await CreditCardInvoice.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -108,9 +115,11 @@ export default class CreditCardInvoicesController {
     }
 
     const payload = await request.validateUsing(updateCreditCardInvoiceValidator);
-
     const linkError = await this.validateCreditCardLink(userId, payload.creditCardId);
-    if (linkError) return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+
+    if (linkError) {
+      return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
+    }
 
     const periodStart = this.parseDate(payload.periodStart);
     const periodEnd = this.parseDate(payload.periodEnd);
@@ -150,6 +159,7 @@ export default class CreditCardInvoicesController {
       status: payload.status,
       notes: payload.notes,
     });
+
     await invoice.save();
 
     return response.ok({ data: invoice });
@@ -157,6 +167,7 @@ export default class CreditCardInvoicesController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const invoice = await CreditCardInvoice.query()
       .where('id', params.id)
       .where('user_id', userId)

@@ -13,6 +13,7 @@ export default class AccountTypesController {
 
   async index({ auth, response }: HttpContext) {
     const userId = auth.user!.id;
+
     const accountTypes = await AccountType.query()
       .where('user_id', userId)
       .where('archived', false)
@@ -24,7 +25,6 @@ export default class AccountTypesController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createAccountTypeValidator);
-
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
@@ -44,6 +44,7 @@ export default class AccountTypesController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const accountType = await AccountType.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -70,6 +71,7 @@ export default class AccountTypesController {
       name: payload.name,
       description: payload.description,
     });
+
     await accountType.save();
 
     return response.ok({ data: accountType });
@@ -77,6 +79,7 @@ export default class AccountTypesController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const accountType = await AccountType.query()
       .where('id', params.id)
       .where('user_id', userId)

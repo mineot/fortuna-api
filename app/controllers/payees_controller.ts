@@ -45,6 +45,7 @@ export default class PayeesController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const payee = await Payee.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -71,6 +72,7 @@ export default class PayeesController {
       name: payload.name,
       notes: payload.notes,
     });
+
     await payee.save();
 
     return response.ok({ data: payee });

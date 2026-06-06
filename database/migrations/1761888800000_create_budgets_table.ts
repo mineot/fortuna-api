@@ -14,15 +14,14 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE');
+
       table.string('name', 120).notNullable();
       table.date('period_start').notNullable();
       table.date('period_end').notNullable();
       table.string('status', 20).notNullable().defaultTo('active');
       table.text('notes').nullable();
-
       table.boolean('archived').notNullable().defaultTo(false);
       table.timestamp('archived_at').nullable();
-
       table.timestamp('created_at').notNullable();
       table.timestamp('updated_at').nullable();
 

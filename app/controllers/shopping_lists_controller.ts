@@ -1,15 +1,19 @@
 import ShoppingList from '#models/shopping_list';
-import {
-  createShoppingListValidator,
-  updateShoppingListValidator,
-} from '#validators/shopping_list';
 import type { HttpContext } from '@adonisjs/core/http';
 import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
 
+import {
+  createShoppingListValidator,
+  updateShoppingListValidator,
+} from '#validators/shopping_list';
+
 export default class ShoppingListsController {
   private parseDate(value?: string | null) {
-    if (!value) return null;
+    if (!value) {
+      return null;
+    }
+
     const parsed = DateTime.fromISO(value);
     return parsed.isValid ? parsed : null;
   }
@@ -34,13 +38,14 @@ export default class ShoppingListsController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createShoppingListValidator);
-
     const targetDate = this.parseDate(payload.targetDate);
+
     if (payload.targetDate && !targetDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid target date') });
     }
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
+
     if (existing) {
       return response.conflict({ message: tHttp(i18n, 'Shopping list name already exists') });
     }
@@ -60,18 +65,20 @@ export default class ShoppingListsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const shoppingList = await ShoppingList.query()
       .where('id', params.id)
       .where('user_id', userId)
       .where('archived', false)
       .first();
 
-    if (!shoppingList)
+    if (!shoppingList) {
       return response.notFound({ message: tHttp(i18n, 'Shopping list not found') });
+    }
 
     const payload = await request.validateUsing(updateShoppingListValidator);
-
     const targetDate = this.parseDate(payload.targetDate);
+
     if (payload.targetDate && !targetDate) {
       return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid target date') });
     }
@@ -92,6 +99,7 @@ export default class ShoppingListsController {
       targetDate,
       notes: payload.notes,
     });
+
     await shoppingList.save();
 
     return response.ok({ data: shoppingList });
@@ -99,13 +107,15 @@ export default class ShoppingListsController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const shoppingList = await ShoppingList.query()
       .where('id', params.id)
       .where('user_id', userId)
       .first();
 
-    if (!shoppingList)
+    if (!shoppingList) {
       return response.notFound({ message: tHttp(i18n, 'Shopping list not found') });
+    }
 
     if (!shoppingList.archived) {
       shoppingList.archived = true;

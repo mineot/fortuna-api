@@ -14,6 +14,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE');
+
       table
         .integer('category_group_id')
         .unsigned()
@@ -27,10 +28,8 @@ export default class extends BaseSchema {
       table.string('color', 20).nullable();
       table.string('icon', 50).nullable();
       table.integer('position').notNullable().defaultTo(0);
-
       table.boolean('archived').notNullable().defaultTo(false);
       table.timestamp('archived_at').nullable();
-
       table.timestamp('created_at').notNullable();
       table.timestamp('updated_at').nullable();
 

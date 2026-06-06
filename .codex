@@ -37,20 +37,20 @@ Follow the roadmap below exactly.
 ## Pending (Next Roadmap Scope)
 
 - [x] Step 20.1 — Controllers/Routes/Validation: `AccountTypes` module (`index`, `store`, `update`, `archive`) with ownership checks.
-- [ ] Step 20.2 — Controllers/Routes/Validation: `Accounts` module (`index`, `store`, `update`, `archive`) with ownership checks and account-type linkage.
-- [ ] Step 20.3 — Controllers/Routes/Validation: `CategoryGroups` module (`index`, `store`, `update`, `archive`) with ownership checks.
-- [ ] Step 20.4 — Controllers/Routes/Validation: `Categories` module (`index`, `store`, `update`, `archive`) with ownership checks and category-group linkage.
-- [ ] Step 20.5 — Controllers/Routes/Validation: `Payees` module (`index`, `store`, `update`, `archive`) with ownership checks.
-- [ ] Step 20.6 — Controllers/Routes/Validation: `Transactions` module (`index`, `store`, `update`, `archive`) with ownership checks and account/category/payee validation.
-- [ ] Step 20.7 — Controllers/Routes/Validation: `Transfers` module (`store`, `show`, `archive`) integrated with `TransferService` and ownership checks.
-- [ ] Step 20.8 — Controllers/Routes/Validation: `RecurringTransactions` module (`index`, `store`, `update`, `archive`) with ownership checks.
-- [ ] Step 20.9 — Controllers/Routes/Validation: `Budgets` and `BudgetCategories` modules with ownership checks and category linkage.
-- [ ] Step 20.10 — Controllers/Routes/Validation: `CreditCards` module with ownership checks.
-- [ ] Step 20.11 — Controllers/Routes/Validation: `CreditCardInvoices` module with ownership checks and credit-card linkage.
-- [ ] Step 20.12 — Controllers/Routes/Validation: `CreditCardPurchases` and `CreditCardInstallments` modules with ownership checks and invoice/category linkage.
-- [ ] Step 20.13 — Controllers/Routes/Validation: `CreditCardInvoicePayments` module with ownership checks and account/invoice/transaction linkage.
-- [ ] Step 20.14 — Controllers/Routes/Validation: `ShoppingLists` and `ShoppingListItems` modules with ownership checks.
-- [ ] Step 20.15 — Controllers/Routes/Validation: `Purchases` and `PurchaseItems` modules with ownership checks and category linkage.
+- [x] Step 20.2 — Controllers/Routes/Validation: `Accounts` module (`index`, `store`, `update`, `archive`) with ownership checks and account-type linkage.
+- [x] Step 20.3 — Controllers/Routes/Validation: `CategoryGroups` module (`index`, `store`, `update`, `archive`) with ownership checks.
+- [x] Step 20.4 — Controllers/Routes/Validation: `Categories` module (`index`, `store`, `update`, `archive`) with ownership checks and category-group linkage.
+- [x] Step 20.5 — Controllers/Routes/Validation: `Payees` module (`index`, `store`, `update`, `archive`) with ownership checks.
+- [x] Step 20.6 — Controllers/Routes/Validation: `Transactions` module (`index`, `store`, `update`, `archive`) with ownership checks and account/category/payee validation.
+- [x] Step 20.7 — Controllers/Routes/Validation: `Transfers` module (`store`, `show`, `archive`) integrated with `TransferService` and ownership checks.
+- [x] Step 20.8 — Controllers/Routes/Validation: `RecurringTransactions` module (`index`, `store`, `update`, `archive`) with ownership checks.
+- [x] Step 20.9 — Controllers/Routes/Validation: `Budgets` and `BudgetCategories` modules with ownership checks and category linkage.
+- [x] Step 20.10 — Controllers/Routes/Validation: `CreditCards` module with ownership checks.
+- [x] Step 20.11 — Controllers/Routes/Validation: `CreditCardInvoices` module with ownership checks and credit-card linkage.
+- [x] Step 20.12 — Controllers/Routes/Validation: `CreditCardPurchases` and `CreditCardInstallments` modules with ownership checks and invoice/category linkage.
+- [x] Step 20.13 — Controllers/Routes/Validation: `CreditCardInvoicePayments` module with ownership checks and account/invoice/transaction linkage.
+- [x] Step 20.14 — Controllers/Routes/Validation: `ShoppingLists` and `ShoppingListItems` modules with ownership checks.
+- [x] Step 20.15 — Controllers/Routes/Validation: `Purchases` and `PurchaseItems` modules with ownership checks and category linkage.
 - [ ] Step 21.1 — UI Pages: `AccountTypes` and `Accounts` (list/create/edit/archive) with i18n and server-side validation feedback.
 - [ ] Step 21.2 — UI Pages: `CategoryGroups`, `Categories`, `Payees` (list/create/edit/archive) with i18n and validation feedback.
 - [ ] Step 21.3 — UI Pages: `Transactions`, `Transfers`, `RecurringTransactions` with i18n and validation feedback.
@@ -74,6 +74,11 @@ Follow the roadmap below exactly.
 - `account_types`, `category_groups`, and `categories` persist direct fields (`name` and `description` where applicable), without database-term i18n.
 - User locale bootstrap strategy: `settings.locale` is the persistent source of truth after first authenticated access. On first authenticated request (`settings.locale_initialized_at` is null), locale is detected from `Accept-Language`, normalized to supported locales, persisted to `settings.locale`, and marked with `locale_initialized_at`. Subsequent requests ignore `Accept-Language` for authenticated users and rely on `settings.locale`.
 - Settings defaults strategy: users must always have a `settings` row with defaults (`currency=USD`, `locale=en-US`, `timezone=UTC`), created on signup and backfilled via `settings` seeder for existing users without settings.
+- HTTP error message standardization is active through `app/services/http_i18n.ts` (`tHttp`) and centralized reusable message constants in `app/services/http_messages.ts`.
+- Domain enum reuse is active via `app/services/domain_enums.ts` and validators now consume shared enums instead of local duplicated literal arrays.
+- Money normalization helper is active via `app/services/money.ts` and core controllers/services moved away from direct `toFixed(2)` formatting.
+- Transfer error flow is hardened with typed domain validation errors (`TransferValidationError`) in `TransferService`, avoiding fragile message regex in controller handling.
+- Controllers now protect key list endpoints from children of archived parents using relational guards (`whereHas(... archived=false)`) where applicable.
 - Seeders implemented for base local data:
   - `database/seeders/00_users_seeder.ts` creates a default local user (`seed.user@fortuna.local`) and must execute first.
   - `database/seeders/settings_seeder.ts` backfills missing settings (`USD`, `en-US`, `UTC`, `locale_initialized_at=null`) for existing users.

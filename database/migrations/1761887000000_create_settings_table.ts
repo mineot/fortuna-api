@@ -19,7 +19,7 @@ export default class extends BaseSchema {
       table.string('currency', 3).notNullable().defaultTo('USD');
       table.string('locale', 10).notNullable().defaultTo('en-US');
       table.string('timezone', 64).notNullable().defaultTo('UTC');
-
+      table.timestamp('locale_initialized_at').nullable();
       table.timestamp('created_at').notNullable();
       table.timestamp('updated_at').nullable();
     });

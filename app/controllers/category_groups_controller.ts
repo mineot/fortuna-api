@@ -1,11 +1,12 @@
 import CategoryGroup from '#models/category_group';
+import type { HttpContext } from '@adonisjs/core/http';
+import { tHttp } from '#services/http_i18n';
+import { DateTime } from 'luxon';
+
 import {
   createCategoryGroupValidator,
   updateCategoryGroupValidator,
 } from '#validators/category_group';
-import type { HttpContext } from '@adonisjs/core/http';
-import { tHttp } from '#services/http_i18n';
-import { DateTime } from 'luxon';
 
 export default class CategoryGroupsController {
   private findByNormalizedName(userId: number, name: string) {
@@ -29,7 +30,6 @@ export default class CategoryGroupsController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCategoryGroupValidator);
-
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
@@ -49,6 +49,7 @@ export default class CategoryGroupsController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const categoryGroup = await CategoryGroup.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -75,6 +76,7 @@ export default class CategoryGroupsController {
       name: payload.name,
       position: payload.position,
     });
+
     await categoryGroup.save();
 
     return response.ok({ data: categoryGroup });
@@ -82,6 +84,7 @@ export default class CategoryGroupsController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const categoryGroup = await CategoryGroup.query()
       .where('id', params.id)
       .where('user_id', userId)

@@ -14,6 +14,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE');
+
       table
         .integer('credit_card_invoice_id')
         .unsigned()
@@ -21,6 +22,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('credit_card_invoices')
         .onDelete('CASCADE');
+
       table
         .integer('account_id')
         .unsigned()
@@ -28,6 +30,7 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('accounts')
         .onDelete('RESTRICT');
+
       table
         .integer('transaction_id')
         .unsigned()
@@ -40,10 +43,8 @@ export default class extends BaseSchema {
       table.date('payment_date').notNullable();
       table.string('status', 20).notNullable().defaultTo('posted');
       table.text('notes').nullable();
-
       table.boolean('archived').notNullable().defaultTo(false);
       table.timestamp('archived_at').nullable();
-
       table.timestamp('created_at').notNullable();
       table.timestamp('updated_at').nullable();
 

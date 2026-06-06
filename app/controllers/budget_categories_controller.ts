@@ -1,15 +1,16 @@
 import Budget from '#models/budget';
 import BudgetCategory from '#models/budget_category';
 import Category from '#models/category';
-import {
-  createBudgetCategoryValidator,
-  updateBudgetCategoryValidator,
-} from '#validators/budget_category';
 import type { HttpContext } from '@adonisjs/core/http';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
+
+import {
+  createBudgetCategoryValidator,
+  updateBudgetCategoryValidator,
+} from '#validators/budget_category';
 
 export default class BudgetCategoriesController {
   private formatMoney(value: number) {
@@ -22,6 +23,7 @@ export default class BudgetCategoriesController {
       .where('user_id', userId)
       .where('archived', false)
       .first();
+
     if (!budget) {
       return HTTP_MESSAGES.BUDGET_NOT_FOUND_FOR_USER;
     }
@@ -31,6 +33,7 @@ export default class BudgetCategoriesController {
       .where('user_id', userId)
       .where('archived', false)
       .first();
+
     if (!category) {
       return HTTP_MESSAGES.CATEGORY_NOT_FOUND_FOR_USER;
     }
@@ -55,8 +58,8 @@ export default class BudgetCategoriesController {
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createBudgetCategoryValidator);
-
     const linkError = await this.validateLinks(userId, payload.budgetId, payload.categoryId);
+
     if (linkError) {
       return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
     }
@@ -88,6 +91,7 @@ export default class BudgetCategoriesController {
 
   async update({ auth, params, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const budgetCategory = await BudgetCategory.query()
       .where('id', params.id)
       .where('user_id', userId)
@@ -99,8 +103,8 @@ export default class BudgetCategoriesController {
     }
 
     const payload = await request.validateUsing(updateBudgetCategoryValidator);
-
     const linkError = await this.validateLinks(userId, payload.budgetId, payload.categoryId);
+
     if (linkError) {
       return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
     }
@@ -124,6 +128,7 @@ export default class BudgetCategoriesController {
       carryoverAmount: this.formatMoney(payload.carryoverAmount),
       notes: payload.notes,
     });
+
     await budgetCategory.save();
 
     return response.ok({ data: budgetCategory });
@@ -131,6 +136,7 @@ export default class BudgetCategoriesController {
 
   async archive({ auth, params, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
+
     const budgetCategory = await BudgetCategory.query()
       .where('id', params.id)
       .where('user_id', userId)

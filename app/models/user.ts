@@ -28,42 +28,61 @@ import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations';
 export default class User extends compose(UserSchema, withAuthFinder(hash)) {
   @hasOne(() => Setting)
   declare setting: HasOne<typeof Setting>;
+
   @hasMany(() => AccountType)
   declare accountTypes: HasMany<typeof AccountType>;
+
   @hasMany(() => Account)
   declare accounts: HasMany<typeof Account>;
+
   @hasMany(() => CategoryGroup)
   declare categoryGroups: HasMany<typeof CategoryGroup>;
+
   @hasMany(() => Category)
   declare categories: HasMany<typeof Category>;
+
   @hasMany(() => Payee)
   declare payees: HasMany<typeof Payee>;
+
   @hasMany(() => Transaction)
   declare transactions: HasMany<typeof Transaction>;
+
   @hasMany(() => Transfer)
   declare transfers: HasMany<typeof Transfer>;
+
   @hasMany(() => RecurringTransaction)
   declare recurringTransactions: HasMany<typeof RecurringTransaction>;
+
   @hasMany(() => Budget)
   declare budgets: HasMany<typeof Budget>;
+
   @hasMany(() => BudgetCategory)
   declare budgetCategories: HasMany<typeof BudgetCategory>;
+
   @hasMany(() => CreditCard)
   declare creditCards: HasMany<typeof CreditCard>;
+
   @hasMany(() => CreditCardInvoice)
   declare creditCardInvoices: HasMany<typeof CreditCardInvoice>;
+
   @hasMany(() => CreditCardPurchase)
   declare creditCardPurchases: HasMany<typeof CreditCardPurchase>;
+
   @hasMany(() => CreditCardInstallment)
   declare creditCardInstallments: HasMany<typeof CreditCardInstallment>;
+
   @hasMany(() => CreditCardInvoicePayment)
   declare creditCardInvoicePayments: HasMany<typeof CreditCardInvoicePayment>;
+
   @hasMany(() => ShoppingList)
   declare shoppingLists: HasMany<typeof ShoppingList>;
+
   @hasMany(() => ShoppingListItem)
   declare shoppingListItems: HasMany<typeof ShoppingListItem>;
+
   @hasMany(() => Purchase)
   declare purchases: HasMany<typeof Purchase>;
+
   @hasMany(() => PurchaseItem)
   declare purchaseItems: HasMany<typeof PurchaseItem>;
 
