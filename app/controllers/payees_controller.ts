@@ -29,7 +29,7 @@ export default class PayeesController {
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: tHttp(i18n, 'Payee name already exists') });
+      return response.conflict({ message: tHttp(i18n, 'payeeNameAlreadyExists') });
     }
 
     const payee = await Payee.create({
@@ -53,7 +53,7 @@ export default class PayeesController {
       .first();
 
     if (!payee) {
-      return response.notFound({ message: tHttp(i18n, 'Payee not found') });
+      return response.notFound({ message: tHttp(i18n, 'payeeNotFound') });
     }
 
     const payload = await request.validateUsing(updatePayeeValidator);
@@ -64,7 +64,7 @@ export default class PayeesController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: tHttp(i18n, 'Payee name already exists') });
+        return response.conflict({ message: tHttp(i18n, 'payeeNameAlreadyExists') });
       }
     }
 
@@ -83,7 +83,7 @@ export default class PayeesController {
     const payee = await Payee.query().where('id', params.id).where('user_id', userId).first();
 
     if (!payee) {
-      return response.notFound({ message: tHttp(i18n, 'Payee not found') });
+      return response.notFound({ message: tHttp(i18n, 'payeeNotFound') });
     }
 
     if (!payee.archived) {

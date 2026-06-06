@@ -28,7 +28,7 @@ export default class AccountTypesController {
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: tHttp(i18n, 'Account type name already exists') });
+      return response.conflict({ message: tHttp(i18n, 'accountTypeNameAlreadyExists') });
     }
 
     const accountType = await AccountType.create({
@@ -52,7 +52,7 @@ export default class AccountTypesController {
       .first();
 
     if (!accountType) {
-      return response.notFound({ message: tHttp(i18n, 'Account type not found') });
+      return response.notFound({ message: tHttp(i18n, 'accountTypeNotFound') });
     }
 
     const payload = await request.validateUsing(updateAccountTypeValidator);
@@ -63,7 +63,7 @@ export default class AccountTypesController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: tHttp(i18n, 'Account type name already exists') });
+        return response.conflict({ message: tHttp(i18n, 'accountTypeNameAlreadyExists') });
       }
     }
 
@@ -86,7 +86,7 @@ export default class AccountTypesController {
       .first();
 
     if (!accountType) {
-      return response.notFound({ message: tHttp(i18n, 'Account type not found') });
+      return response.notFound({ message: tHttp(i18n, 'accountTypeNotFound') });
     }
 
     if (!accountType.archived) {

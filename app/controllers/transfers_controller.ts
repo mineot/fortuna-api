@@ -20,7 +20,7 @@ export default class TransfersController {
     const transferDate = this.parseTransferDate(payload.transferDate);
 
     if (!transferDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transfer date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTransferDate') });
     }
 
     try {
@@ -42,7 +42,7 @@ export default class TransfersController {
       const message =
         error instanceof TransferValidationError
           ? error.message
-          : tHttp(i18n, 'Transfer could not be created');
+          : tHttp(i18n, 'transferCouldNotBeCreated');
 
       return response.unprocessableEntity({ message });
     }
@@ -61,7 +61,7 @@ export default class TransfersController {
       .first();
 
     if (!transfer) {
-      return response.notFound({ message: tHttp(i18n, 'Transfer not found') });
+      return response.notFound({ message: tHttp(i18n, 'transferNotFound') });
     }
 
     return response.ok({ data: transfer });
@@ -72,7 +72,7 @@ export default class TransfersController {
     const transfer = await Transfer.query().where('id', params.id).where('user_id', userId).first();
 
     if (!transfer) {
-      return response.notFound({ message: tHttp(i18n, 'Transfer not found') });
+      return response.notFound({ message: tHttp(i18n, 'transferNotFound') });
     }
 
     if (!transfer.archived) {

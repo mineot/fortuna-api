@@ -49,7 +49,7 @@ export default class TransactionsController {
     const transactionDate = this.parseTransactionDate(payload.transactionDate);
 
     if (!transactionDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transaction date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTransactionDate') });
     }
 
     const account = await Account.query()
@@ -60,7 +60,7 @@ export default class TransactionsController {
 
     if (!account) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Account not found for this user'),
+        message: tHttp(i18n, 'accountNotFoundForUser'),
       });
     }
 
@@ -73,7 +73,7 @@ export default class TransactionsController {
 
       if (!category) {
         return response.unprocessableEntity({
-          message: tHttp(i18n, 'Category not found for this user'),
+          message: tHttp(i18n, 'categoryNotFoundForUser'),
         });
       }
     }
@@ -87,7 +87,7 @@ export default class TransactionsController {
 
       if (!payee) {
         return response.unprocessableEntity({
-          message: tHttp(i18n, 'Payee not found for this user'),
+          message: tHttp(i18n, 'payeeNotFoundForUser'),
         });
       }
     }
@@ -120,7 +120,7 @@ export default class TransactionsController {
       .first();
 
     if (!transaction) {
-      return response.notFound({ message: tHttp(i18n, 'Transaction not found') });
+      return response.notFound({ message: tHttp(i18n, 'transactionNotFound') });
     }
 
     if (
@@ -129,7 +129,7 @@ export default class TransactionsController {
       (await this.hasTransferLink(transaction.id))
     ) {
       return response.conflict({
-        message: tHttp(i18n, 'Transfer transactions cannot be updated through this endpoint'),
+        message: tHttp(i18n, 'transferTransactionsCannotBeUpdated'),
       });
     }
 
@@ -137,7 +137,7 @@ export default class TransactionsController {
     const transactionDate = this.parseTransactionDate(payload.transactionDate);
 
     if (!transactionDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid transaction date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTransactionDate') });
     }
 
     const account = await Account.query()
@@ -148,7 +148,7 @@ export default class TransactionsController {
 
     if (!account) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Account not found for this user'),
+        message: tHttp(i18n, 'accountNotFoundForUser'),
       });
     }
 
@@ -161,7 +161,7 @@ export default class TransactionsController {
 
       if (!category) {
         return response.unprocessableEntity({
-          message: tHttp(i18n, 'Category not found for this user'),
+          message: tHttp(i18n, 'categoryNotFoundForUser'),
         });
       }
     }
@@ -175,7 +175,7 @@ export default class TransactionsController {
 
       if (!payee) {
         return response.unprocessableEntity({
-          message: tHttp(i18n, 'Payee not found for this user'),
+          message: tHttp(i18n, 'payeeNotFoundForUser'),
         });
       }
     }
@@ -206,7 +206,7 @@ export default class TransactionsController {
       .first();
 
     if (!transaction) {
-      return response.notFound({ message: tHttp(i18n, 'Transaction not found') });
+      return response.notFound({ message: tHttp(i18n, 'transactionNotFound') });
     }
 
     if (
@@ -215,7 +215,7 @@ export default class TransactionsController {
       (await this.hasTransferLink(transaction.id))
     ) {
       return response.conflict({
-        message: tHttp(i18n, 'Transfer transactions cannot be archived through this endpoint'),
+        message: tHttp(i18n, 'transferTransactionsCannotBeArchived'),
       });
     }
 

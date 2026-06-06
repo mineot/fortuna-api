@@ -90,13 +90,13 @@ export default class RecurringTransactionsController {
 
     if (!startDate || !nextOccurrenceDate || (payload.endDate && !endDate)) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Invalid recurring transaction dates'),
+        message: tHttp(i18n, 'invalidRecurringTransactionDates'),
       });
     }
 
     if (endDate && endDate < startDate) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'End date must be greater than or equal to start date'),
+        message: tHttp(i18n, 'endDateMustBeGreaterThanOrEqualToStartDate'),
       });
     }
 
@@ -143,7 +143,7 @@ export default class RecurringTransactionsController {
       .first();
 
     if (!recurringTransaction) {
-      return response.notFound({ message: tHttp(i18n, 'Recurring transaction not found') });
+      return response.notFound({ message: tHttp(i18n, 'recurringTransactionNotFound') });
     }
 
     const payload = await request.validateUsing(updateRecurringTransactionValidator);
@@ -153,13 +153,13 @@ export default class RecurringTransactionsController {
 
     if (!startDate || !nextOccurrenceDate || (payload.endDate && !endDate)) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Invalid recurring transaction dates'),
+        message: tHttp(i18n, 'invalidRecurringTransactionDates'),
       });
     }
 
     if (endDate && endDate < startDate) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'End date must be greater than or equal to start date'),
+        message: tHttp(i18n, 'endDateMustBeGreaterThanOrEqualToStartDate'),
       });
     }
 
@@ -204,7 +204,7 @@ export default class RecurringTransactionsController {
       .first();
 
     if (!recurringTransaction) {
-      return response.notFound({ message: tHttp(i18n, 'Recurring transaction not found') });
+      return response.notFound({ message: tHttp(i18n, 'recurringTransactionNotFound') });
     }
 
     if (!recurringTransaction.archived) {

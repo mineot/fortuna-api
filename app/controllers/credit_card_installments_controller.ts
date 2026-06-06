@@ -72,7 +72,7 @@ export default class CreditCardInstallmentsController {
     const dueDate = this.parseDate(payload.dueDate);
 
     if (!dueDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid installment due date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidInstallmentDueDate') });
     }
 
     const linkError = await this.validateLinks(
@@ -92,7 +92,7 @@ export default class CreditCardInstallmentsController {
 
     if (existing) {
       return response.conflict({
-        message: tHttp(i18n, 'Installment number already exists for this purchase'),
+        message: tHttp(i18n, 'installmentNumberAlreadyExistsForPurchase'),
       });
     }
 
@@ -122,14 +122,14 @@ export default class CreditCardInstallmentsController {
       .first();
 
     if (!installment) {
-      return response.notFound({ message: tHttp(i18n, 'Credit card installment not found') });
+      return response.notFound({ message: tHttp(i18n, 'creditCardInstallmentNotFound') });
     }
 
     const payload = await request.validateUsing(updateCreditCardInstallmentValidator);
     const dueDate = this.parseDate(payload.dueDate);
 
     if (!dueDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid installment due date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidInstallmentDueDate') });
     }
 
     const linkError = await this.validateLinks(
@@ -150,7 +150,7 @@ export default class CreditCardInstallmentsController {
 
     if (existing) {
       return response.conflict({
-        message: tHttp(i18n, 'Installment number already exists for this purchase'),
+        message: tHttp(i18n, 'installmentNumberAlreadyExistsForPurchase'),
       });
     }
 
@@ -178,7 +178,7 @@ export default class CreditCardInstallmentsController {
       .first();
 
     if (!installment) {
-      return response.notFound({ message: tHttp(i18n, 'Credit card installment not found') });
+      return response.notFound({ message: tHttp(i18n, 'creditCardInstallmentNotFound') });
     }
 
     if (!installment.archived) {

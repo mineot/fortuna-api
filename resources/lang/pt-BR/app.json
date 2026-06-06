@@ -14,20 +14,20 @@
     "creatingAccount": "Criando conta..."
   },
   "home": {
-    "title": "Inicio",
+    "title": "Início",
     "heroTitle": "Fortuna pronto com Vue + Bootstrap",
     "heroDescription": "UI orientada pelo servidor com Inertia, componentes Vue e tema escuro do Bootstrap como base global.",
-    "docs": "Documentacao",
-    "docsDescription": "Referencia oficial do AdonisJS.",
+    "docs": "Documentação",
+    "docsDescription": "Referência oficial do AdonisJS.",
     "inertia": "Inertia",
-    "inertiaDescription": "Guia de navegacao orientada pelo servidor com Vue.",
+    "inertiaDescription": "Guia de navegação orientada pelo servidor com Vue.",
     "bootstrap": "Bootstrap",
     "bootstrapDescription": "Estilos globais e sistema de componentes."
   },
   "errors": {
-    "notFoundTitle": "Pagina nao encontrada",
-    "notFoundDescription": "A pagina solicitada nao existe ou foi movida.",
+    "notFoundTitle": "Página não encontrada",
+    "notFoundDescription": "A página solicitada não existe ou foi movida.",
     "serverErrorTitle": "Algo deu errado.",
-    "serverErrorDescription": "Ocorreu um erro inesperado ao processar sua solicitacao."
+    "serverErrorDescription": "Ocorreu um erro inesperado ao processar sua solicitação."
   }
 }

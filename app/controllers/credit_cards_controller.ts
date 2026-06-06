@@ -60,7 +60,7 @@ export default class CreditCardsController {
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: tHttp(i18n, 'Credit card name already exists') });
+      return response.conflict({ message: tHttp(i18n, 'creditCardNameAlreadyExists') });
     }
 
     const creditCard = await CreditCard.create({
@@ -91,7 +91,7 @@ export default class CreditCardsController {
       .first();
 
     if (!creditCard) {
-      return response.notFound({ message: tHttp(i18n, 'Credit card not found') });
+      return response.notFound({ message: tHttp(i18n, 'creditCardNotFound') });
     }
 
     const payload = await request.validateUsing(updateCreditCardValidator);
@@ -107,7 +107,7 @@ export default class CreditCardsController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: tHttp(i18n, 'Credit card name already exists') });
+        return response.conflict({ message: tHttp(i18n, 'creditCardNameAlreadyExists') });
       }
     }
 
@@ -137,7 +137,7 @@ export default class CreditCardsController {
       .first();
 
     if (!creditCard) {
-      return response.notFound({ message: tHttp(i18n, 'Credit card not found') });
+      return response.notFound({ message: tHttp(i18n, 'creditCardNotFound') });
     }
 
     if (!creditCard.archived) {

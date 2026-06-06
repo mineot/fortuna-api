@@ -37,14 +37,14 @@ export default class CategoriesController {
 
     if (!categoryGroup) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Category group not found for this user'),
+        message: tHttp(i18n, 'categoryGroupNotFoundForUser'),
       });
     }
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: tHttp(i18n, 'Category name already exists') });
+      return response.conflict({ message: tHttp(i18n, 'categoryNameAlreadyExists') });
     }
 
     const category = await Category.create({
@@ -72,7 +72,7 @@ export default class CategoriesController {
       .first();
 
     if (!category) {
-      return response.notFound({ message: tHttp(i18n, 'Category not found') });
+      return response.notFound({ message: tHttp(i18n, 'categoryNotFound') });
     }
 
     const payload = await request.validateUsing(updateCategoryValidator);
@@ -85,7 +85,7 @@ export default class CategoriesController {
 
     if (!categoryGroup) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Category group not found for this user'),
+        message: tHttp(i18n, 'categoryGroupNotFoundForUser'),
       });
     }
 
@@ -95,7 +95,7 @@ export default class CategoriesController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: tHttp(i18n, 'Category name already exists') });
+        return response.conflict({ message: tHttp(i18n, 'categoryNameAlreadyExists') });
       }
     }
 
@@ -118,7 +118,7 @@ export default class CategoriesController {
     const category = await Category.query().where('id', params.id).where('user_id', userId).first();
 
     if (!category) {
-      return response.notFound({ message: tHttp(i18n, 'Category not found') });
+      return response.notFound({ message: tHttp(i18n, 'categoryNotFound') });
     }
 
     if (!category.archived) {

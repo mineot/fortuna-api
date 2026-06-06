@@ -89,7 +89,7 @@ export default class CreditCardInvoicePaymentsController {
     const paymentDate = this.parseDate(payload.paymentDate);
 
     if (!paymentDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid payment date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidPaymentDate') });
     }
 
     const linkError = await this.validateLinks(
@@ -129,14 +129,14 @@ export default class CreditCardInvoicePaymentsController {
       .first();
 
     if (!payment) {
-      return response.notFound({ message: tHttp(i18n, 'Credit card invoice payment not found') });
+      return response.notFound({ message: tHttp(i18n, 'creditCardInvoicePaymentNotFound') });
     }
 
     const payload = await request.validateUsing(updateCreditCardInvoicePaymentValidator);
     const paymentDate = this.parseDate(payload.paymentDate);
 
     if (!paymentDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid payment date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidPaymentDate') });
     }
 
     const linkError = await this.validateLinks(
@@ -174,7 +174,7 @@ export default class CreditCardInvoicePaymentsController {
       .first();
 
     if (!payment) {
-      return response.notFound({ message: tHttp(i18n, 'Credit card invoice payment not found') });
+      return response.notFound({ message: tHttp(i18n, 'creditCardInvoicePaymentNotFound') });
     }
 
     if (!payment.archived) {

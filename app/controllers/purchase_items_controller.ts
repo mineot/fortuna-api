@@ -143,7 +143,7 @@ export default class PurchaseItemsController {
       .first();
 
     if (!item) {
-      return response.notFound({ message: tHttp(i18n, 'Purchase item not found') });
+      return response.notFound({ message: tHttp(i18n, 'purchaseItemNotFound') });
     }
 
     const payload = await request.validateUsing(updatePurchaseItemValidator);
@@ -182,7 +182,7 @@ export default class PurchaseItemsController {
     const item = await PurchaseItem.query().where('id', params.id).where('user_id', userId).first();
 
     if (!item) {
-      return response.notFound({ message: tHttp(i18n, 'Purchase item not found') });
+      return response.notFound({ message: tHttp(i18n, 'purchaseItemNotFound') });
     }
 
     if (!item.archived) {

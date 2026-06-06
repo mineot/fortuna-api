@@ -41,14 +41,14 @@ export default class AccountsController {
 
     if (!accountType) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Account type not found for this user'),
+        message: tHttp(i18n, 'accountTypeNotFoundForUser'),
       });
     }
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: tHttp(i18n, 'Account name already exists') });
+      return response.conflict({ message: tHttp(i18n, 'accountNameAlreadyExists') });
     }
 
     const initialBalance = this.formatMoney(payload.initialBalance ?? 0);
@@ -79,7 +79,7 @@ export default class AccountsController {
       .first();
 
     if (!account) {
-      return response.notFound({ message: tHttp(i18n, 'Account not found') });
+      return response.notFound({ message: tHttp(i18n, 'accountNotFound') });
     }
 
     const payload = await request.validateUsing(updateAccountValidator);
@@ -92,7 +92,7 @@ export default class AccountsController {
 
     if (!accountType) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Account type not found for this user'),
+        message: tHttp(i18n, 'accountTypeNotFoundForUser'),
       });
     }
 
@@ -102,7 +102,7 @@ export default class AccountsController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: tHttp(i18n, 'Account name already exists') });
+        return response.conflict({ message: tHttp(i18n, 'accountNameAlreadyExists') });
       }
     }
 
@@ -125,7 +125,7 @@ export default class AccountsController {
     const account = await Account.query().where('id', params.id).where('user_id', userId).first();
 
     if (!account) {
-      return response.notFound({ message: tHttp(i18n, 'Account not found') });
+      return response.notFound({ message: tHttp(i18n, 'accountNotFound') });
     }
 
     if (!account.archived) {

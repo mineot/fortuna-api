@@ -65,7 +65,7 @@ export default class PurchasesController {
     const purchaseDate = this.parseDate(payload.purchaseDate);
 
     if (!purchaseDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid purchase date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidPurchaseDate') });
     }
 
     const linkError = await this.validateLinks(userId, payload.accountId, payload.shoppingListId);
@@ -100,14 +100,14 @@ export default class PurchasesController {
       .first();
 
     if (!purchase) {
-      return response.notFound({ message: tHttp(i18n, 'Purchase not found') });
+      return response.notFound({ message: tHttp(i18n, 'purchaseNotFound') });
     }
 
     const payload = await request.validateUsing(updatePurchaseValidator);
     const purchaseDate = this.parseDate(payload.purchaseDate);
 
     if (!purchaseDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid purchase date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidPurchaseDate') });
     }
 
     const linkError = await this.validateLinks(userId, payload.accountId, payload.shoppingListId);
@@ -136,7 +136,7 @@ export default class PurchasesController {
     const purchase = await Purchase.query().where('id', params.id).where('user_id', userId).first();
 
     if (!purchase) {
-      return response.notFound({ message: tHttp(i18n, 'Purchase not found') });
+      return response.notFound({ message: tHttp(i18n, 'purchaseNotFound') });
     }
 
     if (!purchase.archived) {

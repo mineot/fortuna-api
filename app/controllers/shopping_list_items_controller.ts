@@ -87,7 +87,7 @@ export default class ShoppingListItemsController {
       .first();
 
     if (!item) {
-      return response.notFound({ message: tHttp(i18n, 'Shopping list item not found') });
+      return response.notFound({ message: tHttp(i18n, 'shoppingListItemNotFound') });
     }
 
     const payload = await request.validateUsing(updateShoppingListItemValidator);
@@ -124,7 +124,7 @@ export default class ShoppingListItemsController {
       .first();
 
     if (!item) {
-      return response.notFound({ message: tHttp(i18n, 'Shopping list item not found') });
+      return response.notFound({ message: tHttp(i18n, 'shoppingListItemNotFound') });
     }
 
     if (!item.archived) {

@@ -41,13 +41,13 @@ export default class ShoppingListsController {
     const targetDate = this.parseDate(payload.targetDate);
 
     if (payload.targetDate && !targetDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid target date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTargetDate') });
     }
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: tHttp(i18n, 'Shopping list name already exists') });
+      return response.conflict({ message: tHttp(i18n, 'shoppingListNameAlreadyExists') });
     }
 
     const shoppingList = await ShoppingList.create({
@@ -73,14 +73,14 @@ export default class ShoppingListsController {
       .first();
 
     if (!shoppingList) {
-      return response.notFound({ message: tHttp(i18n, 'Shopping list not found') });
+      return response.notFound({ message: tHttp(i18n, 'shoppingListNotFound') });
     }
 
     const payload = await request.validateUsing(updateShoppingListValidator);
     const targetDate = this.parseDate(payload.targetDate);
 
     if (payload.targetDate && !targetDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid target date') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTargetDate') });
     }
 
     if (payload.name.toLocaleLowerCase() !== shoppingList.name.toLocaleLowerCase()) {
@@ -89,7 +89,7 @@ export default class ShoppingListsController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: tHttp(i18n, 'Shopping list name already exists') });
+        return response.conflict({ message: tHttp(i18n, 'shoppingListNameAlreadyExists') });
       }
     }
 
@@ -114,7 +114,7 @@ export default class ShoppingListsController {
       .first();
 
     if (!shoppingList) {
-      return response.notFound({ message: tHttp(i18n, 'Shopping list not found') });
+      return response.notFound({ message: tHttp(i18n, 'shoppingListNotFound') });
     }
 
     if (!shoppingList.archived) {

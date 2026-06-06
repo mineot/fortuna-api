@@ -29,12 +29,12 @@ export default class BudgetsController {
     const periodEnd = this.parseDate(payload.periodEnd);
 
     if (!periodStart || !periodEnd) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid budget period dates') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidBudgetPeriodDates') });
     }
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Period end must be greater than or equal to period start'),
+        message: tHttp(i18n, 'periodEndMustBeGreaterThanOrEqualToPeriodStart'),
       });
     }
 
@@ -46,7 +46,7 @@ export default class BudgetsController {
 
     if (existing) {
       return response.conflict({
-        message: tHttp(i18n, 'Budget already exists for this name and period start'),
+        message: tHttp(i18n, 'budgetAlreadyExistsForNameAndPeriodStart'),
       });
     }
 
@@ -74,7 +74,7 @@ export default class BudgetsController {
       .first();
 
     if (!budget) {
-      return response.notFound({ message: tHttp(i18n, 'Budget not found') });
+      return response.notFound({ message: tHttp(i18n, 'budgetNotFound') });
     }
 
     const payload = await request.validateUsing(updateBudgetValidator);
@@ -82,12 +82,12 @@ export default class BudgetsController {
     const periodEnd = this.parseDate(payload.periodEnd);
 
     if (!periodStart || !periodEnd) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid budget period dates') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidBudgetPeriodDates') });
     }
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Period end must be greater than or equal to period start'),
+        message: tHttp(i18n, 'periodEndMustBeGreaterThanOrEqualToPeriodStart'),
       });
     }
 
@@ -100,7 +100,7 @@ export default class BudgetsController {
 
     if (existing) {
       return response.conflict({
-        message: tHttp(i18n, 'Budget already exists for this name and period start'),
+        message: tHttp(i18n, 'budgetAlreadyExistsForNameAndPeriodStart'),
       });
     }
 
@@ -122,7 +122,7 @@ export default class BudgetsController {
     const budget = await Budget.query().where('id', params.id).where('user_id', userId).first();
 
     if (!budget) {
-      return response.notFound({ message: tHttp(i18n, 'Budget not found') });
+      return response.notFound({ message: tHttp(i18n, 'budgetNotFound') });
     }
 
     if (!budget.archived) {

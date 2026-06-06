@@ -71,7 +71,7 @@ export default class BudgetCategoriesController {
 
     if (existing) {
       return response.conflict({
-        message: tHttp(i18n, 'Budget category already exists for this budget and category'),
+        message: tHttp(i18n, 'budgetCategoryAlreadyExistsForBudgetAndCategory'),
       });
     }
 
@@ -99,7 +99,7 @@ export default class BudgetCategoriesController {
       .first();
 
     if (!budgetCategory) {
-      return response.notFound({ message: tHttp(i18n, 'Budget category not found') });
+      return response.notFound({ message: tHttp(i18n, 'budgetCategoryNotFound') });
     }
 
     const payload = await request.validateUsing(updateBudgetCategoryValidator);
@@ -117,7 +117,7 @@ export default class BudgetCategoriesController {
 
     if (existing) {
       return response.conflict({
-        message: tHttp(i18n, 'Budget category already exists for this budget and category'),
+        message: tHttp(i18n, 'budgetCategoryAlreadyExistsForBudgetAndCategory'),
       });
     }
 
@@ -143,7 +143,7 @@ export default class BudgetCategoriesController {
       .first();
 
     if (!budgetCategory) {
-      return response.notFound({ message: tHttp(i18n, 'Budget category not found') });
+      return response.notFound({ message: tHttp(i18n, 'budgetCategoryNotFound') });
     }
 
     if (!budgetCategory.archived) {

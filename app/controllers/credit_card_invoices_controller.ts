@@ -62,12 +62,12 @@ export default class CreditCardInvoicesController {
     const dueDate = this.parseDate(payload.dueDate);
 
     if (!periodStart || !periodEnd || !dueDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid invoice dates') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidInvoiceDates') });
     }
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Period end must be greater than or equal to period start'),
+        message: tHttp(i18n, 'periodEndMustBeGreaterThanOrEqualToPeriodStart'),
       });
     }
 
@@ -78,7 +78,7 @@ export default class CreditCardInvoicesController {
 
     if (existing) {
       return response.conflict({
-        message: tHttp(i18n, 'Invoice already exists for this credit card and reference month'),
+        message: tHttp(i18n, 'invoiceAlreadyExistsForCreditCardAndReferenceMonth'),
       });
     }
 
@@ -111,7 +111,7 @@ export default class CreditCardInvoicesController {
       .first();
 
     if (!invoice) {
-      return response.notFound({ message: tHttp(i18n, 'Credit card invoice not found') });
+      return response.notFound({ message: tHttp(i18n, 'creditCardInvoiceNotFound') });
     }
 
     const payload = await request.validateUsing(updateCreditCardInvoiceValidator);
@@ -126,12 +126,12 @@ export default class CreditCardInvoicesController {
     const dueDate = this.parseDate(payload.dueDate);
 
     if (!periodStart || !periodEnd || !dueDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'Invalid invoice dates') });
+      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidInvoiceDates') });
     }
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
-        message: tHttp(i18n, 'Period end must be greater than or equal to period start'),
+        message: tHttp(i18n, 'periodEndMustBeGreaterThanOrEqualToPeriodStart'),
       });
     }
 
@@ -143,7 +143,7 @@ export default class CreditCardInvoicesController {
 
     if (existing) {
       return response.conflict({
-        message: tHttp(i18n, 'Invoice already exists for this credit card and reference month'),
+        message: tHttp(i18n, 'invoiceAlreadyExistsForCreditCardAndReferenceMonth'),
       });
     }
 
@@ -174,7 +174,7 @@ export default class CreditCardInvoicesController {
       .first();
 
     if (!invoice) {
-      return response.notFound({ message: tHttp(i18n, 'Credit card invoice not found') });
+      return response.notFound({ message: tHttp(i18n, 'creditCardInvoiceNotFound') });
     }
 
     if (!invoice.archived) {

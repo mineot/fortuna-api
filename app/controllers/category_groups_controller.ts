@@ -33,7 +33,7 @@ export default class CategoryGroupsController {
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
     if (existing) {
-      return response.conflict({ message: tHttp(i18n, 'Category group name already exists') });
+      return response.conflict({ message: tHttp(i18n, 'categoryGroupNameAlreadyExists') });
     }
 
     const categoryGroup = await CategoryGroup.create({
@@ -57,7 +57,7 @@ export default class CategoryGroupsController {
       .first();
 
     if (!categoryGroup) {
-      return response.notFound({ message: tHttp(i18n, 'Category group not found') });
+      return response.notFound({ message: tHttp(i18n, 'categoryGroupNotFound') });
     }
 
     const payload = await request.validateUsing(updateCategoryGroupValidator);
@@ -68,7 +68,7 @@ export default class CategoryGroupsController {
         .first();
 
       if (existing) {
-        return response.conflict({ message: tHttp(i18n, 'Category group name already exists') });
+        return response.conflict({ message: tHttp(i18n, 'categoryGroupNameAlreadyExists') });
       }
     }
 
@@ -91,7 +91,7 @@ export default class CategoryGroupsController {
       .first();
 
     if (!categoryGroup) {
-      return response.notFound({ message: tHttp(i18n, 'Category group not found') });
+      return response.notFound({ message: tHttp(i18n, 'categoryGroupNotFound') });
     }
 
     if (!categoryGroup.archived) {
