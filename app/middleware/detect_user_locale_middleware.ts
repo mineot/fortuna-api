@@ -3,6 +3,7 @@ import { I18n } from '@adonisjs/i18n';
 import i18nManager from '@adonisjs/i18n/services/main';
 import type { NextFn } from '@adonisjs/core/types/http';
 import { type HttpContext, RequestValidator } from '@adonisjs/core/http';
+import { DateTime } from 'luxon';
 
 /**
  * The "DetectUserLocaleMiddleware" middleware uses i18n service to share
@@ -53,10 +54,8 @@ export default class DetectUserLocaleMiddleware {
 
       if (!setting.localeInitializedAt) {
         const detected = this.normalizeLocale(language);
-        await Setting.query()
-          .where('id', setting.id)
-          .whereNull('locale_initialized_at')
-          .update({ locale: detected, locale_initialized_at: new Date() });
+        setting.merge({ locale: detected, localeInitializedAt: DateTime.local() });
+        await setting.save();
         language = detected;
       } else {
         language = this.normalizeLocale(setting.locale);
