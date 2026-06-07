@@ -1,13 +1,105 @@
+<template>
+  <section class="app-shell">
+    <header class="navbar navbar-expand-lg bg-body border-bottom border-secondary-subtle">
+      <div class="container">
+        <Link route="home" class="navbar-brand fw-semibold brand-logo">{{ t('app.brand') }}</Link>
+        <nav class="ms-auto d-flex align-items-center gap-3">
+          <template v-if="page.props.user">
+            <button
+              type="button"
+              class="btn btn-lg btn-dark"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#sidebar"
+              aria-controls="sidebar"
+            >
+              <i class="bi bi-list"></i>
+            </button>
+          </template>
+          <template v-else>
+            <Link route="new_account.create" class="btn btn-sm btn-secondary">
+              <i class="bi bi-person-plus me-1"></i>
+              {{ t('app.auth.signup') }}
+            </Link>
+            <Link route="session.create" class="btn btn-sm btn-primary">
+              <i class="bi bi-box-arrow-in-right me-1"></i>
+              {{ t('app.auth.login') }}
+            </Link>
+          </template>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <slot />
+    </main>
+  </section>
+
+  <template v-if="page.props.user">
+    <div
+      class="offcanvas offcanvas-start"
+      tabindex="-1"
+      id="sidebar"
+      aria-labelledby="sidebarLabel"
+    >
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="sidebarLabel">{{ t('app.brand') }}</h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column gap-4">
+        <div class="d-flex gap-2 align-items-center justify-content-between">
+          <div class="d-flex flex-column">
+            <span class="fs-4">{{ page.props.user.fullName }}</span>
+            <span class="fs-6 text-body-tertiary">{{ page.props.user.email }}</span>
+          </div>
+
+          <Form route="session.destroy" class="">
+            <button type="submit" class="btn btn-sm btn-secondary" @click="closeSidebar()">
+              <i class="bi bi-box-arrow-right me-1"></i>
+              {{ t('app.auth.logout') }}
+            </button>
+          </Form>
+        </div>
+
+        <div>
+          <div class="list-group list-group-flush">
+            <Link
+              v-for="menu in menuItems"
+              :class="{ active: isActive(menu.activeRoute) }"
+              :key="menu.activeRoute"
+              :route="menu.route"
+              @click="closeSidebar()"
+              aria-current="true"
+              class="list-group-item list-group-item-action list-group-item-secondary"
+            >
+              {{ t(menu.label) }}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <Toaster position="top-center" rich-colors />
+</template>
+
 <script setup lang="ts">
-import { watch } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import { toast, Toaster } from 'vue-sonner';
-import type { Data } from '@generated/data';
 import { Link, Form } from '@adonisjs/inertia/vue';
+import { Offcanvas } from 'bootstrap';
+import { toast, Toaster } from 'vue-sonner';
 import { useI18n } from '../lib/i18n';
+import { usePage } from '@inertiajs/vue3';
+import { watch } from 'vue';
+import type { Data } from '@generated/data';
 
 const page = usePage<Data.SharedProps>();
 const { t } = useI18n();
+const isActive = (url: string) => page.url === url;
 
 watch(
   () => page.url,
@@ -20,47 +112,42 @@ watch(
     if (flashMessages.error) {
       toast.error(flashMessages.error);
     }
+
     if (flashMessages.success) {
       toast.success(flashMessages.success);
     }
   },
   { immediate: true },
 );
+
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+
+  if (!sidebar) {
+    return;
+  }
+
+  Offcanvas.getOrCreateInstance(sidebar).hide();
+}
+
+type MenuRouteNames = 'home' | 'account_types.index';
+
+type MenuItem = {
+  route: MenuRouteNames;
+  activeRoute: string;
+  label: string;
+};
+
+const menuItems: MenuItem[] = [
+  {
+    route: 'home',
+    activeRoute: '/',
+    label: 'app.home.title',
+  },
+  {
+    route: 'account_types.index',
+    activeRoute: '/account-types',
+    label: 'app.accountTypes.title',
+  },
+];
 </script>
-
-<template>
-  <header class="navbar navbar-expand-lg bg-body border-bottom border-secondary-subtle">
-    <div class="container">
-      <Link route="home" class="navbar-brand fw-semibold brand-logo">{{ t('app.brand') }}</Link>
-      <nav class="ms-auto d-flex align-items-center gap-3">
-        <template v-if="page.props.user">
-          <span class="badge text-bg-secondary">{{ page.props.user.initials }}</span>
-          <Form route="session.destroy">
-            <button type="submit" class="btn btn-outline-light btn-sm">
-              <i class="bi bi-box-arrow-right me-1"></i>
-              {{ t('app.auth.logout') }}
-            </button>
-          </Form>
-        </template>
-        <template v-else>
-          <Link route="new_account.create" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-person-plus me-1"></i>
-            {{ t('app.auth.signup') }}
-          </Link>
-          <Link route="session.create" class="btn btn-primary btn-sm">
-            <i class="bi bi-box-arrow-in-right me-1"></i>
-            {{ t('app.auth.login') }}
-          </Link>
-        </template>
-      </nav>
-    </div>
-  </header>
-
-  <main class="app-shell py-4">
-    <div class="container">
-      <slot />
-    </div>
-  </main>
-
-  <Toaster position="top-center" rich-colors />
-</template>

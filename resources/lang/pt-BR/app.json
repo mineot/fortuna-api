@@ -24,10 +24,13 @@
     "bootstrap": "Bootstrap",
     "bootstrapDescription": "Estilos globais e sistema de componentes."
   },
+  "accountTypes": {
+    "title": "Tipos de Conta"
+  },
   "errors": {
-    "notFoundTitle": "Página não encontrada",
     "notFoundDescription": "A página solicitada não existe ou foi movida.",
-    "serverErrorTitle": "Algo deu errado.",
-    "serverErrorDescription": "Ocorreu um erro inesperado ao processar sua solicitação."
+    "notFoundTitle": "Página não encontrada",
+    "serverErrorDescription": "Ocorreu um erro inesperado ao processar sua solicitação.",
+    "serverErrorTitle": "Algo deu errado."
   }
 }

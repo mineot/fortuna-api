@@ -11,7 +11,7 @@ export default class AccountTypesController {
       .whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
   }
 
-  async index({ auth, response }: HttpContext) {
+  async index({ auth, inertia }: HttpContext) {
     const userId = auth.user!.id;
 
     const accountTypes = await AccountType.query()
@@ -19,7 +19,9 @@ export default class AccountTypesController {
       .where('archived', false)
       .orderBy('id', 'asc');
 
-    return response.ok({ data: accountTypes });
+    return inertia.render('account-types/account-types', {
+      accountTypes,
+    });
   }
 
   async store({ auth, request, response, i18n }: HttpContext) {

@@ -1,0 +1,16 @@
+{
+  "shared": {
+    "fields": {
+      "email": "e-mail",
+      "password": "senha",
+      "passwordConfirmation": "confirmação de senha"
+    },
+    "messages": {
+      "required": "O campo {field} é obrigatório.",
+      "email": "O campo {field} deve ser um e-mail válido.",
+      "minLength": "O campo {field} deve ter pelo menos {min} caracteres.",
+      "maxLength": "O campo {field} não pode ter mais de {max} caracteres.",
+      "confirmed": "O campo {field} e o campo {otherField} devem ser iguais."
+    }
+  }
+}

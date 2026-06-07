@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { Form } from '@adonisjs/inertia/vue';
-import { useI18n } from '../../lib/i18n';
-
-const { t } = useI18n();
-</script>
-
 <template>
   <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-5">
@@ -80,3 +73,10 @@ const { t } = useI18n();
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { Form } from '@adonisjs/inertia/vue';
+import { useI18n } from '../../lib/i18n';
+
+const { t } = useI18n();
+</script>
