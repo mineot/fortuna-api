@@ -1,9 +1,3 @@
-<script setup lang="ts">
-import { useI18n } from '../../lib/i18n';
-
-const { t } = useI18n();
-</script>
-
 <template>
   <div class="container py-5">
     <div class="alert alert-warning mb-0" role="alert">
@@ -12,3 +6,9 @@ const { t } = useI18n();
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from '../../lib/i18n';
+
+const { t } = useI18n();
+</script>

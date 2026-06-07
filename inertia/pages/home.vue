@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import { useI18n } from '../lib/i18n';
-
-const { t } = useI18n();
-</script>
-
 <template>
   <Head :title="t('app.home.title')" />
 
@@ -62,3 +55,10 @@ const { t } = useI18n();
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { Head } from '@inertiajs/vue3';
+import { useI18n } from '../lib/i18n';
+
+const { t } = useI18n();
+</script>
