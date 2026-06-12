@@ -1,5 +1,10 @@
 {
   "brand": "FORTUNA",
+  "terms": {
+    "search": "Pequisar",
+    "noRecordsFound": "Nenhum registro encontrado.",
+    "totalRecords": "Total de registros: {0}"
+  },
   "auth": {
     "login": "Entrar",
     "logout": "Sair",

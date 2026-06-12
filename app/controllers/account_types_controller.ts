@@ -11,13 +11,15 @@ export default class AccountTypesController {
       .whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
   }
 
-  async index({ auth, inertia }: HttpContext) {
+  async index({ request, auth, inertia }: HttpContext) {
     const userId = auth.user!.id;
+    const page = request.input('page', 1);
 
     const accountTypes = await AccountType.query()
       .where('user_id', userId)
       .where('archived', false)
-      .orderBy('id', 'asc');
+      .orderBy('name', 'asc')
+      .paginate(page, 5);
 
     return inertia.render('account-types/account-types', {
       accountTypes,
