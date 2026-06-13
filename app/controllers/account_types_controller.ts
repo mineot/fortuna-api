@@ -1,8 +1,8 @@
-import AccountType from '#models/account_type';
 import { createAccountTypeValidator, updateAccountTypeValidator } from '#validators/account_type';
-import type { HttpContext } from '@adonisjs/core/http';
-import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
+import { tHttp } from '#services/http_i18n';
+import AccountType from '#models/account_type';
+import type { HttpContext } from '@adonisjs/core/http';
 
 export default class AccountTypesController {
   private findByNormalizedName(userId: number, name: string) {
@@ -11,19 +11,29 @@ export default class AccountTypesController {
       .whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
   }
 
-  async index({ request, auth, inertia }: HttpContext) {
+  async index({ inertia }: HttpContext) {
+    return inertia.render('account-types/account-types', {});
+  }
+
+  async list({ request, auth, response }: HttpContext) {
     const userId = auth.user!.id;
+    const searchText = request.input('searchText', null);
     const page = request.input('page', 1);
 
     const accountTypes = await AccountType.query()
       .where('user_id', userId)
       .where('archived', false)
       .orderBy('name', 'asc')
+      .where((query) => {
+        if (searchText) {
+          query
+            .where('name', 'like', `%${searchText}%`)
+            .orWhere('description', 'like', `%${searchText}%`);
+        }
+      })
       .paginate(page, 5);
 
-    return inertia.render('account-types/account-types', {
-      accountTypes,
-    });
+    return response.ok({ accountTypes });
   }
 
   async store({ auth, request, response, i18n }: HttpContext) {

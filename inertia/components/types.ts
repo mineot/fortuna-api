@@ -36,16 +36,3 @@ export type InputTypes =
   | 'time'
   | 'url'
   | 'week';
-
-export type TableColumnText = { type: 'column'; value: string };
-export type TableColumnButton = {
-  variant: Variants;
-  label: string;
-  icon?: Icons;
-  action: () => void;
-};
-export type TableColumnButtons = { type: 'buttons'; buttons: TableColumnButton[] };
-export type TableHeader = Array<{ value: string; fit?: boolean }>;
-export type TableColumn = Array<TableColumnText | TableColumnButtons>;
-export type TableRow = TableColumn[];
-export type TablePaginator = { path: string; meta: any };

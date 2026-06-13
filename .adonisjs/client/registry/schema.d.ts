@@ -91,6 +91,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/account_types_controller').default['index']>>>
     }
   }
+  'account_types.list': {
+    methods: ["GET","HEAD"]
+    pattern: '/account-types/list'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/account_types_controller').default['list']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/account_types_controller').default['list']>>>
+    }
+  }
   'account_types.store': {
     methods: ["POST"]
     pattern: '/account-types'

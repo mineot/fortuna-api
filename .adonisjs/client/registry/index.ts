@@ -48,6 +48,12 @@ const routes = {
     tokens: [{"old":"/account-types","type":0,"val":"account-types","end":""}],
     types: placeholder as Registry['account_types.index']['types'],
   },
+  'account_types.list': {
+    methods: ["GET","HEAD"],
+    pattern: '/account-types/list',
+    tokens: [{"old":"/account-types/list","type":0,"val":"account-types","end":""},{"old":"/account-types/list","type":0,"val":"list","end":""}],
+    types: placeholder as Registry['account_types.list']['types'],
+  },
   'account_types.store': {
     methods: ["POST"],
     pattern: '/account-types',

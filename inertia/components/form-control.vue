@@ -3,6 +3,7 @@
     class="form-control form-control-sm"
     :type="props.type ?? 'text'"
     :placeholder="props.placeholder ?? ''"
+    :name="props.name"
     v-model="formControlModel"
     v-bind="$attrs"
   />
@@ -19,6 +20,10 @@ defineOptions({
 });
 
 const props = defineProps({
+  name: {
+    type: String,
+    required: false,
+  },
   type: {
     type: String as PropType<InputTypes>,
     required: false,
