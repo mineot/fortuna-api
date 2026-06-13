@@ -1,6 +1,4 @@
 <template>
-  <Head :title="t('app.home.title')" />
-
   <section class="p-4 p-md-5 mb-4 bg-body rounded-3 border border-secondary-subtle">
     <div class="container-fluid py-2">
       <h1 class="display-6 fw-semibold mb-3">{{ t('app.home.heroTitle') }}</h1>
@@ -57,8 +55,14 @@
 </template>
 
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import { useI18n } from '../lib/i18n';
+import { onMounted } from 'vue';
+import { useI18n } from '~/lib/i18n';
+import { useAppStore } from '~/stores/app.store';
 
 const { t } = useI18n();
+const { setTitle } = useAppStore();
+
+onMounted(() => {
+  setTitle(t('app.home.title'));
+});
 </script>

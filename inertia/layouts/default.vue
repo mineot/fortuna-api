@@ -1,35 +1,7 @@
 <template>
   <section class="app-shell">
-    <header class="navbar navbar-expand-lg bg-body border-bottom border-secondary-subtle">
-      <div class="container">
-        <Link route="home" class="navbar-brand fw-semibold brand-logo">{{ t('app.brand') }}</Link>
-        <nav class="ms-auto d-flex align-items-center gap-3">
-          <template v-if="page.props.user">
-            <button
-              type="button"
-              class="btn btn-lg btn-dark"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#sidebar"
-              aria-controls="sidebar"
-            >
-              <i class="bi bi-list"></i>
-            </button>
-          </template>
-          <template v-else>
-            <Link route="new_account.create" class="btn btn-sm btn-secondary">
-              <i class="bi bi-person-plus me-1"></i>
-              {{ t('app.auth.signup') }}
-            </Link>
-            <Link route="session.create" class="btn btn-sm btn-primary">
-              <i class="bi bi-box-arrow-in-right me-1"></i>
-              {{ t('app.auth.login') }}
-            </Link>
-          </template>
-        </nav>
-      </div>
-    </header>
-
-    <main class="container">
+    <Navbar />
+    <main class="container-fluid">
       <slot />
     </main>
   </section>
@@ -95,6 +67,7 @@ import { toast, Toaster } from 'vue-sonner';
 import { useI18n } from '../lib/i18n';
 import { usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
+import Navbar from '~/components/navbar.vue';
 import type { Data } from '@generated/data';
 
 const page = usePage<Data.SharedProps>();
