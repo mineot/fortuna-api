@@ -1,6 +1,11 @@
 <template>
   <div class="d-flex flex-column gap-1">
-    <FormControl type="search" name="table_search" :placeholder="t('app.terms.search')" />
+    <FormControl
+      type="search"
+      name="table_search"
+      :placeholder="t('app.terms.search')"
+      v-model="searchText"
+    />
 
     <table class="table table-sm table-hover p-0 m-0">
       <thead>
@@ -103,8 +108,7 @@
 </style>
 
 <script setup lang="ts">
-import { computed, onMounted, PropType } from 'vue';
-import { ref } from 'vue';
+import { computed, onMounted, PropType, ref, watch } from 'vue';
 import { useI18n } from '~/lib/i18n.js';
 import FormControl from './form-control.vue';
 
@@ -137,8 +141,10 @@ const props = defineProps({
 
 const { t } = useI18n();
 const currentPage = ref<number>(1);
+const searchText = ref<string>('');
 const tableData = ref<Row[]>([]);
 const tableMeta = ref<Meta>({} as Meta);
+let timer: any = null;
 
 const dataRows = computed(() => {
   return tableData.value.map((row: any) => {
@@ -172,6 +178,10 @@ async function refresh() {
   const qs = new URLSearchParams();
   qs.set('page', String(currentPage.value));
 
+  if (searchText.value) {
+    qs.set('searchText', searchText.value);
+  }
+
   const response = await fetch(`${props.routePath}?${qs.toString()}`, {
     headers: {
       Accept: 'application/json',
@@ -185,5 +195,13 @@ async function refresh() {
 
 onMounted(() => {
   refresh();
+});
+
+watch(searchText, () => {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    currentPage.value = 1;
+    refresh();
+  }, 500);
 });
 </script>
