@@ -2,7 +2,7 @@
   <div class="d-flex flex-column gap-1">
     <FormControl type="search" name="table_search" :placeholder="t('app.terms.search')" />
 
-    <table class="table table-sm table-hover p-0 m-0">
+    <table class="table table-hover p-0 m-0">
       <thead>
         <tr>
           <template v-for="(header, index) in headers" :key="index">
@@ -22,15 +22,27 @@
         </tr>
       </thead>
       <tbody>
-        <!-- <tr v-for="(row, index) in dataRows" :key="index">
-          <template v-for="(header, index) in headers" :key="index">
-            <td v-if="header.type === 'column'">{{ row[header.key].value }}</td>
-            <td class="d-flex flex-nowrap gap-3 align-items-center justify-content-around">
-              <i class="bi bi-pencil-fill" role="button"></i>
-              <i class="bi bi-trash3-fill text-danger" role="button"></i>
+        <tr v-for="(rows, index) in dataRows" :key="index">
+          <template v-for="(row, index) in rows" :key="index">
+            <td v-if="row.type === 'column'">
+              <span>{{ row.value }}</span>
+            </td>
+            <td v-if="row.type === 'action'" class="d-flex gap-2">
+              <i
+                v-if="row.enableActions?.includes('edit')"
+                class="bi bi-pencil-fill p-1 link-secondary"
+                role="button"
+                @click="row.onAction && row.onAction('edit', row.value)"
+              />
+              <i
+                v-if="row.enableActions?.includes('delete')"
+                class="bi bi-trash3-fill p-1 link-danger"
+                role="button"
+                @click="row.onAction && row.onAction('delete', row.value)"
+              />
             </td>
           </template>
-        </tr> -->
+        </tr>
       </tbody>
     </table>
 
@@ -61,8 +73,6 @@
       </span>
     </nav>
   </div>
-
-  {{ dataRows }}
 </template>
 
 <style scoped>
@@ -106,22 +116,20 @@ const tableData = ref([]);
 const tableMeta = ref({});
 
 const dataRows = computed(() => {
-  const rows = tableData.value.map((row: any) => {
-    const rw: Row = { type: 'column', key: '', value: null };
+  return tableData.value.map((row: any) => {
+    const list: Row[] = [];
     props.headers.forEach((header: Header) => {
-      rw.type = header.type;
-      rw.key = header.key;
-      rw.align = header.align;
-      rw.enableActions = header.enableActions;
-      rw.onAction = header.onAction;
-      rw.value = row[header.key];
+      list.push({
+        type: header.type,
+        key: header.key,
+        align: header.align,
+        enableActions: header.enableActions,
+        onAction: header.onAction,
+        value: row[header.key],
+      });
     });
-    return rw;
+    return list;
   });
-
-  console.log(rows);
-
-  return [];
 });
 
 const props = defineProps({
