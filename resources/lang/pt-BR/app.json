@@ -30,7 +30,8 @@
     "bootstrapDescription": "Estilos globais e sistema de componentes."
   },
   "accountTypes": {
-    "title": "Tipos de Conta"
+    "title": "Tipos de Conta",
+    "create_new": "Novo Tipo de Conta"
   },
   "errors": {
     "notFoundDescription": "A página solicitada não existe ou foi movida.",

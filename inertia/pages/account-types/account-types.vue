@@ -1,10 +1,4 @@
 <template>
-  <h3>{{ t('app.accountTypes.title') }}</h3>
-
-  <div>
-    <button class="btn btn-sm btn-primary">New</button>
-  </div>
-
   <Table
     :headers="[
       {
@@ -20,94 +14,45 @@
       {
         type: 'action',
         key: 'id',
-        enableActions: ['edit', 'delete'],
-        onAction,
+        actions: [
+          {
+            type: 'edit',
+            title: 'Editar',
+            onAction,
+          },
+          {
+            type: 'delete',
+            title: 'Excluir',
+            onAction,
+          },
+        ],
       },
     ]"
     route-path="/account-types/list"
     object-name="accountTypes"
   />
-
-  <!-- <Table
-    :headers="tableHeaders"
-    :rows="tableRows"
-    :paginator="tablePaginator"
-    @search="onSearch($event)"
-  /> -->
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
+import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import Table from '~/components/table.vue';
 
 const { t } = useI18n();
+const { setTitle, setButtons, clearButtons } = useAppStore();
 
 function onAction(action: string, id: number) {
   console.log(action, id);
 }
 
-// async function loadData(page: number = 1) {
-//   const response = await fetch(`/account-types/list?searchText=10&page=${page}`, {
-//     headers: {
-//       Accept: 'application/json',
-//     },
-//   });
+onMounted(() => {
+  setTitle(t('app.accountTypes.title'));
 
-//   const json = await response.json();
+  setButtons([{ icon: 'plus', title: 'Novo Tipo de Conta', click: () => console.log('new') }]);
+});
 
-//   console.log(json);
-// }
-
-// loadData();
-
-// import { computed, ComputedRef } from 'vue';
-// import { usePage } from '@inertiajs/vue3';
-// import AccountType from '#models/account_type';
-// import type { Data } from '@generated/data';
-// import type { TableHeader, TablePaginator, TableRow } from '~/components/types';
-
-// const page = usePage<Data.SharedProps>();
-
-// const tableHeaders: TableHeader = [
-//   { value: 'Name' },
-//   { value: 'Description' },
-//   { value: '', fit: true },
-// ];
-
-// const tableRows: ComputedRef<TableRow> = computed(() => {
-//   const accountTypes: AccountType[] = (page.props.accountTypes as any).data as AccountType[];
-
-//   return accountTypes.map((accountType) => [
-//     { type: 'column', value: accountType.name },
-//     { type: 'column', value: accountType.description },
-//     {
-//       type: 'buttons',
-//       buttons: [
-//         {
-//           icon: 'pencil-fill',
-//           variant: 'secondary',
-//           action: () => {
-//             alert('Edit: ' + accountType.id);
-//           },
-//         },
-//         {
-//           icon: 'trash-fill',
-//           variant: 'danger',
-//           action: () => {
-//             alert('Delete: ' + accountType.id);
-//           },
-//         },
-//       ],
-//     },
-//   ]) as TableRow;
-// });
-
-// const tablePaginator: ComputedRef<TablePaginator> = computed<any>(() => {
-//   const accountTypes: any = page.props.accountTypes;
-//   return { path: '/account-types', meta: accountTypes.meta } as TablePaginator;
-// });
-
-// function onSearch(search: string) {
-//   alert(search);
-// }
+onUnmounted(() => {
+  clearButtons();
+});
 </script>

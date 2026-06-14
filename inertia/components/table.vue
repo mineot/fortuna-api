@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column gap-1">
+  <div class="d-flex flex-column gap-1 position-relative">
     <FormControl
       type="search"
       name="table_search"
@@ -27,6 +27,11 @@
         </tr>
       </thead>
       <tbody>
+        <tr v-if="isEmpty">
+          <td class="text-center" colspan="100%">
+            {{ t('app.terms.noRecordsFound') }}
+          </td>
+        </tr>
         <tr v-for="(rows, index) in dataRows" :key="index">
           <template v-for="(row, index) in rows" :key="index">
             <td
@@ -40,18 +45,19 @@
             >
               <span>{{ row.value }}</span>
             </td>
-            <td v-if="row.type === 'action'" class="d-flex gap-2">
+            <td v-if="row.type === 'action' && row.actions" class="d-flex gap-2">
               <i
-                v-if="row.enableActions?.includes('edit')"
-                class="bi bi-pencil-fill p-1 link-secondary"
+                v-for="(action, index) in row.actions"
+                :key="index"
                 role="button"
-                @click="row.onAction && row.onAction('edit', row.value)"
-              />
-              <i
-                v-if="row.enableActions?.includes('delete')"
-                class="bi bi-trash3-fill p-1 link-danger"
-                role="button"
-                @click="row.onAction && row.onAction('delete', row.value)"
+                class="p-1 bi"
+                :class="{
+                  'bi-pencil-fill link-secondary': action.type === 'edit',
+                  'bi-trash-fill text-danger link-danger': action.type === 'delete',
+                }"
+                data-bs-toggle="tooltip"
+                :data-bs-title="action.title"
+                @click="action.onAction(action.type, row.value)"
               />
             </td>
           </template>
@@ -86,6 +92,13 @@
         {{ t('app.terms.totalRecords', [tableMeta.total]) }}
       </span>
     </nav>
+
+    <div
+      v-if="loading"
+      class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-75"
+    >
+      <span class="spinner-border spinner-border-lg me-2" role="status" aria-hidden="true" />
+    </div>
   </div>
 </template>
 
@@ -109,15 +122,23 @@
 
 <script setup lang="ts">
 import { computed, onMounted, PropType, ref, watch } from 'vue';
+import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n.js';
 import FormControl from './form-control.vue';
+
+type DataActionTypes = 'edit' | 'delete';
+
+type DataAction = {
+  type: DataActionTypes;
+  title: string;
+  onAction: (action: DataActionTypes, value: any) => void;
+};
 
 type Data = {
   type: 'column' | 'action';
   key: string;
   align?: 'left' | 'center' | 'right';
-  enableActions?: Array<'edit' | 'delete'>;
-  onAction?: (action: 'edit' | 'delete', value: any) => void;
+  actions?: DataAction[];
 };
 
 type Header = Data & { label?: string };
@@ -140,10 +161,12 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
+const { refreshTooltips } = useAppStore();
 const currentPage = ref<number>(1);
 const searchText = ref<string>('');
 const tableData = ref<Row[]>([]);
 const tableMeta = ref<Meta>({} as Meta);
+const loading = ref<boolean>(false);
 let timer: any = null;
 
 const dataRows = computed(() => {
@@ -154,8 +177,7 @@ const dataRows = computed(() => {
         type: header.type,
         key: header.key,
         align: header.align,
-        enableActions: header.enableActions,
-        onAction: header.onAction,
+        actions: header.actions,
         value: row[header.key],
       });
     });
@@ -167,6 +189,10 @@ const pages = computed(() => {
   return Array.from({ length: tableMeta.value.lastPage }, (_, i) => i + 1);
 });
 
+const isEmpty = computed(() => {
+  return dataRows.value.length === 0;
+});
+
 function setPage(page: number) {
   if (currentPage.value !== page) {
     currentPage.value = page;
@@ -175,22 +201,32 @@ function setPage(page: number) {
 }
 
 async function refresh() {
-  const qs = new URLSearchParams();
-  qs.set('page', String(currentPage.value));
+  try {
+    loading.value = true;
 
-  if (searchText.value) {
-    qs.set('searchText', searchText.value);
+    const qs = new URLSearchParams();
+    qs.set('page', String(currentPage.value));
+
+    if (searchText.value) {
+      qs.set('searchText', searchText.value);
+    }
+
+    const response = await fetch(`${props.routePath}?${qs.toString()}`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    const json = await response.json();
+    tableData.value = json[props.objectName].data;
+    tableMeta.value = json[props.objectName].meta;
+  } finally {
+    loading.value = false;
+
+    setTimeout(() => {
+      refreshTooltips();
+    }, 500);
   }
-
-  const response = await fetch(`${props.routePath}?${qs.toString()}`, {
-    headers: {
-      Accept: 'application/json',
-    },
-  });
-
-  const json = await response.json();
-  tableData.value = json[props.objectName].data;
-  tableMeta.value = json[props.objectName].meta;
 }
 
 onMounted(() => {
