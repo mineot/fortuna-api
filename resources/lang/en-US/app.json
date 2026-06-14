@@ -1,8 +1,12 @@
 {
   "brand": "FORTUNA",
   "terms": {
-    "search": "Search",
+    "delete": "Delete",
+    "description": "Description",
+    "edit": "Edit",
+    "name": "Name",
     "noRecordsFound": "No records found.",
+    "search": "Search",
     "totalRecords": "Total records: {0}"
   },
   "auth": {
@@ -30,7 +34,8 @@
     "bootstrapDescription": "Global styles and component system."
   },
   "accountTypes": {
-    "title": "Account Types"
+    "title": "Account Types",
+    "new": "New account type"
   },
   "errors": {
     "notFoundTitle": "Page not found",

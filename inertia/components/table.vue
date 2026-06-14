@@ -10,7 +10,7 @@
     <table class="table table-sm table-hover p-0 m-0">
       <thead>
         <tr>
-          <template v-for="(header, index) in headers" :key="index">
+          <template v-for="(header, index) in dataTypes" :key="index">
             <th
               v-if="header.type === 'column'"
               scope="col"
@@ -146,7 +146,7 @@ type Row = Data & { value: any };
 type Meta = { total: number; lastPage: number; currentPage: number };
 
 const props = defineProps({
-  headers: {
+  dataTypes: {
     type: Array as PropType<Header[]>,
     required: true,
   },
@@ -172,7 +172,7 @@ let timer: any = null;
 const dataRows = computed(() => {
   return tableData.value.map((row: any) => {
     const list: Row[] = [];
-    props.headers.forEach((header: Header) => {
+    props.dataTypes.forEach((header: Header) => {
       list.push({
         type: header.type,
         key: header.key,

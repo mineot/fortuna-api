@@ -1,8 +1,12 @@
 {
   "brand": "FORTUNA",
   "terms": {
-    "search": "Pequisar",
+    "delete": "Excluir",
+    "description": "Descrição",
+    "edit": "Editar",
+    "name": "Nome",
     "noRecordsFound": "Nenhum registro encontrado.",
+    "search": "Pequisar",
     "totalRecords": "Total de registros: {0}"
   },
   "auth": {
@@ -31,7 +35,7 @@
   },
   "accountTypes": {
     "title": "Tipos de Conta",
-    "create_new": "Novo Tipo de Conta"
+    "new": "Novo tipo de conta"
   },
   "errors": {
     "notFoundDescription": "A página solicitada não existe ou foi movida.",

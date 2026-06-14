@@ -1,15 +1,15 @@
 <template>
   <Table
-    :headers="[
+    :data-types="[
       {
         type: 'column',
         key: 'name',
-        label: 'Nome',
+        label: t('app.terms.name'),
       },
       {
         type: 'column',
         key: 'description',
-        label: 'Descrição',
+        label: t('app.terms.description'),
       },
       {
         type: 'action',
@@ -17,12 +17,12 @@
         actions: [
           {
             type: 'edit',
-            title: 'Editar',
+            title: t('app.terms.edit'),
             onAction,
           },
           {
             type: 'delete',
-            title: 'Excluir',
+            title: t('app.terms.delete'),
             onAction,
           },
         ],
@@ -49,7 +49,7 @@ function onAction(action: string, id: number) {
 onMounted(() => {
   setTitle(t('app.accountTypes.title'));
 
-  setButtons([{ icon: 'plus', title: 'Novo Tipo de Conta', click: () => console.log('new') }]);
+  setButtons([{ icon: 'plus', title: t('app.accountTypes.new'), click: () => console.log('new') }]);
 });
 
 onUnmounted(() => {
