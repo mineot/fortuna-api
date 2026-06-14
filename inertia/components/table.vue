@@ -2,7 +2,7 @@
   <div class="d-flex flex-column gap-1">
     <FormControl type="search" name="table_search" :placeholder="t('app.terms.search')" />
 
-    <table class="table table-hover p-0 m-0">
+    <table class="table table-sm table-hover p-0 m-0">
       <thead>
         <tr>
           <template v-for="(header, index) in headers" :key="index">
@@ -24,7 +24,15 @@
       <tbody>
         <tr v-for="(rows, index) in dataRows" :key="index">
           <template v-for="(row, index) in rows" :key="index">
-            <td v-if="row.type === 'column'">
+            <td
+              v-if="row.type === 'column'"
+              class="align-middle"
+              :class="{
+                left: row?.align === 'left',
+                center: row?.align === 'center',
+                right: row?.align === 'right',
+              }"
+            >
               <span>{{ row.value }}</span>
             </td>
             <td v-if="row.type === 'action'" class="d-flex gap-2">
@@ -49,27 +57,28 @@
     <nav class="d-flex align-items-center justify-content-between">
       <ul class="pagination pagination-sm p-0 m-0">
         <li class="page-item">
-          <a class="page-link" href="#">
+          <span class="page-link" @click="setPage(1)" role="button">
             <i class="bi bi-chevron-double-left"></i>
-          </a>
+          </span>
+        </li>
+        <li
+          v-for="(page, index) in pages"
+          :key="index"
+          class="page-item"
+          :class="{ active: currentPage === page }"
+        >
+          <span class="page-link" @click="setPage(page)" role="button">
+            {{ page }}
+          </span>
         </li>
         <li class="page-item">
-          <a href="#" class="page-link">1</a>
-        </li>
-        <li class="page-item">
-          <a href="#" class="page-link">2</a>
-        </li>
-        <li class="page-item">
-          <a href="#" class="page-link">3</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="#">
+          <span class="page-link" @click="setPage(tableMeta.lastPage)" role="button">
             <i class="bi bi-chevron-double-right"></i>
-          </a>
+          </span>
         </li>
       </ul>
       <span class="fs-6 text-body-tertiary">
-        {{ t('app.terms.totalRecords', [10]) }}
+        {{ t('app.terms.totalRecords', [tableMeta.total]) }}
       </span>
     </nav>
   </div>
@@ -108,12 +117,28 @@ type Data = {
 };
 
 type Header = Data & { label?: string };
-
 type Row = Data & { value: any };
+type Meta = { total: number; lastPage: number; currentPage: number };
+
+const props = defineProps({
+  headers: {
+    type: Array as PropType<Header[]>,
+    required: true,
+  },
+  routePath: {
+    type: String,
+    required: true,
+  },
+  objectName: {
+    type: String,
+    required: true,
+  },
+});
 
 const { t } = useI18n();
-const tableData = ref([]);
-const tableMeta = ref({});
+const currentPage = ref<number>(1);
+const tableData = ref<Row[]>([]);
+const tableMeta = ref<Meta>({} as Meta);
 
 const dataRows = computed(() => {
   return tableData.value.map((row: any) => {
@@ -132,30 +157,28 @@ const dataRows = computed(() => {
   });
 });
 
-const props = defineProps({
-  headers: {
-    type: Array as PropType<Header[]>,
-    required: true,
-  },
-  routePath: {
-    type: String,
-    required: true,
-  },
-  objectName: {
-    type: String,
-    required: true,
-  },
+const pages = computed(() => {
+  return Array.from({ length: tableMeta.value.lastPage }, (_, i) => i + 1);
 });
 
+function setPage(page: number) {
+  if (currentPage.value !== page) {
+    currentPage.value = page;
+    refresh();
+  }
+}
+
 async function refresh() {
-  const response = await fetch(props.routePath, {
+  const qs = new URLSearchParams();
+  qs.set('page', String(currentPage.value));
+
+  const response = await fetch(`${props.routePath}?${qs.toString()}`, {
     headers: {
       Accept: 'application/json',
     },
   });
 
   const json = await response.json();
-
   tableData.value = json[props.objectName].data;
   tableMeta.value = json[props.objectName].meta;
 }
