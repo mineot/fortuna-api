@@ -20,6 +20,7 @@
         variant: 'primary',
         label: 'Save',
         closeModal: false,
+        loading: isLoading,
         click: () => onSave(),
       },
     ]"
@@ -48,20 +49,12 @@
 </style>
 
 <script setup lang="ts">
-import { FormControlTypes } from './types.js';
-import { onMounted, PropType } from 'vue';
+import { computed, ComputedRef, onMounted, PropType } from 'vue';
+import { FormModalControl } from './types.js';
+import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import FormControl from './form-control.vue';
 import Modal from './modal.vue';
-
-type FormModalControl = {
-  id: string;
-  name: string;
-  type: FormControlTypes;
-  label: string;
-  placeholder?: string;
-  required?: boolean;
-};
 
 const props = defineProps({
   show: {
@@ -81,6 +74,8 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 const form = useForm({});
+const loading = ref(false);
+const isLoading: ComputedRef<boolean> = computed(() => loading.value);
 
 function onClose() {
   emit('close');
@@ -88,9 +83,15 @@ function onClose() {
 
 function onSave() {
   form.post('/account-types', {
-    onStart: () => {},
-    onSuccess: () => {},
-    onError: () => {},
+    onStart: () => {
+      loading.value = true;
+    },
+    onSuccess: () => {
+      loading.value = false;
+    },
+    onError: () => {
+      loading.value = false;
+    },
   });
 }
 

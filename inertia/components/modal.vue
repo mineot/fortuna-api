@@ -15,17 +15,18 @@
           <slot />
         </div>
         <div class="modal-footer">
-          <button
+          <Button
             v-for="(action, index) in actions"
+            :dismiss="action.closeModal ? 'modal' : undefined"
+            :icon="action.icon"
             :key="index"
-            type="button"
-            class="btn btn-sm"
-            :class="modalVariant(action.variant)"
-            :data-bs-dismiss="action.closeModal ? 'modal' : null"
+            :loading="action.loading"
+            :label="action.label"
+            :title="action.title"
+            :variant="action.variant"
             @click="action.click"
-          >
-            {{ action.label }}
-          </button>
+            type="button"
+          />
         </div>
       </div>
     </div>
@@ -33,16 +34,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, PropType } from 'vue';
 import { Modal } from 'bootstrap';
-import { Variants } from './types';
-
-type ModalAction = {
-  variant: Variants;
-  label: string;
-  closeModal: boolean;
-  click?: () => void;
-};
+import { ModalAction } from './types';
+import { ref, watch, onMounted, onBeforeUnmount, PropType } from 'vue';
+import Button from './button.vue';
 
 const props = defineProps({
   show: {
@@ -63,7 +58,6 @@ const emit = defineEmits(['close']);
 
 const modalEl = ref<any>(null);
 const modalIns = ref<any>(null);
-const modalVariant = (variant: Variants) => `btn-${variant}`;
 
 onMounted(() => {
   if (modalEl.value) {

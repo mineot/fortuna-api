@@ -1,25 +1,17 @@
 <template>
   <div class="d-flex flex-column gap-1 position-relative">
     <Input
-      type="search"
-      name="table_search"
       :placeholder="t('app.terms.search')"
+      name="table_search"
+      type="search"
       v-model="searchText"
     />
 
-    <table class="table table-sm table-hover p-0 m-0">
+    <table class="table table-bordered table-hover p-0 m-0">
       <thead>
         <tr>
           <template v-for="(header, index) in dataTypes" :key="index">
-            <th
-              v-if="header.type === 'column'"
-              scope="col"
-              :class="{
-                left: header?.align === 'left',
-                center: header?.align === 'center',
-                right: header?.align === 'right',
-              }"
-            >
+            <th v-if="header.type === 'column'" scope="col" :class="getAlign(header.align)">
               {{ header.label }}
             </th>
             <th v-if="header.type === 'action'" scope="col" class="fit"></th>
@@ -34,30 +26,18 @@
         </tr>
         <tr v-for="(rows, index) in dataRows" :key="index">
           <template v-for="(row, index) in rows" :key="index">
-            <td
-              v-if="row.type === 'column'"
-              class="align-middle"
-              :class="{
-                left: row?.align === 'left',
-                center: row?.align === 'center',
-                right: row?.align === 'right',
-              }"
-            >
+            <td v-if="row.type === 'column'" :class="['align-middle', getAlign(row.align)]">
               <span>{{ row.value }}</span>
             </td>
             <td v-if="row.type === 'action' && row.actions" class="d-flex gap-2">
-              <i
+              <Button
                 v-for="(action, index) in row.actions"
+                :icon="getIcon(action.type)"
                 :key="index"
-                role="button"
-                class="p-1 bi"
-                :class="{
-                  'bi-pencil-fill link-secondary': action.type === 'edit',
-                  'bi-trash-fill text-danger link-danger': action.type === 'delete',
-                }"
-                data-bs-toggle="tooltip"
-                :data-bs-title="action.title"
+                :title="action.title"
+                :variant="getVariant(action.type)"
                 @click="action.onAction(action.type, row.value)"
+                type="button"
               />
             </td>
           </template>
@@ -74,9 +54,8 @@
         </li>
         <li
           v-for="(page, index) in pages"
+          :class="['page-item', { active: currentPage === page }]"
           :key="index"
-          class="page-item"
-          :class="{ active: currentPage === page }"
         >
           <span class="page-link" @click="setPage(page)" role="button">
             {{ page }}
@@ -124,30 +103,21 @@
 import { computed, onMounted, PropType, ref, watch } from 'vue';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n.js';
+import Button from './button.vue';
 import Input from './input.vue';
 
-type DataActionTypes = 'edit' | 'delete';
-
-type DataAction = {
-  type: DataActionTypes;
-  title: string;
-  onAction: (action: DataActionTypes, value: any) => void;
-};
-
-type Data = {
-  type: 'column' | 'action';
-  key: string;
-  align?: 'left' | 'center' | 'right';
-  actions?: DataAction[];
-};
-
-type Header = Data & { label?: string };
-type Row = Data & { value: any };
-type Meta = { total: number; lastPage: number; currentPage: number };
+import {
+  AlignTypes,
+  TableDataActionTypes,
+  TableHeader,
+  TableMeta,
+  TableRow,
+  Variants,
+} from './types.js';
 
 const props = defineProps({
   dataTypes: {
-    type: Array as PropType<Header[]>,
+    type: Array as PropType<TableHeader[]>,
     required: true,
   },
   routePath: {
@@ -164,15 +134,36 @@ const { t } = useI18n();
 const { refreshTooltips } = useAppStore();
 const currentPage = ref<number>(1);
 const searchText = ref<string>('');
-const tableData = ref<Row[]>([]);
-const tableMeta = ref<Meta>({} as Meta);
+const tableData = ref<TableRow[]>([]);
+const tableMeta = ref<TableMeta>({} as TableMeta);
 const loading = ref<boolean>(false);
 let timer: any = null;
 
+const iconTypes = {
+  edit: 'bi-pencil-fill',
+  delete: 'bi-trash-fill',
+};
+
+const getIcon = (type: TableDataActionTypes): string => {
+  return iconTypes[type];
+};
+
+const getVariant = (type: TableDataActionTypes): Variants => {
+  return type === 'edit' ? 'secondary' : 'danger';
+};
+
+const getAlign = (align: AlignTypes | undefined) => {
+  return {
+    left: align === 'left',
+    center: align === 'center',
+    right: align === 'right',
+  };
+};
+
 const dataRows = computed(() => {
   return tableData.value.map((row: any) => {
-    const list: Row[] = [];
-    props.dataTypes.forEach((header: Header) => {
+    const list: TableRow[] = [];
+    props.dataTypes.forEach((header: TableHeader) => {
       list.push({
         type: header.type,
         key: header.key,

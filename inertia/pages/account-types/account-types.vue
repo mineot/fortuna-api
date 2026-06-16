@@ -44,8 +44,6 @@
         type: 'text',
         required: true,
         placeholder: 'Enter name',
-        value: '',
-        defaultValue: '',
       },
     ]"
   />
@@ -74,7 +72,11 @@ onMounted(() => {
   setTitle(t('app.accountTypes.title'));
 
   setButtons([
-    { icon: 'plus', title: t('app.accountTypes.new'), click: () => (showFormModal.value = true) },
+    {
+      icon: 'bi bi-plus',
+      title: t('app.accountTypes.new'),
+      click: () => (showFormModal.value = true),
+    },
   ]);
 });
 

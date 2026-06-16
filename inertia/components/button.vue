@@ -1,20 +1,38 @@
 <template>
-  <button
-    :type="type"
-    class="btn"
-    :class="classes"
-    v-bind="$attrs"
-    data-bs-toggle="tooltip"
+  <i
+    v-if="props.type === 'icon'"
+    :class="[props.icon, 'px-2 py-1', iconVariant]"
+    :data-bs-dismiss="props.dismiss"
     :data-bs-title="title"
+    data-bs-toggle="tooltip"
+    role="button"
+    v-bind="$attrs"
+  />
+
+  <button
+    v-else
+    :class="[
+      'btn',
+      { 'btn-sm': props.size === 'sm', 'btn-lg': props.size === 'lg' },
+      variant,
+      'd-flex flex-nowrap gap-1 align-items-center justify-content-center text-nowrap',
+    ]"
+    :data-bs-dismiss="props.dismiss"
+    :data-bs-title="title"
+    :type="type as any"
+    data-bs-toggle="tooltip"
+    v-bind="$attrs"
   >
-    <div class="d-flex flex-nowrap gap-1">
-      <i v-if="icon" class="bi" :class="icon"></i>
-      <span v-if="props.label">{{ props.label }}</span>
-    </div>
+    <span
+      v-if="props.loading"
+      class="spinner-border spinner-border-sm"
+      role="status"
+      aria-hidden="true"
+    />
+    <i v-if="props.icon" :class="props.icon"></i>
+    <span v-if="props.label">{{ props.label }}</span>
   </button>
 </template>
-
-<style scoped></style>
 
 <script setup lang="ts">
 import { computed, ComputedRef, nextTick, PropType, watch } from 'vue';
@@ -31,55 +49,61 @@ const props = defineProps({
   type: {
     type: String as PropType<ButtonTypes>,
     required: false,
+    defult: 'button',
   },
   variant: {
     type: String as PropType<Variants>,
     required: false,
+    default: 'primary',
   },
   size: {
     type: String as PropType<'sm' | 'md' | 'lg'>,
     required: false,
+    default: 'sm',
   },
   label: {
-    type: String as PropType<string>,
+    type: String,
     required: false,
+    default: '',
   },
   title: {
-    type: String as PropType<string>,
+    type: String,
     required: false,
+    default: undefined,
   },
   icon: {
     type: String,
     required: false,
+    default: '',
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  dismiss: {
+    type: String,
+    required: false,
+    default: null,
   },
 });
-
-const type: ComputedRef<ButtonTypes> = computed(() => props.type ?? 'button');
 
 const variant: ComputedRef<string> = computed(() =>
   props.variant ? `btn-${props.variant}` : 'btn-primary',
 );
 
-const size: ComputedRef<string> = computed(() => {
-  if (props.size) {
-    if (props.size === 'md') {
-      return '';
-    }
-
-    return `btn-${props.size}`;
-  }
-  return 'btn-sm';
+const iconVariant = computed(() => {
+  return props.variant
+    ? `link-${props.variant} text-${props.variant}`
+    : 'link-primary text-primary';
 });
 
-const classes: ComputedRef<string> = computed(() => `${size.value} ${variant.value}`.trim());
+const checkTitle = computed(() => {
+  return props.title ?? '';
+});
 
-const icon: ComputedRef<string | undefined> = computed(() =>
-  props.icon ? `bi-${props.icon}` : undefined,
-);
-
-const title = computed(() => props.title ?? '');
-
-watch(title, async () => {
+watch(checkTitle, async () => {
+  console.log('refreshing tooltips');
   await nextTick();
   refreshTooltips();
 });

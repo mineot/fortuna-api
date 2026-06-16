@@ -1,3 +1,5 @@
+import { type ComputedRef } from 'vue';
+
 export type Variants =
   | 'primary'
   | 'secondary'
@@ -9,9 +11,7 @@ export type Variants =
   | 'dark'
   | 'link';
 
-export type Icons = 'cursor-fill' | 'pencil-fill' | 'trash3-fill';
-
-export type ButtonTypes = 'button' | 'submit' | 'reset';
+export type ButtonTypes = 'button' | 'submit' | 'reset' | 'icon';
 
 export type InputTypes =
   | 'checkbox'
@@ -35,3 +35,43 @@ export type FormControlTypes = InputTypes | 'dropdown' | 'textarea';
 export type ModelValueTypes = string | number | boolean | Date;
 
 export type ErrorType = Record<string, string | undefined>;
+
+export type AlignTypes = 'left' | 'center' | 'right';
+
+export type TableDataActionTypes = 'edit' | 'delete';
+
+export type TableDataAction = {
+  type: TableDataActionTypes;
+  title: string;
+  onAction: (action: TableDataActionTypes, value: any) => void;
+};
+
+export type TableData = {
+  type: 'column' | 'action';
+  key: string;
+  align?: AlignTypes;
+  actions?: TableDataAction[];
+};
+
+export type TableHeader = TableData & { label?: string };
+export type TableRow = TableData & { value: any };
+export type TableMeta = { total: number; lastPage: number; currentPage: number };
+
+export type ModalAction = {
+  variant: Variants;
+  closeModal: boolean;
+  label: string;
+  icon?: string;
+  loading?: boolean;
+  title?: string;
+  click?: () => void;
+};
+
+export type FormModalControl = {
+  id: string;
+  name: string;
+  type: FormControlTypes;
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+};
