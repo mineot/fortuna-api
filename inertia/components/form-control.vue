@@ -2,8 +2,9 @@
   <input
     class="form-control form-control-sm"
     :type="props.type ?? 'text'"
-    :placeholder="props.placeholder ?? ''"
     :name="props.name"
+    :placeholder="props.placeholder ?? ''"
+    :required="props.required"
     v-model="formControlModel"
     v-bind="$attrs"
   />
@@ -13,7 +14,7 @@
 
 <script setup lang="ts">
 import { PropType } from 'vue';
-import type { InputTypes } from './types';
+import type { FormControlTypes } from './types';
 
 defineOptions({
   inheritAttrs: false,
@@ -25,11 +26,16 @@ const props = defineProps({
     required: false,
   },
   type: {
-    type: String as PropType<InputTypes>,
+    type: String as PropType<FormControlTypes>,
     required: false,
   },
   placeholder: {
     type: String,
+    required: false,
+  },
+  required: {
+    type: Boolean,
+    default: false,
     required: false,
   },
 });
