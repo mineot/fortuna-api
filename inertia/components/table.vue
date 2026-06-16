@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column gap-1 position-relative">
-    <FormControl
+    <Input
       type="search"
       name="table_search"
       :placeholder="t('app.terms.search')"
@@ -124,7 +124,7 @@
 import { computed, onMounted, PropType, ref, watch } from 'vue';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n.js';
-import FormControl from './form-control.vue';
+import Input from './input.vue';
 
 type DataActionTypes = 'edit' | 'delete';
 

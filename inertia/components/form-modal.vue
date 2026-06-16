@@ -25,43 +25,18 @@
     ]"
   >
     <form @submit.prevent class="d-flex flex-column gap-3">
-      <template v-for="(control, index) in props.controls" :key="index">
-        <div class="d-flex flex-column gap-0">
-          <label :for="control.id" class="form-label m-0 d-flex gap-2 align-items-center">
-            <span>{{ control.label }}</span>
-            <span v-if="control.required" class="required">*</span>
-          </label>
-          <input
-            :type="control.type"
-            :name="control.name"
-            :id="control.id"
-            :class="['form-control form-control-sm', { 'is-invalid': getError(control.name) }]"
-          />
-          <div v-if="getError(control.name)" class="invalid-feedback d-block">
-            {{ getError(control.name) }}
-          </div>
-        </div>
-      </template>
+      <FormControl
+        v-for="(control, index) in props.controls"
+        :key="index"
+        :errors="form.errors"
+        :id="control.id"
+        :label="control.label"
+        :name="control.name"
+        :placeholder="control.placeholder"
+        :required="control.required"
+        :type="control.type"
+      />
     </form>
-
-    <!--
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked />
-      <label class="form-check-label" for="checkChecked"> Checked checkbox </label>
-    </div>
-
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1" />
-      <label class="form-check-label" for="radioDefault1"> Default radio </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2" checked />
-      <label class="form-check-label" for="radioDefault2"> Default checked radio </label>
-    </div>
-
-    <label for="range1" class="form-label">Example range</label>
-    <input type="range" class="form-range" id="range1" /> 
-    -->
   </Modal>
 </template>
 
@@ -76,17 +51,16 @@
 import { FormControlTypes } from './types.js';
 import { onMounted, PropType } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import FormControl from './form-control.vue';
 import Modal from './modal.vue';
 
 type FormModalControl = {
   id: string;
   name: string;
-  type: FormControlTypes | 'textarea';
+  type: FormControlTypes;
   label: string;
   placeholder?: string;
   required?: boolean;
-  value?: string | number | boolean | Date;
-  defaultValue: string | number | boolean | Date;
 };
 
 const props = defineProps({
@@ -108,11 +82,6 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 const form = useForm({});
 
-const getError = (controlName: string) => {
-  const erros = form.errors as Record<string, string | undefined>;
-  return erros[controlName];
-};
-
 function onClose() {
   emit('close');
 }
@@ -126,13 +95,13 @@ function onSave() {
 }
 
 onMounted(() => {
-  props.controls.forEach((control) => {
-    form.transform((data) => {
-      return {
-        ...data,
-        [control.name]: control.value ?? control.defaultValue,
-      };
-    });
-  });
+  // props.controls.forEach((control) => {
+  //   form.transform((data) => {
+  //     return {
+  //       ...data,
+  //       [control.name]: control.value ?? control.defaultValue,
+  //     };
+  //   });
+  // });
 });
 </script>
