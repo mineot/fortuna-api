@@ -1,41 +1,78 @@
 <template>
-  <div class="d-flex flex-column gap-0">
+  <div v-if="props.type === 'checkbox' || props.type === 'radio'" class="form-check">
+    <Checkbox
+      v-if="props.type === 'checkbox'"
+      :id="props.id"
+      :name="props.name"
+      :disabled="props.disabled"
+      v-model="formControlModel"
+    />
+
+    <Radio
+      v-if="props.type === 'radio'"
+      :id="props.id"
+      :name="props.name"
+      :disabled="props.disabled"
+      v-model="formControlModel"
+    />
+
+    <label class="form-check-label" :for="props.id">
+      {{ props.label }}
+    </label>
+  </div>
+
+  <div v-else-if="props.type === 'range'">
+    <label :for="props.id" class="form-label m-0">
+      {{ props.label }}
+    </label>
+
+    <Ranger
+      :id="props.id"
+      :class="props.name"
+      :disabled="props.disabled"
+      v-model="formControlModel"
+    />
+  </div>
+
+  <div v-else class="d-flex flex-column gap-0">
     <label :for="props.id" class="form-label m-0 d-flex gap-2 align-items-center">
       <span>{{ props.label }}</span>
       <span v-if="props.required" class="required">*</span>
     </label>
 
-    <Input
+    <Textarea
+      v-if="props.type === 'textarea'"
+      :disabled="props.disabled"
       :id="props.id"
       :invalid="isInvalid"
       :name="props.name"
+      :readonly="props.readonly"
+      :required="props.required"
+      v-model="formControlModel"
+    />
+
+    <Select
+      v-else-if="props.type === 'select'"
+      :disabled="props.disabled"
+      :id="props.id"
+      :invalid="isInvalid"
+      :name="props.name"
+      :options="props.options"
+      :required="props.required"
+      v-model="formControlModel"
+    />
+
+    <Input
+      v-else
+      :disabled="props.disabled"
+      :id="props.id"
+      :invalid="isInvalid"
+      :name="props.name"
+      :readonly="props.readonly"
       :required="props.required"
       :type="props.type as InputTypes"
       v-model="formControlModel"
     />
-
-    <!--
-    textarea 
-
-    dropdown
-
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked />
-      <label class="form-check-label" for="checkChecked"> Checked checkbox </label>
-    </div>
-
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault1" />
-      <label class="form-check-label" for="radioDefault1"> Default radio </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="radioDefault" id="radioDefault2" checked />
-      <label class="form-check-label" for="radioDefault2"> Default checked radio </label>
-    </div>
-
-    <label for="range1" class="form-label">Example range</label>
-    <input type="range" class="form-range" id="range1" /> 
-    -->
 
     <div v-if="isInvalid" class="invalid-feedback d-block">
       {{ getErrorMessage }}
@@ -44,13 +81,16 @@
 </template>
 
 <script setup lang="ts">
-import { ErrorType, FormControlTypes, InputTypes, ModelValueTypes } from './types.js';
 import { computed, PropType } from 'vue';
+import { ErrorType, FormControlTypes, InputTypes, SelectOption } from './types.js';
+import Checkbox from './checkbox.vue';
 import Input from './input.vue';
+import Radio from './radio.vue';
+import Ranger from './ranger.vue';
+import Select from './select.vue';
+import Textarea from './textarea.vue';
 
-const formControlModel = defineModel({
-  type: Object as PropType<ModelValueTypes>,
-});
+const formControlModel = defineModel({});
 
 const props = defineProps({
   type: {
@@ -78,10 +118,25 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  readonly: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
   label: {
     type: String,
     required: false,
     default: 'Form Control',
+  },
+  options: {
+    type: Array as PropType<SelectOption[]>,
+    required: false,
+    default: [],
   },
 });
 

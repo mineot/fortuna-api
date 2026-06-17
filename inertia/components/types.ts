@@ -30,9 +30,7 @@ export type InputTypes =
   | 'url'
   | 'week';
 
-export type FormControlTypes = InputTypes | 'dropdown' | 'textarea';
-
-export type ModelValueTypes = string | number | boolean | Date;
+export type FormControlTypes = InputTypes | 'select' | 'textarea';
 
 export type ErrorType = Record<string, string | undefined>;
 
@@ -74,4 +72,9 @@ export type FormModalControl = {
   label: string;
   placeholder?: string;
   required?: boolean;
+};
+
+export type SelectOption = {
+  value: any;
+  label: string;
 };

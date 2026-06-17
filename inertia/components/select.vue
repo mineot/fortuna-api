@@ -1,27 +1,29 @@
 <template>
-  <input
-    :class="['form-control form-control-sm', { 'is-invalid': invalid }]"
+  <select
+    :class="['form-select form-select-sm', { 'is-invalid': props.invalid }]"
     :disabled="props.disabled"
     :id="props.id"
     :name="props.name"
-    :placeholder="props.placeholder"
-    :readonly="props.readonly"
     :required="props.required"
-    :type="props.type"
     v-bind="$attrs"
-    v-model="inputModel"
-  />
+    v-model="selectModel"
+  >
+    <option v-if="props.placeholder" selected>{{ props.placeholder }}</option>
+    <option v-for="(option, index) in props.options" :key="index" :value="option.value">
+      {{ option.label }}
+    </option>
+  </select>
 </template>
 
 <script setup lang="ts">
 import { PropType } from 'vue';
-import type { InputTypes } from './types';
+import { SelectOption } from './types';
 
 defineOptions({
   inheritAttrs: false,
 });
 
-const inputModel = defineModel({});
+const selectModel = defineModel({});
 
 const props = defineProps({
   id: {
@@ -34,11 +36,6 @@ const props = defineProps({
     required: false,
     default: '',
   },
-  type: {
-    type: String as PropType<InputTypes>,
-    required: false,
-    default: 'text',
-  },
   placeholder: {
     type: String,
     required: false,
@@ -49,20 +46,20 @@ const props = defineProps({
     required: false,
     default: false,
   },
-  invalid: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
   disabled: {
     type: Boolean,
     required: false,
     default: false,
   },
-  readonly: {
+  invalid: {
     type: Boolean,
     required: false,
     default: false,
+  },
+  options: {
+    type: Array as PropType<SelectOption[]>,
+    required: false,
+    default: [],
   },
 });
 </script>

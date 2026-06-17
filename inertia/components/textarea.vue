@@ -1,27 +1,25 @@
 <template>
-  <input
-    :class="['form-control form-control-sm', { 'is-invalid': invalid }]"
+  <textarea
+    :class="['form-control', { 'is-invalid': props.invalid }]"
+    :cols="props.cols"
     :disabled="props.disabled"
     :id="props.id"
     :name="props.name"
     :placeholder="props.placeholder"
     :readonly="props.readonly"
     :required="props.required"
-    :type="props.type"
+    :rows="props.rows"
     v-bind="$attrs"
-    v-model="inputModel"
+    v-modal="textareaModel"
   />
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
-import type { InputTypes } from './types';
-
 defineOptions({
   inheritAttrs: false,
 });
 
-const inputModel = defineModel({});
+const textareaModel = defineModel({});
 
 const props = defineProps({
   id: {
@@ -34,22 +32,12 @@ const props = defineProps({
     required: false,
     default: '',
   },
-  type: {
-    type: String as PropType<InputTypes>,
-    required: false,
-    default: 'text',
-  },
   placeholder: {
     type: String,
     required: false,
     default: '',
   },
   required: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  invalid: {
     type: Boolean,
     required: false,
     default: false,
@@ -63,6 +51,21 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false,
+  },
+  invalid: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  cols: {
+    type: Number,
+    required: false,
+    default: 30,
+  },
+  rows: {
+    type: Number,
+    required: false,
+    default: 3,
   },
 });
 </script>
