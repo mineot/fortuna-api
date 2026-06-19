@@ -40,7 +40,6 @@
   },
   "accountTypes": {
     "title": "Tipos de Conta",
-    "create_new": "Criar novo tipo de conta",
     "new": "Novo tipo de conta",
     "successSave": "Tipo de conta salvo com sucesso."
   },

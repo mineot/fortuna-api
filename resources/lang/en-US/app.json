@@ -40,7 +40,6 @@
   },
   "accountTypes": {
     "title": "Account Types",
-    "create_new": "Create new account type",
     "new": "New account type",
     "successSave": "Account type saved successfully."
   },

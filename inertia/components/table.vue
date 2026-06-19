@@ -220,6 +220,8 @@ async function refresh() {
   }
 }
 
+defineExpose({ refresh });
+
 onMounted(() => {
   refresh();
 });

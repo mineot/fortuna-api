@@ -1,5 +1,6 @@
 <template>
   <Table
+    ref="tableRef"
     route-path="/account-types/list"
     object-name="accountTypes"
     :data-types="[
@@ -36,7 +37,7 @@
     :show="showFormModal"
     @close="onClose()"
     @success="onSuccess()"
-    :title="t('app.accountTypes.create_new')"
+    :title="t('app.accountTypes.new')"
     url="/account-types"
     :controls="[
       {
@@ -66,6 +67,7 @@ import Table from '~/components/table.vue';
 
 const { t } = useI18n();
 const { setTitle, setButtons, clearButtons } = useAppStore();
+const tableRef = ref<InstanceType<typeof Table>>();
 const showFormModal = ref(false);
 
 function onAction(action: string, id: number) {
@@ -77,7 +79,7 @@ function onClose() {
 }
 
 function onSuccess() {
-  // TODO: atualizar a tabela
+  tableRef.value?.refresh();
   onClose();
 }
 
