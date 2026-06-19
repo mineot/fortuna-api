@@ -1,5 +1,3 @@
-import { type ComputedRef } from 'vue';
-
 export type Variants =
   | 'primary'
   | 'secondary'
@@ -72,6 +70,8 @@ export type FormModalControl = {
   label: string;
   placeholder?: string;
   required?: boolean;
+  value?: any;
+  defaultValue?: any;
 };
 
 export type SelectOption = {

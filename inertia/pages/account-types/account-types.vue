@@ -33,17 +33,25 @@
   />
 
   <FormModal
-    title="Account Type"
     :show="showFormModal"
     @close="onClose()"
+    @success="onSuccess()"
+    :title="t('app.accountTypes.create_new')"
+    url="/account-types"
     :controls="[
       {
         id: 'name',
         name: 'name',
-        label: 'Name',
+        label: t('app.terms.name'),
         type: 'text',
         required: true,
-        placeholder: 'Enter name',
+      },
+      {
+        id: 'description',
+        name: 'description',
+        label: 'Description',
+        type: 'textarea',
+        required: false,
       },
     ]"
   />
@@ -66,6 +74,11 @@ function onAction(action: string, id: number) {
 
 function onClose() {
   showFormModal.value = false;
+}
+
+function onSuccess() {
+  // TODO: atualizar a tabela
+  onClose();
 }
 
 onMounted(() => {

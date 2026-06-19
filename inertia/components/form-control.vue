@@ -90,7 +90,7 @@ import Ranger from './ranger.vue';
 import Select from './select.vue';
 import Textarea from './textarea.vue';
 
-const formControlModel = defineModel({});
+const formControlModel = defineModel<string>({ default: '' });
 
 const props = defineProps({
   type: {

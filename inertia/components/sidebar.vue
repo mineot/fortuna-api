@@ -22,12 +22,10 @@
           <span class="fs-6 text-body-tertiary">{{ page.props.user?.email ?? '' }}</span>
         </div>
 
-        <Form route="session.destroy" class="">
-          <button type="submit" class="btn btn-sm btn-secondary" @click="closeSidebar()">
+        <button type="button" class="btn btn-sm btn-secondary" @click="logout()">
             <i class="bi bi-box-arrow-right me-1"></i>
             {{ t('app.auth.logout') }}
           </button>
-        </Form>
       </div>
 
       <div class="d-flex flex-column gap-2">
@@ -52,7 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { Link, Form } from '@adonisjs/inertia/vue';
+import { Link } from '@adonisjs/inertia/vue';
+import { router } from '@inertiajs/vue3';
 import { Offcanvas } from 'bootstrap';
 import { useI18n } from '~/lib/i18n';
 import { usePage } from '@inertiajs/vue3';
@@ -84,6 +83,12 @@ const menuItems: MenuItem[] = [
     label: 'app.accountTypes.title',
   },
 ];
+
+function logout() {
+  closeSidebar();
+
+  router.post('/logout');
+}
 
 function closeSidebar() {
   const sidebar = document.getElementById('sidebar');

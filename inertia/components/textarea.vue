@@ -10,7 +10,7 @@
     :required="props.required"
     :rows="props.rows"
     v-bind="$attrs"
-    v-modal="textareaModel"
+    v-model="textareaModel"
   />
 </template>
 
@@ -19,7 +19,7 @@ defineOptions({
   inheritAttrs: false,
 });
 
-const textareaModel = defineModel({});
+const textareaModel = defineModel<string>({ default: '' });
 
 const props = defineProps({
   id: {

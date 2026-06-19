@@ -1,11 +1,16 @@
 {
   "brand": "FORTUNA",
   "terms": {
+    "cancel": "Cancel",
+    "clear": "Clear",
     "delete": "Delete",
     "description": "Description",
     "edit": "Edit",
+    "error_occurred": "An error occurred: {0}",
+    "error_unexpected": "An unexpected error occurred.",
     "name": "Name",
     "noRecordsFound": "No records found.",
+    "save": "Save",
     "search": "Search",
     "totalRecords": "Total records: {0}"
   },
@@ -35,7 +40,9 @@
   },
   "accountTypes": {
     "title": "Account Types",
-    "new": "New account type"
+    "create_new": "Create new account type",
+    "new": "New account type",
+    "successSave": "Account type saved successfully."
   },
   "errors": {
     "notFoundTitle": "Page not found",

@@ -13,12 +13,12 @@ export default class SessionController {
 
     await auth.use('web').login(user);
 
-    response.redirect().toRoute('home');
+    return response.redirect().toRoute('home');
   }
 
   async destroy({ auth, response }: HttpContext) {
     await auth.use('web').logout();
 
-    response.redirect().toRoute('session.create');
+    return response.redirect().toRoute('session.create');
   }
 }

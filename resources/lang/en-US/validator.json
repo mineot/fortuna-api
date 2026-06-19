@@ -3,7 +3,9 @@
     "fields": {
       "email": "email",
       "password": "password",
-      "passwordConfirmation": "password confirmation"
+      "passwordConfirmation": "password confirmation",
+      "name": "name",
+      "description": "description"
     },
     "messages": {
       "required": "The {field} field is required.",
