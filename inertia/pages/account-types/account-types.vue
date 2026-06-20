@@ -3,7 +3,7 @@
     ref="tableRef"
     route-path="/account-types/list"
     object-name="accountTypes"
-    :data-types="[
+    :headers="[
       {
         type: 'column',
         key: 'name',
@@ -47,46 +47,47 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import FormModal from '~/components/form-modal.vue';
 import Table from '~/components/table.vue';
-import type { FormModalControl } from '~/components/types';
+import type { FormModalControlType } from '~/components/types';
 
 const { t } = useI18n();
 const { setTitle, clearTitle, setButtons, clearButtons, findById } = useAppStore();
 
 const editId = ref<number | null>(null);
+const editMode = computed(() => editId.value !== null);
 const showFormModal = ref(false);
 const tableRef = ref<InstanceType<typeof Table>>();
 
-const formControlName = ref<FormModalControl>({
-  id: 'name',
-  name: 'name',
-  label: t('app.terms.name'),
-  type: 'text',
-  required: true,
+const formControls = reactive<FormModalControlType>({
+  name: {
+    id: 'name',
+    name: 'name',
+    label: t('app.terms.name'),
+    type: 'text',
+    required: true,
+    defaultValue: '',
+  },
+  description: {
+    id: 'description',
+    name: 'description',
+    label: t('app.terms.description'),
+    type: 'textarea',
+    required: false,
+    defaultValue: '',
+  },
 });
-
-const formControlDescription = ref<FormModalControl>({
-  id: 'description',
-  name: 'description',
-  label: t('app.terms.description'),
-  type: 'textarea',
-  required: false,
-});
-
-const formControls = computed(() => [formControlName.value, formControlDescription.value]);
-const editMode = computed(() => editId.value !== null);
 
 async function onAction(action: string, id: number) {
   if (action === 'edit') {
     const data = await findById<any>('/account-types', id);
 
     editId.value = id;
-    formControlName.value.value = data.name;
-    formControlDescription.value.value = data.description;
+    formControls.name.value = data.name;
+    formControls.description.value = data.description;
     showFormModal.value = true;
   }
 }
@@ -110,8 +111,8 @@ onMounted(() => {
       title: t('app.accountTypes.new'),
       click: () => {
         editId.value = null;
-        formControlName.value.value = '';
-        formControlDescription.value.value = '';
+        formControls.name.value = '';
+        formControls.description.value = '';
         showFormModal.value = true;
       },
     },

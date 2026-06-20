@@ -1,3 +1,9 @@
+// GENERAL
+
+export type ButtonTypes = 'button' | 'submit' | 'reset' | 'icon';
+export type ErrorType = Record<string, string | undefined>;
+export type AlignTypes = 'left' | 'center' | 'right';
+
 export type Variants =
   | 'primary'
   | 'secondary'
@@ -8,8 +14,6 @@ export type Variants =
   | 'light'
   | 'dark'
   | 'link';
-
-export type ButtonTypes = 'button' | 'submit' | 'reset' | 'icon';
 
 export type InputTypes =
   | 'checkbox'
@@ -28,11 +32,12 @@ export type InputTypes =
   | 'url'
   | 'week';
 
-export type FormControlTypes = InputTypes | 'select' | 'textarea';
+export type SelectOption = {
+  value: any;
+  label: string;
+};
 
-export type ErrorType = Record<string, string | undefined>;
-
-export type AlignTypes = 'left' | 'center' | 'right';
+// TABLE
 
 export type TableDataActionTypes = 'edit' | 'delete';
 
@@ -53,15 +58,10 @@ export type TableHeader = TableData & { label?: string };
 export type TableRow = TableData & { value: any };
 export type TableMeta = { total: number; lastPage: number; currentPage: number };
 
-export type ModalAction = {
-  variant: Variants;
-  closeModal: boolean;
-  label: string;
-  icon?: string;
-  loading?: boolean;
-  title?: string;
-  click?: () => void;
-};
+// FORM MODAL
+
+export type FormModalTitle = { create: string; edit: string };
+export type FormControlTypes = InputTypes | 'select' | 'textarea';
 
 export type FormModalControl = {
   id: string;
@@ -74,9 +74,14 @@ export type FormModalControl = {
   defaultValue?: any;
 };
 
-export type SelectOption = {
-  value: any;
-  label: string;
-};
+export type FormModalControlType = Record<string, FormModalControl>;
 
-export type FormModalTitle = { create: string; edit: string };
+export type ModalAction = {
+  variant: Variants;
+  closeModal: boolean;
+  label: string;
+  icon?: string;
+  loading?: boolean;
+  title?: string;
+  click?: () => void;
+};

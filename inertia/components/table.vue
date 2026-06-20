@@ -10,7 +10,7 @@
     <table class="table table-bordered table-hover p-0 m-0">
       <thead>
         <tr>
-          <template v-for="(header, index) in dataTypes" :key="index">
+          <template v-for="(header, index) in headers" :key="index">
             <th v-if="header.type === 'column'" scope="col" :class="getAlign(header.align)">
               {{ header.label }}
             </th>
@@ -116,7 +116,7 @@ import {
 } from './types.js';
 
 const props = defineProps({
-  dataTypes: {
+  headers: {
     type: Array as PropType<TableHeader[]>,
     required: true,
   },
@@ -163,7 +163,7 @@ const getAlign = (align: AlignTypes | undefined) => {
 const dataRows = computed(() => {
   return tableData.value.map((row: any) => {
     const list: TableRow[] = [];
-    props.dataTypes.forEach((header: TableHeader) => {
+    props.headers.forEach((header: TableHeader) => {
       list.push({
         type: header.type,
         key: header.key,

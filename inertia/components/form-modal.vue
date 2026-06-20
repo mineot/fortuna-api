@@ -27,7 +27,7 @@
   >
     <form @submit.prevent class="d-flex flex-column gap-3">
       <FormControl
-        v-for="(control, index) in props.controls"
+        v-for="(control, index) in controls"
         :errors="errors"
         :id="control.id"
         :key="index"
@@ -51,12 +51,15 @@
 
 <script setup lang="ts">
 import { computed, ComputedRef, PropType, reactive, ref, watch } from 'vue';
-import { FormModalControl, FormModalTitle } from './types.js';
+import { FormModalControl, FormModalControlType, FormModalTitle } from './types.js';
 import { toast } from 'vue-sonner';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import FormControl from './form-control.vue';
 import Modal from './modal.vue';
+
+const { getCsrfHeader } = useAppStore();
+const { t } = useI18n();
 
 const props = defineProps({
   show: {
@@ -69,7 +72,7 @@ const props = defineProps({
     required: true,
   },
   controls: {
-    type: Array as PropType<FormModalControl[]>,
+    type: Object as PropType<FormModalControlType>,
     required: true,
   },
   url: {
@@ -94,30 +97,20 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'success']);
 
-const { getCsrfHeader } = useAppStore();
-const { t } = useI18n();
+const controls = computed<FormModalControl[]>(() =>
+  Array.isArray(props.controls) ? props.controls : Object.values(props.controls),
+);
 
 const data = reactive(buildData());
 const errors = reactive<Record<string, string | undefined>>({});
 const loading = ref(false);
-
 const isLoading: ComputedRef<boolean> = computed(() => loading.value);
 const title = computed(() => (props.editMode ? props.title.edit : props.title.create));
 const url = computed(() => (props.editMode ? `${props.url}/${props.editId}` : props.url));
 
 function buildData(): Record<string, any> {
-  return Object.fromEntries(props.controls.map((c) => [c.name, c.value ?? c.defaultValue ?? null]));
+  return Object.fromEntries(controls.value.map((c) => [c.name, c.value ?? c.defaultValue ?? null]));
 }
-
-watch(
-  () => props.show,
-  (open) => {
-    if (open) {
-      Object.assign(data, buildData());
-      clearErrors();
-    }
-  },
-);
 
 function onClose() {
   emit('close');
@@ -172,4 +165,14 @@ async function onSave() {
     loading.value = false;
   }
 }
+
+watch(
+  () => props.show,
+  (open) => {
+    if (open) {
+      Object.assign(data, buildData());
+      clearErrors();
+    }
+  },
+);
 </script>
