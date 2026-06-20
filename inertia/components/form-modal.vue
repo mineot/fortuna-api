@@ -1,6 +1,6 @@
 <template>
   <Modal
-    :title="props.title"
+    :title="title"
     :show="props.show"
     @close="onClose()"
     :actions="[
@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { computed, ComputedRef, PropType, reactive, ref, watch } from 'vue';
-import { FormModalControl } from './types.js';
+import { FormModalControl, FormModalTitle } from './types.js';
 import { toast } from 'vue-sonner';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
@@ -64,7 +64,7 @@ const props = defineProps({
     default: false,
   },
   title: {
-    type: String,
+    type: Object as PropType<FormModalTitle>,
     default: 'Form Modal',
     required: true,
   },
@@ -76,13 +76,19 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  method: {
-    type: String as PropType<'post' | 'put' | 'patch'>,
-    default: 'post',
-  },
   successMessage: {
     type: String,
     default: 'Saved successfully',
+  },
+  editMode: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  editId: {
+    type: Number as PropType<number | null>,
+    default: null,
+    required: false,
   },
 });
 
@@ -90,10 +96,14 @@ const emit = defineEmits(['close', 'success']);
 
 const { getCsrfHeader } = useAppStore();
 const { t } = useI18n();
+
 const data = reactive(buildData());
 const errors = reactive<Record<string, string | undefined>>({});
-const isLoading: ComputedRef<boolean> = computed(() => loading.value);
 const loading = ref(false);
+
+const isLoading: ComputedRef<boolean> = computed(() => loading.value);
+const title = computed(() => (props.editMode ? props.title.edit : props.title.create));
+const url = computed(() => (props.editMode ? `${props.url}/${props.editId}` : props.url));
 
 function buildData(): Record<string, any> {
   return Object.fromEntries(props.controls.map((c) => [c.name, c.value ?? c.defaultValue ?? null]));
@@ -128,8 +138,8 @@ async function onSave() {
   clearErrors();
 
   try {
-    const response = await fetch(props.url, {
-      method: props.method.toUpperCase(),
+    const response = await fetch(url.value, {
+      method: props.editMode ? 'PUT' : 'POST',
       credentials: 'include',
       headers: getCsrfHeader(),
       body: JSON.stringify(data),

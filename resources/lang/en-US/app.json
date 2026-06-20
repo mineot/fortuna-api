@@ -12,6 +12,7 @@
     "noRecordsFound": "No records found.",
     "save": "Save",
     "search": "Search",
+    "successSave": "Saved successfully.",
     "totalRecords": "Total records: {0}"
   },
   "auth": {
@@ -41,6 +42,7 @@
   "accountTypes": {
     "title": "Account Types",
     "new": "New account type",
+    "edit": "Edit account type",
     "successSave": "Account type saved successfully."
   },
   "errors": {

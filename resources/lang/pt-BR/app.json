@@ -12,6 +12,7 @@
     "noRecordsFound": "Nenhum registro encontrado.",
     "save": "Salvar",
     "search": "Pequisar",
+    "successSave": "Salvo com sucesso.",
     "totalRecords": "Total de registros: {0}"
   },
   "auth": {
@@ -41,6 +42,7 @@
   "accountTypes": {
     "title": "Tipos de Conta",
     "new": "Novo tipo de conta",
+    "edit": "Editar tipo de conta",
     "successSave": "Tipo de conta salvo com sucesso."
   },
   "errors": {

@@ -34,47 +34,65 @@
   />
 
   <FormModal
+    :controls="formControls"
+    :edit-id="editId"
+    :edit-mode="editMode"
     :show="showFormModal"
+    :success-message="t('app.accountTypes.successSave')"
+    :title="{ create: t('app.accountTypes.new'), edit: t('app.accountTypes.edit') }"
+    :url="'/account-types'"
     @close="onClose()"
     @success="onSuccess()"
-    :title="t('app.accountTypes.new')"
-    url="/account-types"
-    :controls="[
-      {
-        id: 'name',
-        name: 'name',
-        label: t('app.terms.name'),
-        type: 'text',
-        required: true,
-      },
-      {
-        id: 'description',
-        name: 'description',
-        label: 'Description',
-        type: 'textarea',
-        required: false,
-      },
-    ]"
   />
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import FormModal from '~/components/form-modal.vue';
 import Table from '~/components/table.vue';
+import type { FormModalControl } from '~/components/types';
 
 const { t } = useI18n();
-const { setTitle, setButtons, clearButtons } = useAppStore();
-const tableRef = ref<InstanceType<typeof Table>>();
-const showFormModal = ref(false);
+const { setTitle, clearTitle, setButtons, clearButtons, findById } = useAppStore();
 
-function onAction(action: string, id: number) {
-  console.log(action, id);
+const editId = ref<number | null>(null);
+const showFormModal = ref(false);
+const tableRef = ref<InstanceType<typeof Table>>();
+
+const formControlName = ref<FormModalControl>({
+  id: 'name',
+  name: 'name',
+  label: t('app.terms.name'),
+  type: 'text',
+  required: true,
+});
+
+const formControlDescription = ref<FormModalControl>({
+  id: 'description',
+  name: 'description',
+  label: t('app.terms.description'),
+  type: 'textarea',
+  required: false,
+});
+
+const formControls = computed(() => [formControlName.value, formControlDescription.value]);
+const editMode = computed(() => editId.value !== null);
+
+async function onAction(action: string, id: number) {
+  if (action === 'edit') {
+    const data = await findById<any>('/account-types', id);
+
+    editId.value = id;
+    formControlName.value.value = data.name;
+    formControlDescription.value.value = data.description;
+    showFormModal.value = true;
+  }
 }
 
 function onClose() {
+  editId.value = null;
   showFormModal.value = false;
 }
 
@@ -90,12 +108,18 @@ onMounted(() => {
     {
       icon: 'bi bi-plus',
       title: t('app.accountTypes.new'),
-      click: () => (showFormModal.value = true),
+      click: () => {
+        editId.value = null;
+        formControlName.value.value = '';
+        formControlDescription.value.value = '';
+        showFormModal.value = true;
+      },
     },
   ]);
 });
 
 onUnmounted(() => {
+  clearTitle();
   clearButtons();
 });
 </script>

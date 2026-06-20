@@ -103,6 +103,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/account_types_controller').default['list']>>>
     }
   }
+  'account_types.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/account-types/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/account_types_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/account_types_controller').default['show']>>>
+    }
+  }
   'account_types.store': {
     methods: ["POST"]
     pattern: '/account-types'

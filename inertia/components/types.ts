@@ -78,3 +78,5 @@ export type SelectOption = {
   value: any;
   label: string;
 };
+
+export type FormModalTitle = { create: string; edit: string };

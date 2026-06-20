@@ -15,6 +15,7 @@ export interface ApiDefinition {
   accountTypes: {
     index: typeof routes['account_types.index']
     list: typeof routes['account_types.list']
+    show: typeof routes['account_types.show']
     store: typeof routes['account_types.store']
     update: typeof routes['account_types.update']
     archive: typeof routes['account_types.archive']

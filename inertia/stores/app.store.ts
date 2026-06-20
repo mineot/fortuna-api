@@ -12,6 +12,7 @@ export const useAppStore = defineStore('appStore', () => {
   const title = ref<string>('');
   const getTitle = () => title.value;
   const setTitle = (value: string) => (title.value = value);
+  const clearTitle = () => (title.value = '');
 
   const buttons = ref<Button[]>([]);
   const clearButtons = () => (buttons.value = []);
@@ -42,14 +43,25 @@ export const useAppStore = defineStore('appStore', () => {
     };
   }
 
+  async function findById<T>(url: string, id: number): Promise<T> {
+    const response = await fetch(`${url}/${id}`, {
+      headers: { Accept: 'application/json' },
+    });
+
+    const json = await response.json();
+    return json.data as T;
+  }
+
   return {
     getTitle,
     setTitle,
+    clearTitle,
     getButtons,
     setButtons,
     clearButtons,
     refreshTooltips,
     getCsrfToken,
     getCsrfHeader,
+    findById,
   };
 });

@@ -36,6 +36,20 @@ export default class AccountTypesController {
     return response.ok({ accountTypes });
   }
 
+  async show({ auth, params, response, i18n }: HttpContext) {
+    const accountType = await AccountType.query()
+      .where('id', params.id)
+      .where('user_id', auth.user!.id)
+      .where('archived', false)
+      .first();
+
+    if (!accountType) {
+      return response.notFound({ message: tHttp(i18n, 'accountTypeNotFound') });
+    }
+
+    return response.ok({ data: accountType });
+  }
+
   async store({ auth, request, response, i18n }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createAccountTypeValidator);

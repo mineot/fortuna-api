@@ -52,6 +52,7 @@ router
 
     router.get('account-types', [AccountTypesController, 'index']);
     router.get('account-types/list', [AccountTypesController, 'list']);
+    router.get('account-types/:id', [AccountTypesController, 'show']);
     router.post('account-types', [AccountTypesController, 'store']);
     router.put('account-types/:id', [AccountTypesController, 'update']);
     router.patch('account-types/:id/archive', [AccountTypesController, 'archive']);
