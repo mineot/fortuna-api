@@ -9,6 +9,8 @@
     "error_occurred": "Um erro ocorreu: {0}",
     "error_unexpected": "Um erro inesperado ocorreu.",
     "name": "Nome",
+    "no": "Não",
+    "yes": "Sim",
     "noRecordsFound": "Nenhum registro encontrado.",
     "save": "Salvar",
     "search": "Pequisar",
@@ -43,7 +45,10 @@
     "title": "Tipos de Conta",
     "new": "Novo tipo de conta",
     "edit": "Editar tipo de conta",
-    "successSave": "Tipo de conta salvo com sucesso."
+    "successSave": "Tipo de conta salvo com sucesso.",
+    "successDelete": "Tipo de conta excluído com sucesso.",
+    "confirmDelete": "Excluir tipo de conta",
+    "confirmDeleteMessage": "Tem certeza que deseja excluir este tipo de conta?"
   },
   "errors": {
     "notFoundDescription": "A página solicitada não existe ou foi movida.",

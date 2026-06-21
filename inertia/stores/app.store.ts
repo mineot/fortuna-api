@@ -52,6 +52,25 @@ export const useAppStore = defineStore('appStore', () => {
     return json.data as T;
   }
 
+  async function archive(url: string, id: number): Promise<{ fail: boolean; message?: any }> {
+    try {
+      const response = await fetch(`${url}/${id}/archive`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: getCsrfHeader(),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        return { fail: true, message: body.message };
+      }
+
+      return { fail: false };
+    } catch {
+      throw null;
+    }
+  }
+
   return {
     getTitle,
     setTitle,
@@ -63,5 +82,6 @@ export const useAppStore = defineStore('appStore', () => {
     getCsrfToken,
     getCsrfHeader,
     findById,
+    archive,
   };
 });

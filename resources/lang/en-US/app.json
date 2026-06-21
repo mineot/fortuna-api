@@ -9,6 +9,8 @@
     "error_occurred": "An error occurred: {0}",
     "error_unexpected": "An unexpected error occurred.",
     "name": "Name",
+    "no": "No",
+    "yes": "Yes",
     "noRecordsFound": "No records found.",
     "save": "Save",
     "search": "Search",
@@ -43,7 +45,10 @@
     "title": "Account Types",
     "new": "New account type",
     "edit": "Edit account type",
-    "successSave": "Account type saved successfully."
+    "successSave": "Account type saved successfully.",
+    "successDelete": "Account type deleted successfully.",
+    "confirmDelete": "Delete account type",
+    "confirmDeleteMessage": "Are you sure you want to delete this account type?"
   },
   "errors": {
     "notFoundTitle": "Page not found",

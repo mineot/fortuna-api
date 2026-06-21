@@ -84,3 +84,17 @@ Helper code lives in `database/support/` (excluded from seeder scan).
 - `database/seeders/` — 2 seeders
 - `resources/lang/{en-US,pt-BR}/` — ICU-format i18n dictionaries
 - `providers/` — `api_provider.ts` (serializer injection)
+
+## TODOs
+
+### Hard-delete cleanup command
+
+Criar um ace command (`node ace cleanup:archived`) que exclui permanentemente registros com `archived = true` e `archivedAt` com mais de **5 anos**.
+
+**Checklist:**
+
+- [ ] Criar `app/commands/cleanup_archived.ts` — comando ace que varre todas as entidades que possuem soft archive (`archived` + `archivedAt`)
+- [ ] Respeitar ordem de exclusão por chaves estrangeiras (ex.: deletar transactions antes de accounts, etc.)
+- [ ] Logar quantos registros foram excluídos por entidade
+- [ ] Usar Luxon (`DateTime`) para comparar a data — `archivedAt < now().minus({ years: 5 })`
+- [ ] Opcional: agendar execução periódica (ex.: 1x/dia via `cron` ou `node ace` num scheduler)

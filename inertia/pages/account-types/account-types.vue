@@ -44,22 +44,36 @@
     @close="onClose()"
     @success="onSuccess()"
   />
+
+  <ConfirmModal
+    type="remove"
+    :show="showConfirmModal"
+    :title="t('app.accountTypes.confirmDelete')"
+    :message="t('app.accountTypes.confirmDeleteMessage')"
+    @close="onCloseConfirmModal()"
+    @cancel="onCloseConfirmModal()"
+    @confirm="onDelete()"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
+import { toast } from 'vue-sonner';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
+import ConfirmModal from '~/components/confirm-modal.vue';
 import FormModal from '~/components/form-modal.vue';
 import Table from '~/components/table.vue';
 import type { FormModalControlType } from '~/components/types';
 
 const { t } = useI18n();
-const { setTitle, clearTitle, setButtons, clearButtons, findById } = useAppStore();
+const { setTitle, clearTitle, setButtons, clearButtons, findById, archive } = useAppStore();
 
 const editId = ref<number | null>(null);
+const deleteId = ref<number | null>(null);
 const editMode = computed(() => editId.value !== null);
 const showFormModal = ref(false);
+const showConfirmModal = ref(false);
 const tableRef = ref<InstanceType<typeof Table>>();
 
 const formControls = reactive<FormModalControlType>({
@@ -89,12 +103,38 @@ async function onAction(action: string, id: number) {
     formControls.name.value = data.name;
     formControls.description.value = data.description;
     showFormModal.value = true;
+  } else if (action === 'delete') {
+    showConfirmModal.value = true;
+    deleteId.value = id;
   }
 }
 
 function onClose() {
   editId.value = null;
   showFormModal.value = false;
+}
+
+function onCloseConfirmModal() {
+  showConfirmModal.value = false;
+  deleteId.value = null;
+}
+
+async function onDelete() {
+  try {
+    const response = await archive('/account-types', deleteId.value ?? -1);
+
+    if (response.fail) {
+      toast.error(t('app.terms.error_occurred', [response.message]));
+      return;
+    }
+
+    toast.success(t('app.accountTypes.successDelete'));
+    tableRef.value?.refresh();
+  } catch {
+    toast.error(t('app.terms.error_unexpected'));
+  } finally {
+    onCloseConfirmModal();
+  }
 }
 
 function onSuccess() {
