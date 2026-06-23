@@ -20,6 +20,7 @@ export default class extends BaseSchema {
       table.boolean('archived').notNullable().defaultTo(false);
       table.timestamp('archived_at').nullable();
 
+      table.timestamp('created_at').nullable();
       table.timestamp('updated_at').nullable();
 
       table.unique(['user_id', 'name']);

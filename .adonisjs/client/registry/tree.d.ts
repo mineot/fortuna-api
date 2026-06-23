@@ -28,6 +28,8 @@ export interface ApiDefinition {
   }
   categoryGroups: {
     index: typeof routes['category_groups.index']
+    list: typeof routes['category_groups.list']
+    show: typeof routes['category_groups.show']
     store: typeof routes['category_groups.store']
     update: typeof routes['category_groups.update']
     archive: typeof routes['category_groups.archive']

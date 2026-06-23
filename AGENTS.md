@@ -93,8 +93,8 @@ Criar um ace command (`node ace cleanup:archived`) que exclui permanentemente re
 
 **Checklist:**
 
-- [ ] Criar `app/commands/cleanup_archived.ts` — comando ace que varre todas as entidades que possuem soft archive (`archived` + `archivedAt`)
-- [ ] Respeitar ordem de exclusão por chaves estrangeiras (ex.: deletar transactions antes de accounts, etc.)
-- [ ] Logar quantos registros foram excluídos por entidade
-- [ ] Usar Luxon (`DateTime`) para comparar a data — `archivedAt < now().minus({ years: 5 })`
+- [x] Criar `commands/cleanup_archived.ts` — comando ace que varre todas as entidades que possuem soft archive (`archived` + `archivedAt`). Localizado em `commands/` (conforme `adonisrc.ts`), não `app/commands/`.
+- [x] Respeitar ordem de exclusão por chaves estrangeiras — 19 entidades em 4 passes (folhas → topo)
+- [x] Logar quantos registros foram excluídos por entidade
+- [x] Usar Luxon (`DateTime`) para comparar a data — `archivedAt < now().minus({ years: 5 })`
 - [ ] Opcional: agendar execução periódica (ex.: 1x/dia via `cron` ou `node ace` num scheduler)

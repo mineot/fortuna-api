@@ -21,6 +21,8 @@ export type ScannedRoutes = {
     'accounts.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'accounts.archive': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'category_groups.index': { paramsTuple?: []; params?: {} }
+    'category_groups.list': { paramsTuple?: []; params?: {} }
+    'category_groups.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'category_groups.store': { paramsTuple?: []; params?: {} }
     'category_groups.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'category_groups.archive': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -97,6 +99,8 @@ export type ScannedRoutes = {
     'account_types.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'accounts.index': { paramsTuple?: []; params?: {} }
     'category_groups.index': { paramsTuple?: []; params?: {} }
+    'category_groups.list': { paramsTuple?: []; params?: {} }
+    'category_groups.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categories.index': { paramsTuple?: []; params?: {} }
     'payees.index': { paramsTuple?: []; params?: {} }
     'transactions.index': { paramsTuple?: []; params?: {} }
@@ -123,6 +127,8 @@ export type ScannedRoutes = {
     'account_types.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'accounts.index': { paramsTuple?: []; params?: {} }
     'category_groups.index': { paramsTuple?: []; params?: {} }
+    'category_groups.list': { paramsTuple?: []; params?: {} }
+    'category_groups.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'categories.index': { paramsTuple?: []; params?: {} }
     'payees.index': { paramsTuple?: []; params?: {} }
     'transactions.index': { paramsTuple?: []; params?: {} }

@@ -9,6 +9,7 @@
     "error_occurred": "Um erro ocorreu: {0}",
     "error_unexpected": "Um erro inesperado ocorreu.",
     "name": "Nome",
+    "position": "Posição",
     "no": "Não",
     "yes": "Sim",
     "noRecordsFound": "Nenhum registro encontrado.",
@@ -49,6 +50,15 @@
     "successDelete": "Tipo de conta excluído com sucesso.",
     "confirmDelete": "Excluir tipo de conta",
     "confirmDeleteMessage": "Tem certeza que deseja excluir este tipo de conta?"
+  },
+  "categoryGroups": {
+    "title": "Grupos de Categorias",
+    "new": "Novo grupo de categorias",
+    "edit": "Editar grupo de categorias",
+    "successSave": "Grupo de categorias salvo com sucesso.",
+    "successDelete": "Grupo de categorias excluído com sucesso.",
+    "confirmDelete": "Excluir grupo de categorias",
+    "confirmDeleteMessage": "Tem certeza que deseja excluir este grupo de categorias?"
   },
   "errors": {
     "notFoundDescription": "A página solicitada não existe ou foi movida.",

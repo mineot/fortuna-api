@@ -23,9 +23,9 @@
         </div>
 
         <button type="button" class="btn btn-sm btn-secondary" @click="logout()">
-            <i class="bi bi-box-arrow-right me-1"></i>
-            {{ t('app.auth.logout') }}
-          </button>
+          <i class="bi bi-box-arrow-right me-1"></i>
+          {{ t('app.auth.logout') }}
+        </button>
       </div>
 
       <div class="d-flex flex-column gap-2">
@@ -58,7 +58,7 @@ import { usePage } from '@inertiajs/vue3';
 import type { Data } from '@generated/data';
 import { computed } from 'vue';
 
-type MenuRouteNames = 'home' | 'account_types.index';
+type MenuRouteNames = 'home' | 'account_types.index' | 'category_groups.index';
 
 type MenuItem = {
   route: MenuRouteNames;
@@ -81,6 +81,11 @@ const menuItems: MenuItem[] = [
     route: 'account_types.index',
     activeRoute: '/account-types',
     label: 'app.accountTypes.title',
+  },
+  {
+    route: 'category_groups.index',
+    activeRoute: '/category-groups',
+    label: 'app.categoryGroups.title',
   },
 ];
 

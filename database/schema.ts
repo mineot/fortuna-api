@@ -141,12 +141,14 @@ export class CategorySchema extends BaseModel {
 }
 
 export class CategoryGroupSchema extends BaseModel {
-  static $columns = ['archived', 'archivedAt', 'id', 'name', 'position', 'updatedAt', 'userId'] as const
+  static $columns = ['archived', 'archivedAt', 'createdAt', 'id', 'name', 'position', 'updatedAt', 'userId'] as const
   $columns = CategoryGroupSchema.$columns
   @column()
   declare archived: boolean
   @column.dateTime()
   declare archivedAt: DateTime | null
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
   @column({ isPrimary: true })
   declare id: number
   @column()

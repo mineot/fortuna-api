@@ -108,6 +108,18 @@ const routes = {
     tokens: [{"old":"/category-groups","type":0,"val":"category-groups","end":""}],
     types: placeholder as Registry['category_groups.index']['types'],
   },
+  'category_groups.list': {
+    methods: ["GET","HEAD"],
+    pattern: '/category-groups/list',
+    tokens: [{"old":"/category-groups/list","type":0,"val":"category-groups","end":""},{"old":"/category-groups/list","type":0,"val":"list","end":""}],
+    types: placeholder as Registry['category_groups.list']['types'],
+  },
+  'category_groups.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/category-groups/:id',
+    tokens: [{"old":"/category-groups/:id","type":0,"val":"category-groups","end":""},{"old":"/category-groups/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['category_groups.show']['types'],
+  },
   'category_groups.store': {
     methods: ["POST"],
     pattern: '/category-groups',

@@ -12,7 +12,7 @@ export default class AccountTypesController {
   }
 
   async index({ inertia }: HttpContext) {
-    return inertia.render('account-types/account-types', {});
+    return inertia.render('simple_cruds/account-types', {});
   }
 
   async list({ request, auth, response }: HttpContext) {

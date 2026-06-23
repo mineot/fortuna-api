@@ -9,6 +9,7 @@
     "error_occurred": "An error occurred: {0}",
     "error_unexpected": "An unexpected error occurred.",
     "name": "Name",
+    "position": "Position",
     "no": "No",
     "yes": "Yes",
     "noRecordsFound": "No records found.",
@@ -49,6 +50,15 @@
     "successDelete": "Account type deleted successfully.",
     "confirmDelete": "Delete account type",
     "confirmDeleteMessage": "Are you sure you want to delete this account type?"
+  },
+  "categoryGroups": {
+    "title": "Category Groups",
+    "new": "New category group",
+    "edit": "Edit category group",
+    "successSave": "Category group saved successfully.",
+    "successDelete": "Category group deleted successfully.",
+    "confirmDelete": "Delete category group",
+    "confirmDeleteMessage": "Are you sure you want to delete this category group?"
   },
   "errors": {
     "notFoundTitle": "Page not found",

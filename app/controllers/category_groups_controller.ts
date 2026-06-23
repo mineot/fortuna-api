@@ -15,16 +15,42 @@ export default class CategoryGroupsController {
       .whereRaw('LOWER(name) = ?', [name.toLocaleLowerCase()]);
   }
 
-  async index({ auth, response }: HttpContext) {
+  async index({ inertia }: HttpContext) {
+    return inertia.render('simple_cruds/category.group', {});
+  }
+
+  async list({ request, auth, response }: HttpContext) {
     const userId = auth.user!.id;
+    const searchText = request.input('searchText', null);
+    const page = request.input('page', 1);
 
     const categoryGroups = await CategoryGroup.query()
       .where('user_id', userId)
       .where('archived', false)
       .orderBy('position', 'asc')
-      .orderBy('id', 'asc');
+      .orderBy('id', 'asc')
+      .where((query) => {
+        if (searchText) {
+          query.where('name', 'like', `%${searchText}%`);
+        }
+      })
+      .paginate(page, 5);
 
-    return response.ok({ data: categoryGroups });
+    return response.ok({ categoryGroups });
+  }
+
+  async show({ auth, params, response, i18n }: HttpContext) {
+    const categoryGroup = await CategoryGroup.query()
+      .where('id', params.id)
+      .where('user_id', auth.user!.id)
+      .where('archived', false)
+      .first();
+
+    if (!categoryGroup) {
+      return response.notFound({ message: tHttp(i18n, 'categoryGroupNotFound') });
+    }
+
+    return response.ok({ data: categoryGroup });
   }
 
   async store({ auth, request, response, i18n }: HttpContext) {

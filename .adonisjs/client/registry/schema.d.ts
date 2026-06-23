@@ -211,6 +211,30 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/category_groups_controller').default['index']>>>
     }
   }
+  'category_groups.list': {
+    methods: ["GET","HEAD"]
+    pattern: '/category-groups/list'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/category_groups_controller').default['list']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/category_groups_controller').default['list']>>>
+    }
+  }
+  'category_groups.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/category-groups/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/category_groups_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/category_groups_controller').default['show']>>>
+    }
+  }
   'category_groups.store': {
     methods: ["POST"]
     pattern: '/category-groups'

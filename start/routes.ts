@@ -63,6 +63,8 @@ router
     router.patch('accounts/:id/archive', [AccountsController, 'archive']);
 
     router.get('category-groups', [CategoryGroupsController, 'index']);
+    router.get('category-groups/list', [CategoryGroupsController, 'list']);
+    router.get('category-groups/:id', [CategoryGroupsController, 'show']);
     router.post('category-groups', [CategoryGroupsController, 'store']);
     router.put('category-groups/:id', [CategoryGroupsController, 'update']);
     router.patch('category-groups/:id/archive', [CategoryGroupsController, 'archive']);
