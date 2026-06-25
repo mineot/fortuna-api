@@ -5,6 +5,7 @@ import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
+import { parseDateISO } from '#services/date_utils';
 
 import {
   createCreditCardInvoiceValidator,
@@ -12,11 +13,6 @@ import {
 } from '#validators/credit_card_invoice';
 
 export default class CreditCardInvoicesController {
-  private parseDate(value: string) {
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
   private formatMoney(value: number) {
     return money(value);
   }
@@ -48,7 +44,7 @@ export default class CreditCardInvoicesController {
     return response.ok({ data: invoices });
   }
 
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardInvoiceValidator);
     const linkError = await this.validateCreditCardLink(userId, payload.creditCardId);
@@ -57,13 +53,9 @@ export default class CreditCardInvoicesController {
       return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
     }
 
-    const periodStart = this.parseDate(payload.periodStart);
-    const periodEnd = this.parseDate(payload.periodEnd);
-    const dueDate = this.parseDate(payload.dueDate);
-
-    if (!periodStart || !periodEnd || !dueDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidInvoiceDates') });
-    }
+    const periodStart = parseDateISO(payload.periodStart, userTimezone);
+    const periodEnd = parseDateISO(payload.periodEnd, userTimezone);
+    const dueDate = parseDateISO(payload.dueDate, userTimezone);
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
@@ -101,7 +93,7 @@ export default class CreditCardInvoicesController {
     return response.created({ data: invoice });
   }
 
-  async update({ auth, params, request, response, i18n }: HttpContext) {
+  async update({ auth, params, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
 
     const invoice = await CreditCardInvoice.query()
@@ -121,13 +113,9 @@ export default class CreditCardInvoicesController {
       return response.unprocessableEntity({ message: tHttp(i18n, linkError) });
     }
 
-    const periodStart = this.parseDate(payload.periodStart);
-    const periodEnd = this.parseDate(payload.periodEnd);
-    const dueDate = this.parseDate(payload.dueDate);
-
-    if (!periodStart || !periodEnd || !dueDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidInvoiceDates') });
-    }
+    const periodStart = parseDateISO(payload.periodStart, userTimezone);
+    const periodEnd = parseDateISO(payload.periodEnd, userTimezone);
+    const dueDate = parseDateISO(payload.dueDate, userTimezone);
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
@@ -179,7 +167,7 @@ export default class CreditCardInvoicesController {
 
     if (!invoice.archived) {
       invoice.archived = true;
-      invoice.archivedAt = DateTime.now();
+      invoice.archivedAt = DateTime.utc();
       await invoice.save();
     }
 

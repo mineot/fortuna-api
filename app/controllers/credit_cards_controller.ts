@@ -142,7 +142,7 @@ export default class CreditCardsController {
 
     if (!creditCard.archived) {
       creditCard.archived = true;
-      creditCard.archivedAt = DateTime.now();
+      creditCard.archivedAt = DateTime.utc();
       await creditCard.save();
     }
 

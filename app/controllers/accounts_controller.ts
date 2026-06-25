@@ -130,7 +130,7 @@ export default class AccountsController {
 
     if (!account.archived) {
       account.archived = true;
-      account.archivedAt = DateTime.now();
+      account.archivedAt = DateTime.utc();
       await account.save();
     }
 

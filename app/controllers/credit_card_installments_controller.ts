@@ -6,6 +6,7 @@ import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
+import { parseDateISO } from '#services/date_utils';
 
 import {
   createCreditCardInstallmentValidator,
@@ -13,11 +14,6 @@ import {
 } from '#validators/credit_card_installment';
 
 export default class CreditCardInstallmentsController {
-  private parseDate(value: string) {
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
   private formatMoney(value: number) {
     return money(value);
   }
@@ -66,14 +62,10 @@ export default class CreditCardInstallmentsController {
     return response.ok({ data: installments });
   }
 
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardInstallmentValidator);
-    const dueDate = this.parseDate(payload.dueDate);
-
-    if (!dueDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidInstallmentDueDate') });
-    }
+    const dueDate = parseDateISO(payload.dueDate, userTimezone);
 
     const linkError = await this.validateLinks(
       userId,
@@ -112,7 +104,7 @@ export default class CreditCardInstallmentsController {
     return response.created({ data: installment });
   }
 
-  async update({ auth, params, request, response, i18n }: HttpContext) {
+  async update({ auth, params, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
 
     const installment = await CreditCardInstallment.query()
@@ -126,11 +118,7 @@ export default class CreditCardInstallmentsController {
     }
 
     const payload = await request.validateUsing(updateCreditCardInstallmentValidator);
-    const dueDate = this.parseDate(payload.dueDate);
-
-    if (!dueDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidInstallmentDueDate') });
-    }
+    const dueDate = parseDateISO(payload.dueDate, userTimezone);
 
     const linkError = await this.validateLinks(
       userId,
@@ -183,7 +171,7 @@ export default class CreditCardInstallmentsController {
 
     if (!installment.archived) {
       installment.archived = true;
-      installment.archivedAt = DateTime.now();
+      installment.archivedAt = DateTime.utc();
       await installment.save();
     }
 

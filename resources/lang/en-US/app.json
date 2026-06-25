@@ -65,8 +65,8 @@
     "locale": "Language",
     "currency": "Currency",
     "timezone": "Timezone",
-    "localeEnUs": "English (US)",
-    "localePtBr": "Portuguese (Brazil)",
+    "localeEnUs": "🇺🇸 English (US)",
+    "localePtBr": "🇧🇷 Portuguese (Brazil)",
     "successSave": "Settings saved successfully."
   },
   "errors": {

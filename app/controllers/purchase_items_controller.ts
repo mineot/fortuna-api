@@ -187,7 +187,7 @@ export default class PurchaseItemsController {
 
     if (!item.archived) {
       item.archived = true;
-      item.archivedAt = DateTime.now();
+      item.archivedAt = DateTime.utc();
       await item.save();
     }
 

@@ -5,6 +5,8 @@ import type { NextFn } from '@adonisjs/core/types/http';
 import { type HttpContext, RequestValidator } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
 
+type CtxWithTimezone = HttpContext & { userTimezone?: string };
+
 /**
  * The "DetectUserLocaleMiddleware" middleware uses i18n service to share
  * a request specific i18n object with the HTTP Context
@@ -60,6 +62,10 @@ export default class DetectUserLocaleMiddleware {
       } else {
         language = this.normalizeLocale(setting.locale);
       }
+
+      (ctx as CtxWithTimezone).userTimezone = setting.timezone;
+    } else {
+      (ctx as CtxWithTimezone).userTimezone = 'UTC';
     }
 
     /**
@@ -96,5 +102,6 @@ export default class DetectUserLocaleMiddleware {
 declare module '@adonisjs/core/http' {
   export interface HttpContext {
     i18n: I18n;
+    userTimezone: string;
   }
 }

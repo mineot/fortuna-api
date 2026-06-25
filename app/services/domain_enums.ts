@@ -18,3 +18,5 @@ export const CREDIT_CARD_INVOICE_PAYMENT_STATUSES = ['posted', 'pending', 'faile
 export const SHOPPING_LIST_STATUSES = ['open', 'done', 'cancelled'] as const;
 
 export const PURCHASE_STATUSES = ['open', 'paid', 'cancelled'] as const;
+
+export const TIMEZONES = Intl.supportedValuesOf('timeZone');

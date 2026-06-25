@@ -7,6 +7,7 @@ import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
+import { parseDateISO } from '#services/date_utils';
 
 import {
   createCreditCardInvoicePaymentValidator,
@@ -14,11 +15,6 @@ import {
 } from '#validators/credit_card_invoice_payment';
 
 export default class CreditCardInvoicePaymentsController {
-  private parseDate(value: string) {
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
   private formatMoney(value: number) {
     return money(value);
   }
@@ -83,14 +79,10 @@ export default class CreditCardInvoicePaymentsController {
     return response.ok({ data: payments });
   }
 
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createCreditCardInvoicePaymentValidator);
-    const paymentDate = this.parseDate(payload.paymentDate);
-
-    if (!paymentDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidPaymentDate') });
-    }
+    const paymentDate = parseDateISO(payload.paymentDate, userTimezone);
 
     const linkError = await this.validateLinks(
       userId,
@@ -119,7 +111,7 @@ export default class CreditCardInvoicePaymentsController {
     return response.created({ data: payment });
   }
 
-  async update({ auth, params, request, response, i18n }: HttpContext) {
+  async update({ auth, params, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
 
     const payment = await CreditCardInvoicePayment.query()
@@ -133,11 +125,7 @@ export default class CreditCardInvoicePaymentsController {
     }
 
     const payload = await request.validateUsing(updateCreditCardInvoicePaymentValidator);
-    const paymentDate = this.parseDate(payload.paymentDate);
-
-    if (!paymentDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidPaymentDate') });
-    }
+    const paymentDate = parseDateISO(payload.paymentDate, userTimezone);
 
     const linkError = await this.validateLinks(
       userId,
@@ -179,7 +167,7 @@ export default class CreditCardInvoicePaymentsController {
 
     if (!payment.archived) {
       payment.archived = true;
-      payment.archivedAt = DateTime.now();
+      payment.archivedAt = DateTime.utc();
       await payment.save();
     }
 

@@ -28,6 +28,7 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
       messages: ctx.inertia.always(
         pickUiMessages(i18n.localeTranslations as Record<string, string>),
       ),
+      timezone: ctx.inertia.always(ctx.userTimezone ?? 'UTC'),
       user: ctx.inertia.always(auth?.user ? UserTransformer.transform(auth.user) : undefined),
     };
   }

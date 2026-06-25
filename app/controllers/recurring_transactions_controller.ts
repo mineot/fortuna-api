@@ -7,6 +7,7 @@ import { DateTime } from 'luxon';
 import { money } from '#services/money';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
+import { parseDateISO, parseOptionalDateISO } from '#services/date_utils';
 
 import {
   createRecurringTransactionValidator,
@@ -14,11 +15,6 @@ import {
 } from '#validators/recurring_transaction';
 
 export default class RecurringTransactionsController {
-  private parseDate(value: string) {
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
   private formatMoney(value: number) {
     return money(value);
   }
@@ -81,18 +77,12 @@ export default class RecurringTransactionsController {
     return response.ok({ data: recurringTransactions });
   }
 
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createRecurringTransactionValidator);
-    const startDate = this.parseDate(payload.startDate);
-    const endDate = payload.endDate ? this.parseDate(payload.endDate) : null;
-    const nextOccurrenceDate = this.parseDate(payload.nextOccurrenceDate);
-
-    if (!startDate || !nextOccurrenceDate || (payload.endDate && !endDate)) {
-      return response.unprocessableEntity({
-        message: tHttp(i18n, 'invalidRecurringTransactionDates'),
-      });
-    }
+    const startDate = parseDateISO(payload.startDate, userTimezone);
+    const endDate = parseOptionalDateISO(payload.endDate, userTimezone);
+    const nextOccurrenceDate = parseDateISO(payload.nextOccurrenceDate, userTimezone);
 
     if (endDate && endDate < startDate) {
       return response.unprocessableEntity({
@@ -133,7 +123,7 @@ export default class RecurringTransactionsController {
     return response.created({ data: recurringTransaction });
   }
 
-  async update({ auth, params, request, response, i18n }: HttpContext) {
+  async update({ auth, params, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
 
     const recurringTransaction = await RecurringTransaction.query()
@@ -147,15 +137,9 @@ export default class RecurringTransactionsController {
     }
 
     const payload = await request.validateUsing(updateRecurringTransactionValidator);
-    const startDate = this.parseDate(payload.startDate);
-    const endDate = payload.endDate ? this.parseDate(payload.endDate) : null;
-    const nextOccurrenceDate = this.parseDate(payload.nextOccurrenceDate);
-
-    if (!startDate || !nextOccurrenceDate || (payload.endDate && !endDate)) {
-      return response.unprocessableEntity({
-        message: tHttp(i18n, 'invalidRecurringTransactionDates'),
-      });
-    }
+    const startDate = parseDateISO(payload.startDate, userTimezone);
+    const endDate = parseOptionalDateISO(payload.endDate, userTimezone);
+    const nextOccurrenceDate = parseDateISO(payload.nextOccurrenceDate, userTimezone);
 
     if (endDate && endDate < startDate) {
       return response.unprocessableEntity({
@@ -209,7 +193,7 @@ export default class RecurringTransactionsController {
 
     if (!recurringTransaction.archived) {
       recurringTransaction.archived = true;
-      recurringTransaction.archivedAt = DateTime.now();
+      recurringTransaction.archivedAt = DateTime.utc();
       await recurringTransaction.save();
     }
 

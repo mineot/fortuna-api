@@ -122,7 +122,7 @@ export default class CategoryGroupsController {
 
     if (!categoryGroup.archived) {
       categoryGroup.archived = true;
-      categoryGroup.archivedAt = DateTime.now();
+      categoryGroup.archivedAt = DateTime.utc();
       await categoryGroup.save();
     }
 

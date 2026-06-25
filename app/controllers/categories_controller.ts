@@ -123,7 +123,7 @@ export default class CategoriesController {
 
     if (!category.archived) {
       category.archived = true;
-      category.archivedAt = DateTime.now();
+      category.archivedAt = DateTime.utc();
       await category.save();
     }
 

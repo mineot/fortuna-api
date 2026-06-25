@@ -129,7 +129,7 @@ export default class ShoppingListItemsController {
 
     if (!item.archived) {
       item.archived = true;
-      item.archivedAt = DateTime.now();
+      item.archivedAt = DateTime.utc();
       await item.save();
     }
 

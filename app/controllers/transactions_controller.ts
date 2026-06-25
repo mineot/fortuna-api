@@ -8,13 +8,9 @@ import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
 import { money } from '#services/money';
 import { tHttp } from '#services/http_i18n';
+import { parseDateISO } from '#services/date_utils';
 
 export default class TransactionsController {
-  private parseTransactionDate(value: string) {
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
   private formatMoney(value: number) {
     return money(value);
   }
@@ -43,14 +39,10 @@ export default class TransactionsController {
     return response.ok({ data: transactions });
   }
 
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createTransactionValidator);
-    const transactionDate = this.parseTransactionDate(payload.transactionDate);
-
-    if (!transactionDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTransactionDate') });
-    }
+    const transactionDate = parseDateISO(payload.transactionDate, userTimezone);
 
     const account = await Account.query()
       .where('id', payload.accountId)
@@ -110,7 +102,7 @@ export default class TransactionsController {
     return response.created({ data: transaction });
   }
 
-  async update({ auth, params, request, response, i18n }: HttpContext) {
+  async update({ auth, params, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
 
     const transaction = await Transaction.query()
@@ -134,11 +126,7 @@ export default class TransactionsController {
     }
 
     const payload = await request.validateUsing(updateTransactionValidator);
-    const transactionDate = this.parseTransactionDate(payload.transactionDate);
-
-    if (!transactionDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTransactionDate') });
-    }
+    const transactionDate = parseDateISO(payload.transactionDate, userTimezone);
 
     const account = await Account.query()
       .where('id', payload.accountId)
@@ -221,7 +209,7 @@ export default class TransactionsController {
 
     if (!transaction.archived) {
       transaction.archived = true;
-      transaction.archivedAt = DateTime.now();
+      transaction.archivedAt = DateTime.utc();
       await transaction.save();
     }
 

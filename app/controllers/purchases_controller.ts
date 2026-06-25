@@ -7,13 +7,9 @@ import { DateTime } from 'luxon';
 import { money } from '#services/money';
 import { tHttp } from '#services/http_i18n';
 import { HTTP_MESSAGES } from '#services/http_messages';
+import { parseDateISO } from '#services/date_utils';
 
 export default class PurchasesController {
-  private parseDate(value: string) {
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
   private formatMoney(value: number) {
     return money(value);
   }
@@ -58,15 +54,10 @@ export default class PurchasesController {
     return response.ok({ data: purchases });
   }
 
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createPurchaseValidator);
-
-    const purchaseDate = this.parseDate(payload.purchaseDate);
-
-    if (!purchaseDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidPurchaseDate') });
-    }
+    const purchaseDate = parseDateISO(payload.purchaseDate, userTimezone);
 
     const linkError = await this.validateLinks(userId, payload.accountId, payload.shoppingListId);
 
@@ -90,7 +81,7 @@ export default class PurchasesController {
     return response.created({ data: purchase });
   }
 
-  async update({ auth, params, request, response, i18n }: HttpContext) {
+  async update({ auth, params, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
 
     const purchase = await Purchase.query()
@@ -104,11 +95,7 @@ export default class PurchasesController {
     }
 
     const payload = await request.validateUsing(updatePurchaseValidator);
-    const purchaseDate = this.parseDate(payload.purchaseDate);
-
-    if (!purchaseDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidPurchaseDate') });
-    }
+    const purchaseDate = parseDateISO(payload.purchaseDate, userTimezone);
 
     const linkError = await this.validateLinks(userId, payload.accountId, payload.shoppingListId);
 
@@ -141,7 +128,7 @@ export default class PurchasesController {
 
     if (!purchase.archived) {
       purchase.archived = true;
-      purchase.archivedAt = DateTime.now();
+      purchase.archivedAt = DateTime.utc();
       await purchase.save();
     }
 

@@ -65,8 +65,8 @@
     "locale": "Idioma",
     "currency": "Moeda",
     "timezone": "Fuso horário",
-    "localeEnUs": "Inglês (EUA)",
-    "localePtBr": "Português (Brasil)",
+    "localeEnUs": "🇺🇸 Inglês (EUA)",
+    "localePtBr": "🇧🇷 Português (Brasil)",
     "successSave": "Configurações salvas com sucesso."
   },
   "errors": {

@@ -2,6 +2,7 @@ import ShoppingList from '#models/shopping_list';
 import type { HttpContext } from '@adonisjs/core/http';
 import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
+import { parseOptionalDateISO } from '#services/date_utils';
 
 import {
   createShoppingListValidator,
@@ -9,15 +10,6 @@ import {
 } from '#validators/shopping_list';
 
 export default class ShoppingListsController {
-  private parseDate(value?: string | null) {
-    if (!value) {
-      return null;
-    }
-
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
   private findByNormalizedName(userId: number, name: string) {
     return ShoppingList.query()
       .where('user_id', userId)
@@ -35,14 +27,10 @@ export default class ShoppingListsController {
     return response.ok({ data: shoppingLists });
   }
 
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createShoppingListValidator);
-    const targetDate = this.parseDate(payload.targetDate);
-
-    if (payload.targetDate && !targetDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTargetDate') });
-    }
+    const targetDate = parseOptionalDateISO(payload.targetDate, userTimezone);
 
     const existing = await this.findByNormalizedName(userId, payload.name).first();
 
@@ -63,7 +51,7 @@ export default class ShoppingListsController {
     return response.created({ data: shoppingList });
   }
 
-  async update({ auth, params, request, response, i18n }: HttpContext) {
+  async update({ auth, params, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
 
     const shoppingList = await ShoppingList.query()
@@ -77,11 +65,7 @@ export default class ShoppingListsController {
     }
 
     const payload = await request.validateUsing(updateShoppingListValidator);
-    const targetDate = this.parseDate(payload.targetDate);
-
-    if (payload.targetDate && !targetDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTargetDate') });
-    }
+    const targetDate = parseOptionalDateISO(payload.targetDate, userTimezone);
 
     if (payload.name.toLocaleLowerCase() !== shoppingList.name.toLocaleLowerCase()) {
       const existing = await this.findByNormalizedName(userId, payload.name)
@@ -119,7 +103,7 @@ export default class ShoppingListsController {
 
     if (!shoppingList.archived) {
       shoppingList.archived = true;
-      shoppingList.archivedAt = DateTime.now();
+      shoppingList.archivedAt = DateTime.utc();
       await shoppingList.save();
     }
 

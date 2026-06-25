@@ -88,7 +88,7 @@ export default class PayeesController {
 
     if (!payee.archived) {
       payee.archived = true;
-      payee.archivedAt = DateTime.now();
+      payee.archivedAt = DateTime.utc();
       await payee.save();
     }
 

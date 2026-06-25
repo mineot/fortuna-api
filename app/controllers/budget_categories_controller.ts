@@ -148,7 +148,7 @@ export default class BudgetCategoriesController {
 
     if (!budgetCategory.archived) {
       budgetCategory.archived = true;
-      budgetCategory.archivedAt = DateTime.now();
+      budgetCategory.archivedAt = DateTime.utc();
       await budgetCategory.save();
     }
 

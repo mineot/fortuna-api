@@ -3,13 +3,9 @@ import { createBudgetValidator, updateBudgetValidator } from '#validators/budget
 import type { HttpContext } from '@adonisjs/core/http';
 import { tHttp } from '#services/http_i18n';
 import { DateTime } from 'luxon';
+import { parseDateISO } from '#services/date_utils';
 
 export default class BudgetsController {
-  private parseDate(value: string) {
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
   async index({ auth, response }: HttpContext) {
     const userId = auth.user!.id;
 
@@ -22,15 +18,11 @@ export default class BudgetsController {
     return response.ok({ data: budgets });
   }
 
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createBudgetValidator);
-    const periodStart = this.parseDate(payload.periodStart);
-    const periodEnd = this.parseDate(payload.periodEnd);
-
-    if (!periodStart || !periodEnd) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidBudgetPeriodDates') });
-    }
+    const periodStart = parseDateISO(payload.periodStart, userTimezone);
+    const periodEnd = parseDateISO(payload.periodEnd, userTimezone);
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
@@ -64,7 +56,7 @@ export default class BudgetsController {
     return response.created({ data: budget });
   }
 
-  async update({ auth, params, request, response, i18n }: HttpContext) {
+  async update({ auth, params, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
 
     const budget = await Budget.query()
@@ -78,12 +70,8 @@ export default class BudgetsController {
     }
 
     const payload = await request.validateUsing(updateBudgetValidator);
-    const periodStart = this.parseDate(payload.periodStart);
-    const periodEnd = this.parseDate(payload.periodEnd);
-
-    if (!periodStart || !periodEnd) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidBudgetPeriodDates') });
-    }
+    const periodStart = parseDateISO(payload.periodStart, userTimezone);
+    const periodEnd = parseDateISO(payload.periodEnd, userTimezone);
 
     if (periodEnd < periodStart) {
       return response.unprocessableEntity({
@@ -127,7 +115,7 @@ export default class BudgetsController {
 
     if (!budget.archived) {
       budget.archived = true;
-      budget.archivedAt = DateTime.now();
+      budget.archivedAt = DateTime.utc();
       await budget.save();
     }
 

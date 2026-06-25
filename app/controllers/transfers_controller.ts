@@ -4,24 +4,15 @@ import { createTransferValidator } from '#validators/transfer';
 import type { HttpContext } from '@adonisjs/core/http';
 import { DateTime } from 'luxon';
 import { tHttp } from '#services/http_i18n';
+import { parseDateISO } from '#services/date_utils';
 
 export default class TransfersController {
   private transferService = new TransferService();
 
-  private parseTransferDate(value: string) {
-    const parsed = DateTime.fromISO(value);
-    return parsed.isValid ? parsed : null;
-  }
-
-  async store({ auth, request, response, i18n }: HttpContext) {
+  async store({ auth, request, response, i18n, userTimezone }: HttpContext) {
     const userId = auth.user!.id;
     const payload = await request.validateUsing(createTransferValidator);
-
-    const transferDate = this.parseTransferDate(payload.transferDate);
-
-    if (!transferDate) {
-      return response.unprocessableEntity({ message: tHttp(i18n, 'invalidTransferDate') });
-    }
+    const transferDate = parseDateISO(payload.transferDate, userTimezone);
 
     try {
       const transfer = await this.transferService.create({
@@ -77,7 +68,7 @@ export default class TransfersController {
 
     if (!transfer.archived) {
       transfer.archived = true;
-      transfer.archivedAt = DateTime.now();
+      transfer.archivedAt = DateTime.utc();
       await transfer.save();
     }
 
