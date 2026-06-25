@@ -60,6 +60,15 @@
     "confirmDelete": "Delete category group",
     "confirmDeleteMessage": "Are you sure you want to delete this category group?"
   },
+  "settings": {
+    "title": "Settings",
+    "locale": "Language",
+    "currency": "Currency",
+    "timezone": "Timezone",
+    "localeEnUs": "English (US)",
+    "localePtBr": "Portuguese (Brazil)",
+    "successSave": "Settings saved successfully."
+  },
   "errors": {
     "notFoundTitle": "Page not found",
     "notFoundDescription": "The page you requested does not exist or has been moved.",

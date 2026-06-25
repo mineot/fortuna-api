@@ -516,6 +516,18 @@ const routes = {
     tokens: [{"old":"/purchase-items/:id/archive","type":0,"val":"purchase-items","end":""},{"old":"/purchase-items/:id/archive","type":1,"val":"id","end":""},{"old":"/purchase-items/:id/archive","type":0,"val":"archive","end":""}],
     types: placeholder as Registry['purchase_items.archive']['types'],
   },
+  'settings.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/settings',
+    tokens: [{"old":"/settings","type":0,"val":"settings","end":""}],
+    types: placeholder as Registry['settings.index']['types'],
+  },
+  'settings.update': {
+    methods: ["PUT"],
+    pattern: '/settings',
+    tokens: [{"old":"/settings","type":0,"val":"settings","end":""}],
+    types: placeholder as Registry['settings.update']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

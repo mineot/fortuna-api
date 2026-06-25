@@ -16,16 +16,31 @@
       ></button>
     </div>
     <div class="offcanvas-body d-flex flex-column gap-4 pt-0">
-      <div class="d-flex gap-2 align-items-center justify-content-between">
+      <div class="d-flex flex-column gap-1 align-items-start justify-content-between">
         <div class="d-flex flex-column">
           <span class="fs-4">{{ page.props.user?.fullName ?? '' }}</span>
           <span class="fs-6 text-body-tertiary">{{ page.props.user?.email ?? '' }}</span>
         </div>
 
-        <button type="button" class="btn btn-sm btn-secondary" @click="logout()">
-          <i class="bi bi-box-arrow-right me-1"></i>
-          {{ t('app.auth.logout') }}
-        </button>
+        <div class="d-flex gap-2 align-items-center">
+          <Link
+            class="btn btn-sm btn-secondary"
+            :title="t('app.settings.title')"
+            route="settings.index"
+            @click="closeSidebar()"
+          >
+            <i class="bi bi-gear-fill"></i>
+          </Link>
+
+          <button
+            class="btn btn-sm btn-secondary"
+            type="button"
+            :title="t('app.auth.logout')"
+            @click="logout()"
+          >
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
+        </div>
       </div>
 
       <div class="d-flex flex-column gap-2">
@@ -58,7 +73,7 @@ import { usePage } from '@inertiajs/vue3';
 import type { Data } from '@generated/data';
 import { computed } from 'vue';
 
-type MenuRouteNames = 'home' | 'account_types.index' | 'category_groups.index';
+type MenuRouteNames = 'home' | 'account_types.index' | 'category_groups.index' | 'settings.index';
 
 type MenuItem = {
   route: MenuRouteNames;

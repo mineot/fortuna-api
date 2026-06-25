@@ -101,7 +101,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted, PropType, ref, watch } from 'vue';
-import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n.js';
 import Button from './button.vue';
 import Input from './input.vue';
@@ -131,7 +130,6 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
-const { refreshTooltips } = useAppStore();
 const currentPage = ref<number>(1);
 const searchText = ref<string>('');
 const tableData = ref<TableRow[]>([]);
@@ -213,10 +211,6 @@ async function refresh() {
     tableMeta.value = json[props.objectName].meta;
   } finally {
     loading.value = false;
-
-    setTimeout(() => {
-      refreshTooltips();
-    }, 500);
   }
 }
 

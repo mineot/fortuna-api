@@ -129,4 +129,8 @@ export interface ApiDefinition {
     update: typeof routes['purchase_items.update']
     archive: typeof routes['purchase_items.archive']
   }
+  settings: {
+    index: typeof routes['settings.index']
+    update: typeof routes['settings.update']
+  }
 }

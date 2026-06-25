@@ -21,6 +21,7 @@ export const controllers = {
   Purchases: () => import('#controllers/purchases_controller'),
   RecurringTransactions: () => import('#controllers/recurring_transactions_controller'),
   Session: () => import('#controllers/session_controller'),
+  Settings: () => import('#controllers/settings_controller'),
   ShoppingListItems: () => import('#controllers/shopping_list_items_controller'),
   ShoppingLists: () => import('#controllers/shopping_lists_controller'),
   Transactions: () => import('#controllers/transactions_controller'),

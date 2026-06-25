@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import * as bootstrap from 'bootstrap';
 
 export const useAppStore = defineStore('appStore', () => {
   type Button = {
@@ -20,12 +19,6 @@ export const useAppStore = defineStore('appStore', () => {
 
   const setButtons = (values: Button[]) => {
     buttons.value = values;
-    setTimeout(() => refreshTooltips(), 500);
-  };
-
-  const refreshTooltips = () => {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    tooltipTriggerList.forEach((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl));
   };
 
   function getCsrfToken(): string | null {
@@ -78,7 +71,6 @@ export const useAppStore = defineStore('appStore', () => {
     getButtons,
     setButtons,
     clearButtons,
-    refreshTooltips,
     getCsrfToken,
     getCsrfHeader,
     findById,

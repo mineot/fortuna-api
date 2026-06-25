@@ -29,6 +29,7 @@ const CreditCardInstallmentsController = () =>
   import('#controllers/credit_card_installments_controller');
 const CreditCardInvoicePaymentsController = () =>
   import('#controllers/credit_card_invoice_payments_controller');
+const SettingsController = () => import('#controllers/settings_controller');
 const ShoppingListsController = () => import('#controllers/shopping_lists_controller');
 const ShoppingListItemsController = () => import('#controllers/shopping_list_items_controller');
 const PurchasesController = () => import('#controllers/purchases_controller');
@@ -156,5 +157,8 @@ router
     router.post('purchase-items', [PurchaseItemsController, 'store']);
     router.put('purchase-items/:id', [PurchaseItemsController, 'update']);
     router.patch('purchase-items/:id/archive', [PurchaseItemsController, 'archive']);
+
+    router.get('settings', [SettingsController, 'index']);
+    router.put('settings', [SettingsController, 'update']);
   })
   .use(middleware.auth());

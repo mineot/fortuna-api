@@ -80,6 +80,13 @@
   </div>
 </template>
 
+<style scoped>
+.required {
+  color: var(--bs-danger);
+  font-size: 0.75rem;
+}
+</style>
+
 <script setup lang="ts">
 import { computed, PropType } from 'vue';
 import { ErrorType, FormControlTypes, InputTypes, SelectOption } from './types.js';

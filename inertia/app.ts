@@ -9,7 +9,6 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { createPinia } from 'pinia';
 import { resolvePageComponent } from '@adonisjs/inertia/helpers';
 import { TuyauProvider } from '@adonisjs/inertia/vue';
-import * as bootstrap from 'bootstrap';
 import Layout from '~/layouts/default.vue';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Fortuna';
@@ -30,9 +29,6 @@ createInertiaApp({
       .use(plugin)
       .use(pinia)
       .mount(el);
-
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    [...tooltipTriggerList].map((tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl));
   },
   progress: {
     color: '#4B5563',

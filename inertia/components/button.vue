@@ -3,8 +3,7 @@
     v-if="props.type === 'icon'"
     :class="[props.icon, 'px-2 py-1', iconVariant]"
     :data-bs-dismiss="props.dismiss"
-    :data-bs-title="title"
-    data-bs-toggle="tooltip"
+    :title="title"
     role="button"
     v-bind="$attrs"
   />
@@ -18,9 +17,8 @@
       'd-flex flex-nowrap gap-1 align-items-center justify-content-center text-nowrap',
     ]"
     :data-bs-dismiss="props.dismiss"
-    :data-bs-title="title"
+    :title="title"
     :type="type as any"
-    data-bs-toggle="tooltip"
     v-bind="$attrs"
   >
     <span
@@ -35,15 +33,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ComputedRef, nextTick, PropType, watch } from 'vue';
-import { useAppStore } from '~/stores/app.store';
+import { computed, ComputedRef, PropType } from 'vue';
 import type { ButtonTypes, Variants } from './types';
 
 defineOptions({
   inheritAttrs: false,
 });
-
-const { refreshTooltips } = useAppStore();
 
 const props = defineProps({
   type: {
@@ -96,15 +91,5 @@ const iconVariant = computed(() => {
   return props.variant
     ? `link-${props.variant} text-${props.variant}`
     : 'link-primary text-primary';
-});
-
-const checkTitle = computed(() => {
-  return props.title ?? '';
-});
-
-watch(checkTitle, async () => {
-  console.log('refreshing tooltips');
-  await nextTick();
-  refreshTooltips();
 });
 </script>

@@ -89,6 +89,8 @@ export type ScannedRoutes = {
     'purchase_items.store': { paramsTuple?: []; params?: {} }
     'purchase_items.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'purchase_items.archive': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'settings.index': { paramsTuple?: []; params?: {} }
+    'settings.update': { paramsTuple?: []; params?: {} }
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
@@ -117,6 +119,7 @@ export type ScannedRoutes = {
     'shopping_list_items.index': { paramsTuple?: []; params?: {} }
     'purchases.index': { paramsTuple?: []; params?: {} }
     'purchase_items.index': { paramsTuple?: []; params?: {} }
+    'settings.index': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
@@ -145,6 +148,7 @@ export type ScannedRoutes = {
     'shopping_list_items.index': { paramsTuple?: []; params?: {} }
     'purchases.index': { paramsTuple?: []; params?: {} }
     'purchase_items.index': { paramsTuple?: []; params?: {} }
+    'settings.index': { paramsTuple?: []; params?: {} }
   }
   POST: {
     'new_account.store': { paramsTuple?: []; params?: {} }
@@ -189,6 +193,7 @@ export type ScannedRoutes = {
     'shopping_list_items.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'purchases.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'purchase_items.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'settings.update': { paramsTuple?: []; params?: {} }
   }
   PATCH: {
     'account_types.archive': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

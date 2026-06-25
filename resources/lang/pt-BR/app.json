@@ -60,6 +60,15 @@
     "confirmDelete": "Excluir grupo de categorias",
     "confirmDeleteMessage": "Tem certeza que deseja excluir este grupo de categorias?"
   },
+  "settings": {
+    "title": "Configurações",
+    "locale": "Idioma",
+    "currency": "Moeda",
+    "timezone": "Fuso horário",
+    "localeEnUs": "Inglês (EUA)",
+    "localePtBr": "Português (Brasil)",
+    "successSave": "Configurações salvas com sucesso."
+  },
   "errors": {
     "notFoundDescription": "A página solicitada não existe ou foi movida.",
     "notFoundTitle": "Página não encontrada",
