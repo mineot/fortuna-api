@@ -25,6 +25,7 @@
       v-model="form.timezone"
       :label="t('app.settings.timezone')"
       :options="timezones"
+      searchable
     />
   </section>
 </template>

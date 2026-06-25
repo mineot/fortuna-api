@@ -59,6 +59,7 @@
       :name="props.name"
       :options="props.options"
       :required="props.required"
+      :searchable="props.searchable"
       v-model="formControlModel"
     />
 
@@ -144,6 +145,11 @@ const props = defineProps({
     type: Array as PropType<SelectOption[]>,
     required: false,
     default: [],
+  },
+  searchable: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 });
 
