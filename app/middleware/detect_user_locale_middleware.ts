@@ -50,13 +50,19 @@ export default class DetectUserLocaleMiddleware {
           userId: authUser.id,
           currency: 'USD',
           locale: 'en-US',
-          timezone: 'UTC',
+          timezone: 'America/New_York',
           localeInitializedAt: null,
         }));
 
       if (!setting.localeInitializedAt) {
         const detected = this.normalizeLocale(language);
-        setting.merge({ locale: detected, localeInitializedAt: DateTime.local() });
+        const isPtBr = detected === 'pt-BR';
+        setting.merge({
+          locale: detected,
+          timezone: isPtBr ? 'America/Sao_Paulo' : 'America/New_York',
+          currency: isPtBr ? 'BRL' : 'USD',
+          localeInitializedAt: DateTime.local(),
+        });
         await setting.save();
         language = detected;
       } else {
@@ -65,7 +71,7 @@ export default class DetectUserLocaleMiddleware {
 
       (ctx as CtxWithTimezone).userTimezone = setting.timezone;
     } else {
-      (ctx as CtxWithTimezone).userTimezone = 'UTC';
+      (ctx as CtxWithTimezone).userTimezone = 'America/New_York';
     }
 
     /**

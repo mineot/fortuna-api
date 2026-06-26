@@ -19,7 +19,7 @@ export default class NewAccountController {
           userId: created.id,
           currency: 'USD',
           locale: 'en-US',
-          timezone: 'UTC',
+          timezone: 'America/New_York',
           localeInitializedAt: null,
         },
         { client: trx },

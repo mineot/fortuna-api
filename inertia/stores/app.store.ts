@@ -8,6 +8,10 @@ export const useAppStore = defineStore('appStore', () => {
     click: (event?: any) => void;
   };
 
+  const loading = ref<boolean>(false);
+  const isLoading = () => loading.value;
+  const setLoading = (value: boolean) => (loading.value = value);
+
   const title = ref<string>('');
   const getTitle = () => title.value;
   const setTitle = (value: string) => (title.value = value);
@@ -75,5 +79,7 @@ export const useAppStore = defineStore('appStore', () => {
     getCsrfHeader,
     findById,
     archive,
+    isLoading,
+    setLoading,
   };
 });

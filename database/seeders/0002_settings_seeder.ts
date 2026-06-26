@@ -16,7 +16,7 @@ export default class extends BaseSeeder {
         userId: user.id,
         currency: 'USD',
         locale: 'en-US',
-        timezone: 'UTC',
+        timezone: 'America/New_York',
         localeInitializedAt: null,
       }));
 

@@ -31,18 +31,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
+import { SelectOption } from '~/components/types';
 import { toast } from 'vue-sonner';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import { usePage } from '@inertiajs/vue3';
 import FormControl from '~/components/form-control.vue';
 import type { Data } from '@generated/data';
-import { SelectOption } from '~/components/types';
 
+const { getCsrfHeader, setLoading } = useAppStore();
+const { setTitle, setButtons, clearTitle, clearButtons } = useAppStore();
 const { t } = useI18n();
-const { setTitle, setButtons } = useAppStore();
-const { getCsrfHeader } = useAppStore();
 
 const page = usePage<Data.SharedProps & { setting: SettingProps }>();
 
@@ -62,15 +62,10 @@ const form = reactive<SettingProps>({
   timezone: page.props.setting.timezone,
 });
 
-const timezones: SelectOption[] = [
-  { label: 'UTC', value: 'UTC' },
-  ...Intl.supportedValuesOf('timeZone').map((tz) => ({
-    label: tz,
-    value: tz,
-  })),
-];
-
-const saving = ref(false);
+const timezones: SelectOption[] = Intl.supportedValuesOf('timeZone').map((tz) => ({
+  label: tz,
+  value: tz,
+}));
 
 onMounted(() => {
   setTitle(t('app.settings.title'));
@@ -80,7 +75,7 @@ onMounted(() => {
       title: t('app.terms.save'),
       icon: 'bi bi-floppy-fill',
       click: async () => {
-        saving.value = true;
+        setLoading(true);
 
         try {
           const response = await fetch('/settings', {
@@ -96,7 +91,8 @@ onMounted(() => {
 
           if (!response.ok) {
             const body = await response.json().catch(() => ({}));
-            toast.error(body.message || t('app.terms.error_occurred'));
+            const msg = body.errors?.[0]?.message || body.message || t('app.terms.error_occurred');
+            toast.error(msg);
             return;
           }
 
@@ -104,10 +100,16 @@ onMounted(() => {
         } catch {
           toast.error(t('app.terms.error_unexpected'));
         } finally {
-          saving.value = false;
+          setLoading(false);
+          setTimeout(() => location.reload(), 1000);
         }
       },
     },
   ]);
+});
+
+onUnmounted(() => {
+  clearTitle();
+  clearButtons();
 });
 </script>
