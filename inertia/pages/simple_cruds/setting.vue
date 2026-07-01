@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref } from 'vue';
+import { onMounted, onUnmounted, reactive } from 'vue';
 import { SelectOption } from '~/components/types';
 import { toast } from 'vue-sonner';
 import { useAppStore } from '~/stores/app.store';
@@ -40,7 +40,7 @@ import { usePage } from '@inertiajs/vue3';
 import FormControl from '~/components/form-control.vue';
 import type { Data } from '@generated/data';
 
-const { getCsrfHeader, setLoading } = useAppStore();
+const { setLoading } = useAppStore();
 const { setTitle, setButtons, clearTitle, clearButtons } = useAppStore();
 const { t } = useI18n();
 
@@ -81,7 +81,7 @@ onMounted(() => {
           const response = await fetch('/settings', {
             method: 'PUT',
             credentials: 'include',
-            headers: getCsrfHeader(),
+            // headers: getCsrfHeader(),
             body: JSON.stringify({
               locale: form.locale,
               currency: form.currency,

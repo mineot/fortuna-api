@@ -25,53 +25,6 @@ export const useAppStore = defineStore('appStore', () => {
     buttons.value = values;
   };
 
-  // FIXME: transfer to helper class
-  function getCsrfToken(): string | null {
-    const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
-    return match ? decodeURIComponent(match[1]) : null;
-  }
-
-  // FIXME: transfer to helper class
-  function getCsrfHeader() {
-    const csrfToken = getCsrfToken();
-
-    return {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      ...(csrfToken ? { 'X-XSRF-TOKEN': csrfToken } : {}),
-    };
-  }
-
-  // FIXME: transfer to helper class
-  async function findById<T>(url: string, id: number): Promise<T> {
-    const response = await fetch(`${url}/${id}`, {
-      headers: { Accept: 'application/json' },
-    });
-
-    const json = await response.json();
-    return json.data as T;
-  }
-
-  // FIXME: transfer to helper class
-  async function archive(url: string, id: number): Promise<{ fail: boolean; message?: any }> {
-    try {
-      const response = await fetch(`${url}/${id}/archive`, {
-        method: 'PATCH',
-        credentials: 'include',
-        headers: getCsrfHeader(),
-      });
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        return { fail: true, message: body.message };
-      }
-
-      return { fail: false };
-    } catch {
-      throw null;
-    }
-  }
-
   return {
     getTitle,
     setTitle,
@@ -79,10 +32,6 @@ export const useAppStore = defineStore('appStore', () => {
     getButtons,
     setButtons,
     clearButtons,
-    getCsrfToken,
-    getCsrfHeader,
-    findById,
-    archive,
     isLoading,
     setLoading,
   };

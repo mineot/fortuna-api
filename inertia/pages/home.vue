@@ -1,4 +1,6 @@
 <template>
+  <Form></Form>
+
   <section class="p-4 p-md-5 mb-4 bg-body rounded-3 border border-secondary-subtle">
     <div class="container-fluid py-2">
       <h1 class="display-6 fw-semibold mb-3">{{ t('app.home.heroTitle') }}</h1>
@@ -58,6 +60,7 @@
 import { onMounted } from 'vue';
 import { useI18n } from '~/lib/i18n';
 import { useAppStore } from '~/stores/app.store';
+import Form from '~/components/form.vue';
 
 const { t } = useI18n();
 const { setTitle } = useAppStore();

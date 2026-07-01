@@ -1,0 +1,99 @@
+type ResponseStatus = 'ERROR' | 'SUCCESS';
+type Response<T> = { status: ResponseStatus; message: string; data?: T };
+type TFunction = (key: string, params?: (string | number)[]) => string;
+
+type FindByIdArgs = { url: string; id: number; useCredential?: boolean; t: TFunction };
+type ArchiveArgs = { url: string; id: number; t: TFunction };
+type UpdateArgs = { url: string; id: number; t: TFunction; body: any };
+
+function getCsrfToken(): string | null {
+  const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
+
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function getCsrfHeader() {
+  const csrfToken = getCsrfToken();
+
+  return {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    ...(csrfToken ? { 'X-XSRF-TOKEN': csrfToken } : {}),
+  };
+}
+
+export async function findById<T>(args: FindByIdArgs): Promise<Response<T>> {
+  const { url, id, useCredential, t } = args;
+
+  try {
+    const options: RequestInit = useCredential
+      ? { credentials: 'include', headers: getCsrfHeader() }
+      : { headers: { Accept: 'application/json' } };
+
+    const response = await fetch(`${url}/${id}`, options);
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      return { status: 'ERROR', message: body.message };
+    }
+
+    const body = await response.json();
+    return { status: 'SUCCESS', message: body.message, data: body.data as T };
+  } catch (error) {
+    return {
+      status: 'ERROR',
+      message: error instanceof Error ? error.message : t('app.terms.error_unexpected'),
+    };
+  }
+}
+
+export async function archive<T>(args: ArchiveArgs): Promise<Response<T>> {
+  const { url, id, t } = args;
+
+  try {
+    const response = await fetch(`${url}/${id}/archive`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: getCsrfHeader(),
+    });
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      return { status: 'ERROR', message: body.message };
+    }
+
+    const body = await response.json();
+    return { status: 'SUCCESS', message: body.message, data: body.data as T };
+  } catch (error) {
+    return {
+      status: 'ERROR',
+      message: error instanceof Error ? error.message : t('app.terms.error_unexpected'),
+    };
+  }
+}
+
+export async function update<T>(args: UpdateArgs): Promise<Response<T>> {
+  const { url, body, t } = args;
+
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: getCsrfHeader(),
+      body,
+    });
+
+    if (!response.ok) {
+      const json = await response.json().catch(() => ({}));
+      return { status: 'ERROR', message: json.message };
+    }
+
+    const json = await response.json();
+    return { status: 'SUCCESS', message: json.message, data: json.data as T };
+  } catch (error) {
+    return {
+      status: 'ERROR',
+      message: error instanceof Error ? error.message : t('app.terms.error_unexpected'),
+    };
+  }
+}
