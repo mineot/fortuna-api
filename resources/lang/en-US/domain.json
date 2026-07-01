@@ -26,6 +26,8 @@
     "creditCardInvoiceNotFound": "Credit card invoice not found.",
     "creditCardInvoiceNotFoundForUser": "Credit card invoice not found for this user.",
     "creditCardInvoicePaymentNotFound": "Credit card invoice payment not found.",
+    "currentPasswordIncorrect": "Current password is incorrect.",
+    "currentPasswordRequired": "Current password is required to set a new password.",
     "creditCardNameAlreadyExists": "Credit card name already exists.",
     "creditCardNotFound": "Credit card not found.",
     "creditCardNotFoundForUser": "Credit card not found for this user.",

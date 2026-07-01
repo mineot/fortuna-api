@@ -26,6 +26,8 @@
     "creditCardInvoiceNotFound": "Fatura do cartão de crédito não encontrada.",
     "creditCardInvoiceNotFoundForUser": "Fatura do cartão de crédito não encontrada para este usuário.",
     "creditCardInvoicePaymentNotFound": "Pagamento da fatura do cartão de crédito não encontrado.",
+    "currentPasswordIncorrect": "Senha atual incorreta.",
+    "currentPasswordRequired": "Senha atual é obrigatória para definir uma nova senha.",
     "creditCardNameAlreadyExists": "Já existe um cartão de crédito com este nome.",
     "creditCardNotFound": "Cartão de crédito não encontrado.",
     "creditCardNotFoundForUser": "Cartão de crédito não encontrado para este usuário.",

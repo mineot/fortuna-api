@@ -17,6 +17,7 @@ export const controllers = {
   CreditCards: () => import('#controllers/credit_cards_controller'),
   NewAccount: () => import('#controllers/new_account_controller'),
   Payees: () => import('#controllers/payees_controller'),
+  Profile: () => import('#controllers/profile_controller'),
   PurchaseItems: () => import('#controllers/purchase_items_controller'),
   Purchases: () => import('#controllers/purchases_controller'),
   RecurringTransactions: () => import('#controllers/recurring_transactions_controller'),

@@ -30,6 +30,7 @@ const CreditCardInstallmentsController = () =>
 const CreditCardInvoicePaymentsController = () =>
   import('#controllers/credit_card_invoice_payments_controller');
 const SettingsController = () => import('#controllers/settings_controller');
+const ProfileController = () => import('#controllers/profile_controller');
 const ShoppingListsController = () => import('#controllers/shopping_lists_controller');
 const ShoppingListItemsController = () => import('#controllers/shopping_list_items_controller');
 const PurchasesController = () => import('#controllers/purchases_controller');
@@ -160,5 +161,8 @@ router
 
     router.get('settings', [SettingsController, 'index']);
     router.put('settings', [SettingsController, 'update']);
+
+    router.get('profile', [ProfileController, 'index']);
+    router.put('profile', [ProfileController, 'update']);
   })
   .use(middleware.auth());

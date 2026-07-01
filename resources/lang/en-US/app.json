@@ -60,6 +60,19 @@
     "confirmDelete": "Delete category group",
     "confirmDeleteMessage": "Are you sure you want to delete this category group?"
   },
+  "profile": {
+    "title": "Profile",
+    "successSave": "Profile saved successfully.",
+    "profileInfo": "Profile Information",
+    "changePassword": "Change Password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "newPasswordConfirmation": "Confirm new password",
+    "currentPasswordIncorrect": "Current password is incorrect.",
+    "currentPasswordRequired": "Current password is required to set a new password.",
+    "passwordsDoNotMatch": "Passwords do not match.",
+    "emailRequired": "Email is required."
+  },
   "settings": {
     "title": "Settings",
     "locale": "Language",

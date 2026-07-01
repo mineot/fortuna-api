@@ -16,15 +16,26 @@
       ></button>
     </div>
     <div class="offcanvas-body d-flex flex-column gap-4 pt-0">
-      <div class="d-flex flex-column gap-1 align-items-start justify-content-between">
+      <div
+        class="d-flex flex-column gap-2 align-items-start justify-content-between border rounded p-2 bg-dark-subtle"
+      >
         <div class="d-flex flex-column">
           <span class="fs-4">{{ page.props.user?.fullName ?? '' }}</span>
           <span class="fs-6 text-body-tertiary">{{ page.props.user?.email ?? '' }}</span>
         </div>
 
-        <div class="d-flex gap-2 align-items-center">
+        <div class="d-flex gap-2 align-items-center justify-content-end">
           <Link
-            class="btn btn-sm btn-secondary"
+            class="btn btn-sm btn-dark"
+            :title="t('app.profile.title')"
+            route="profile.index"
+            @click="closeSidebar()"
+          >
+            <i class="bi bi-person-fill"></i>
+          </Link>
+
+          <Link
+            class="btn btn-sm btn-dark"
             :title="t('app.settings.title')"
             route="settings.index"
             @click="closeSidebar()"
@@ -33,7 +44,7 @@
           </Link>
 
           <button
-            class="btn btn-sm btn-secondary"
+            class="btn btn-sm btn-dark"
             type="button"
             :title="t('app.auth.logout')"
             @click="logout()"

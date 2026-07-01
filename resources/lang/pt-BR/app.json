@@ -60,6 +60,19 @@
     "confirmDelete": "Excluir grupo de categorias",
     "confirmDeleteMessage": "Tem certeza que deseja excluir este grupo de categorias?"
   },
+  "profile": {
+    "title": "Perfil",
+    "successSave": "Perfil salvo com sucesso.",
+    "profileInfo": "Informações do Perfil",
+    "changePassword": "Alterar Senha",
+    "currentPassword": "Senha atual",
+    "newPassword": "Nova senha",
+    "newPasswordConfirmation": "Confirmar nova senha",
+    "currentPasswordIncorrect": "Senha atual incorreta.",
+    "currentPasswordRequired": "Senha atual é obrigatória para definir uma nova senha.",
+    "passwordsDoNotMatch": "As senhas não conferem.",
+    "emailRequired": "E-mail é obrigatório."
+  },
   "settings": {
     "title": "Configurações",
     "locale": "Idioma",

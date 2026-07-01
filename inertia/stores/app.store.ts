@@ -25,11 +25,13 @@ export const useAppStore = defineStore('appStore', () => {
     buttons.value = values;
   };
 
+  // FIXME: transfer to helper class
   function getCsrfToken(): string | null {
     const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
     return match ? decodeURIComponent(match[1]) : null;
   }
 
+  // FIXME: transfer to helper class
   function getCsrfHeader() {
     const csrfToken = getCsrfToken();
 
@@ -40,6 +42,7 @@ export const useAppStore = defineStore('appStore', () => {
     };
   }
 
+  // FIXME: transfer to helper class
   async function findById<T>(url: string, id: number): Promise<T> {
     const response = await fetch(`${url}/${id}`, {
       headers: { Accept: 'application/json' },
@@ -49,6 +52,7 @@ export const useAppStore = defineStore('appStore', () => {
     return json.data as T;
   }
 
+  // FIXME: transfer to helper class
   async function archive(url: string, id: number): Promise<{ fail: boolean; message?: any }> {
     try {
       const response = await fetch(`${url}/${id}/archive`, {

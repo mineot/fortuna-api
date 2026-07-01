@@ -133,4 +133,8 @@ export interface ApiDefinition {
     index: typeof routes['settings.index']
     update: typeof routes['settings.update']
   }
+  profile: {
+    index: typeof routes['profile.index']
+    update: typeof routes['profile.update']
+  }
 }

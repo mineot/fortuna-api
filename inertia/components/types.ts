@@ -1,3 +1,5 @@
+// FIXME: keep here only generic types
+
 // GENERAL
 
 export type ButtonTypes = 'button' | 'submit' | 'reset' | 'icon';
@@ -23,6 +25,7 @@ export type InputTypes =
   | 'email'
   | 'month'
   | 'number'
+  | 'password'
   | 'radio'
   | 'range'
   | 'search'

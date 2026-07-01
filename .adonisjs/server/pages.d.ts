@@ -18,6 +18,7 @@ declare module '@adonisjs/inertia/types' {
     'simple_cruds/budget': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/budget.vue'))['default']>
     'simple_cruds/category.group': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/category.group.vue'))['default']>
     'simple_cruds/payee': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/payee.vue'))['default']>
+    'simple_cruds/profile': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/profile.vue'))['default']>
     'simple_cruds/setting': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/setting.vue'))['default']>
     'simple_cruds/shopping-list': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/shopping-list.vue'))['default']>
   }
