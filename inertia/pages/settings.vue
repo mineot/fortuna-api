@@ -1,4 +1,8 @@
 <template>
+  <h1>Settings</h1>
+</template>
+
+<!-- <template>
   <section class="d-flex flex-column gap-3">
     <FormControl
       type="select"
@@ -112,4 +116,4 @@ onUnmounted(() => {
   clearTitle();
   clearButtons();
 });
-</script>
+</script> -->

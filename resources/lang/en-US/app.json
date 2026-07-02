@@ -32,15 +32,7 @@
     "creatingAccount": "Creating account..."
   },
   "home": {
-    "title": "Home",
-    "heroTitle": "Fortuna ready with Vue + Bootstrap",
-    "heroDescription": "Server-driven UI with Inertia, Vue components, and Bootstrap dark theme as the global UI base.",
-    "docs": "Docs",
-    "docsDescription": "Official AdonisJS reference.",
-    "inertia": "Inertia",
-    "inertiaDescription": "Guide for server-driven navigation with Vue.",
-    "bootstrap": "Bootstrap",
-    "bootstrapDescription": "Global styles and component system."
+    "title": "Home"
   },
   "accountTypes": {
     "title": "Account Types",

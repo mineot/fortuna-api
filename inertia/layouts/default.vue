@@ -44,13 +44,13 @@
 </style>
 
 <script setup lang="ts">
-import { toast, Toaster } from 'vue-sonner';
-import { usePage } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
+import { toast, Toaster } from 'vue-sonner';
+import { useAppStore } from '~/stores/app.store';
+import { usePage } from '@inertiajs/vue3';
 import Navbar from '~/components/navbar.vue';
 import Sidebar from '~/components/sidebar.vue';
 import type { Data } from '@generated/data';
-import { useAppStore } from '~/stores/app.store';
 
 const { isLoading } = useAppStore();
 

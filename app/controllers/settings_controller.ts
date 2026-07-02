@@ -6,7 +6,7 @@ export default class SettingsController {
   async index({ auth, inertia }: HttpContext) {
     const setting = await Setting.query().where('user_id', auth.user!.id).firstOrFail();
 
-    return inertia.render('simple_cruds/setting', {
+    return inertia.render('settings', {
       setting: setting.toJSON(),
     });
   }

@@ -1,4 +1,8 @@
 <template>
+  <h1>Category Group</h1>
+</template>
+
+<!-- <template>
   <Table
     ref="tableRef"
     route-path="/category-groups/list"
@@ -163,4 +167,4 @@ onUnmounted(() => {
   clearTitle();
   clearButtons();
 });
-</script>
+</script> -->

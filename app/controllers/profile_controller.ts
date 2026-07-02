@@ -8,7 +8,7 @@ export default class UserProfileController {
   async index({ auth, inertia }: HttpContext) {
     const user = await User.query().where('id', auth.user!.id).firstOrFail();
 
-    return inertia.render('simple_cruds/profile', {
+    return inertia.render('profile', {
       user: user.toJSON(),
     });
   }

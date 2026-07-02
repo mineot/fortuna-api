@@ -14,12 +14,12 @@ declare module '@adonisjs/inertia/types' {
     'errors/not_found': ExtractProps<(typeof import('../../inertia/pages/errors/not_found.vue'))['default']>
     'errors/server_error': ExtractProps<(typeof import('../../inertia/pages/errors/server_error.vue'))['default']>
     'home': ExtractProps<(typeof import('../../inertia/pages/home.vue'))['default']>
+    'profile': ExtractProps<(typeof import('../../inertia/pages/profile.vue'))['default']>
+    'settings': ExtractProps<(typeof import('../../inertia/pages/settings.vue'))['default']>
     'simple_cruds/account-types': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/account-types.vue'))['default']>
     'simple_cruds/budget': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/budget.vue'))['default']>
     'simple_cruds/category.group': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/category.group.vue'))['default']>
     'simple_cruds/payee': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/payee.vue'))['default']>
-    'simple_cruds/profile': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/profile.vue'))['default']>
-    'simple_cruds/setting': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/setting.vue'))['default']>
     'simple_cruds/shopping-list': ExtractProps<(typeof import('../../inertia/pages/simple_cruds/shopping-list.vue'))['default']>
   }
 }

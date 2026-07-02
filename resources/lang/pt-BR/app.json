@@ -32,15 +32,7 @@
     "creatingAccount": "Criando conta..."
   },
   "home": {
-    "title": "Início",
-    "heroTitle": "Fortuna pronto com Vue + Bootstrap",
-    "heroDescription": "UI orientada pelo servidor com Inertia, componentes Vue e tema escuro do Bootstrap como base global.",
-    "docs": "Documentação",
-    "docsDescription": "Referência oficial do AdonisJS.",
-    "inertia": "Inertia",
-    "inertiaDescription": "Guia de navegação orientada pelo servidor com Vue.",
-    "bootstrap": "Bootstrap",
-    "bootstrapDescription": "Estilos globais e sistema de componentes."
+    "title": "Início"
   },
   "accountTypes": {
     "title": "Tipos de Conta",

@@ -1,4 +1,8 @@
 <template>
+  <h1>Profile</h1>
+</template>
+
+<!-- <template>
   <section class="d-flex flex-column gap-4">
     <div class="card bg-body border-secondary-subtle">
       <div class="card-body">
@@ -163,4 +167,4 @@ onUnmounted(() => {
   clearTitle();
   clearButtons();
 });
-</script>
+</script> -->
