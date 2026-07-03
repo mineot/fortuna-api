@@ -54,6 +54,9 @@ type Rule = {
   EMAIL?: string;
   WHEN?: { field: string; message: string }[];
   EQUAL?: { field: string; message: string }[];
+  LENGTH?: { value: number; message: string };
+  MIN?: { value: number; message: string };
+  MAX?: { value: number; message: string };
 };
 
 type Field = {
@@ -146,6 +149,27 @@ const schema = computed(() => {
         for (const equal of field.rules.EQUAL) {
           rules[field.name] = rules[field.name].oneOf([yup.ref(equal.field)], equal.message);
         }
+      }
+
+      if (field.rules.LENGTH) {
+        rules[field.name] = rules[field.name].length(
+          field.rules.LENGTH.value,
+          field.rules.LENGTH.message,
+        );
+      }
+
+      if (field.rules.MIN) {
+        rules[field.name] = rules[field.name].min(
+          field.rules.MIN.value,
+          field.rules.MIN.message,
+        );
+      }
+
+      if (field.rules.MAX) {
+        rules[field.name] = rules[field.name].max(
+          field.rules.MAX.value,
+          field.rules.MAX.message,
+        );
       }
     }
   });

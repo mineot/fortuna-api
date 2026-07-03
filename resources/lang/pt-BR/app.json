@@ -67,6 +67,7 @@
     "passwordFieldsRequired": "Todos os campos de senha são obrigatórios.",
     "currentPasswordRequired": "Senha atual é obrigatória para definir uma nova senha.",
     "passwordsDoNotMatch": "As senhas não conferem.",
+    "passwordTooShort": "A senha deve ter no mínimo 8 caracteres.",
     "emailRequired": "E-mail é obrigatório."
   },
   "settings": {

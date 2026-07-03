@@ -1,3 +1,13 @@
+type OptionArgs = {
+  t?: (key: string) => string;
+};
+
+type MergeArgs = {
+  url: string;
+  payload: any;
+  options?: OptionArgs;
+};
+
 export function getCsrfToken(): string | null {
   const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
 
@@ -12,6 +22,44 @@ export function getCsrfHeader() {
     Accept: 'application/json',
     ...(csrfToken ? { 'X-XSRF-TOKEN': csrfToken } : {}),
   };
+}
+
+export async function merge<T>({ url, payload, options }: MergeArgs): Promise<T> {
+  const genericMessage = options?.t
+    ? options.t('app.terms.error_occurred')
+    : 'Unexpected error occurred';
+
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: getCsrfHeader(),
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      let msg = body.errors?.[0]?.message;
+      msg = msg || body.message;
+      msg = msg || genericMessage;
+      throw msg;
+    }
+
+    const body = await response.json();
+    return body.data as T;
+  } catch (error) {
+    console.error('API Helper - Merge: ', error);
+
+    if (typeof error === 'string') {
+      throw error;
+    }
+
+    if (error instanceof Error) {
+      throw error.message;
+    }
+
+    throw genericMessage;
+  }
 }
 
 // type ResponseStatus = 'ERROR' | 'SUCCESS';

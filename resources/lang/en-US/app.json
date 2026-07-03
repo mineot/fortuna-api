@@ -67,6 +67,7 @@
     "passwordFieldsRequired": "All password fields are required.",
     "currentPasswordRequired": "Current password is required to set a new password.",
     "passwordsDoNotMatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 8 characters.",
     "emailRequired": "Email is required."
   },
   "settings": {

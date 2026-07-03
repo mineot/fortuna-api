@@ -78,8 +78,8 @@
 </template>
 
 <script setup lang="ts">
-import { getCsrfHeader } from '~/helpers/app.helper';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { merge } from '~/helpers/app.helper';
 import { toast } from 'vue-sonner';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
@@ -130,7 +130,10 @@ onMounted(() => {
         try {
           const essentialValues = await formEssential.value?.getValues();
           const passwordValues = await formPassword.value?.getValues();
-          if (!essentialValues || !passwordValues) return;
+
+          if (!essentialValues || !passwordValues) {
+            return;
+          }
 
           const payload: Record<string, unknown> = {
             fullName: essentialValues.fullName,
@@ -140,25 +143,11 @@ onMounted(() => {
             newPasswordConfirmation: passwordValues.newPasswordConfirmation || undefined,
           };
 
-          // TODO: colocar esse codigo no app.helper com o nome merge
-          const response = await fetch('/profile', {
-            method: 'PUT',
-            credentials: 'include',
-            headers: getCsrfHeader(),
-            body: JSON.stringify(payload),
-          });
-
-          if (!response.ok) {
-            const body = await response.json().catch(() => ({}));
-            const msg = body.errors?.[0]?.message || body.message || t('app.terms.error_occurred');
-            toast.error(msg);
-            return;
-          }
-
+          await merge({ url: '/profile', payload, options: { t } });
           formPassword.value?.reset();
           toast.success(t('app.profile.successSave'));
-        } catch {
-          toast.error(t('app.terms.error_unexpected'));
+        } catch (msg) {
+          toast.error(typeof msg === 'string' ? msg : t('app.terms.error_unexpected'));
         }
       },
     },
