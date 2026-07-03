@@ -30,6 +30,7 @@
             :key="index"
             :icon="button.icon"
             :title="button.title"
+            :disabled="button.disabled ?? false"
             @click="button.click"
           />
         </template>

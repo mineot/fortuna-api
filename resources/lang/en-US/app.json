@@ -9,14 +9,15 @@
     "error_occurred": "An error occurred: {0}",
     "error_unexpected": "An unexpected error occurred.",
     "name": "Name",
-    "position": "Position",
     "no": "No",
-    "yes": "Yes",
     "noRecordsFound": "No records found.",
+    "position": "Position",
+    "reset": "Reset",
     "save": "Save",
     "search": "Search",
     "successSave": "Saved successfully.",
-    "totalRecords": "Total records: {0}"
+    "totalRecords": "Total records: {0}",
+    "yes": "Yes"
   },
   "auth": {
     "login": "Login",
@@ -25,6 +26,8 @@
     "email": "Email",
     "password": "Password",
     "fullName": "Full name",
+    "fullNameRequired": "Full name is required.",
+    "emailInvalid": "Email is invalid.",
     "passwordConfirmation": "Confirm password",
     "loginSubtitle": "Enter your details to access your account.",
     "signupSubtitle": "Enter your details to create your account.",
@@ -61,6 +64,7 @@
     "newPassword": "New password",
     "newPasswordConfirmation": "Confirm new password",
     "currentPasswordIncorrect": "Current password is incorrect.",
+    "passwordFieldsRequired": "All password fields are required.",
     "currentPasswordRequired": "Current password is required to set a new password.",
     "passwordsDoNotMatch": "Passwords do not match.",
     "emailRequired": "Email is required."

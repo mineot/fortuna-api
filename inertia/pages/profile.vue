@@ -1,98 +1,119 @@
 <template>
-  <h1>Profile</h1>
-</template>
+  <div class="d-flex flex-column gap-3">
+    <Panel>
+      <Form
+        ref="formEssential"
+        :init-values="initEssential"
+        :fields="[
+          {
+            name: 'fullName',
+            label: t('app.auth.fullName'),
+            type: 'TEXT',
+            rules: {
+              REQUIRED: t('app.auth.fullNameRequired'),
+            },
+          },
+          {
+            name: 'email',
+            label: t('app.auth.email'),
+            type: 'EMAIL',
+            rules: {
+              REQUIRED: t('app.profile.emailRequired'),
+              EMAIL: t('app.auth.emailInvalid'),
+            },
+          },
+        ]"
+      />
+    </Panel>
 
-<!-- <template>
-  <section class="d-flex flex-column gap-4">
-    <div class="card bg-body border-secondary-subtle">
-      <div class="card-body">
-        <h5 class="card-title mb-3">{{ t('app.profile.profileInfo') }}</h5>
-        <div class="d-flex flex-column gap-3">
-          <FormControl type="text" v-model="form.fullName" :label="t('app.auth.fullName')" />
-
-          <FormControl
-            type="email"
-            v-model="form.email"
-            name="email"
-            :label="t('app.auth.email')"
-            :errors="errors"
-            required
-          />
-        </div>
-      </div>
-    </div>
-
-    <div class="card bg-body border-secondary-subtle">
-      <div class="card-body">
-        <h5 class="card-title mb-3">{{ t('app.profile.changePassword') }}</h5>
-        <div class="d-flex flex-column gap-3">
-          <FormControl
-            type="password"
-            v-model="form.currentPassword"
-            :label="t('app.profile.currentPassword')"
-          />
-
-          <FormControl
-            type="password"
-            v-model="form.newPassword"
-            :label="t('app.profile.newPassword')"
-          />
-
-          <FormControl
-            type="password"
-            v-model="form.newPasswordConfirmation"
-            name="newPasswordConfirmation"
-            :label="t('app.profile.newPasswordConfirmation')"
-            :errors="errors"
-          />
-        </div>
-      </div>
-    </div>
-  </section>
+    <Panel>
+      <Form
+        ref="formPassword"
+        :init-values="initPassword"
+        :fields="[
+          {
+            name: 'currentPassword',
+            label: t('app.profile.currentPassword'),
+            type: 'PASSWORD',
+            rules: {
+              WHEN: [
+                { field: 'newPassword', message: t('app.profile.passwordFieldsRequired') },
+                {
+                  field: 'newPasswordConfirmation',
+                  message: t('app.profile.passwordFieldsRequired'),
+                },
+              ],
+            },
+          },
+          {
+            name: 'newPassword',
+            label: t('app.profile.newPassword'),
+            type: 'PASSWORD',
+            rules: {
+              WHEN: [
+                { field: 'currentPassword', message: t('app.profile.passwordFieldsRequired') },
+                {
+                  field: 'newPasswordConfirmation',
+                  message: t('app.profile.passwordFieldsRequired'),
+                },
+              ],
+            },
+          },
+          {
+            name: 'newPasswordConfirmation',
+            label: t('app.profile.newPasswordConfirmation'),
+            type: 'PASSWORD',
+            rules: {
+              WHEN: [
+                { field: 'currentPassword', message: t('app.profile.passwordFieldsRequired') },
+                { field: 'newPassword', message: t('app.profile.passwordFieldsRequired') },
+              ],
+              EQUAL: [{ field: 'newPassword', message: t('app.profile.passwordsDoNotMatch') }],
+            },
+          },
+        ]"
+      />
+    </Panel>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, watch } from 'vue';
+import { getCsrfHeader } from '~/helpers/app.helper';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import { usePage } from '@inertiajs/vue3';
-import FormControl from '~/components/form-control.vue';
+import Form, { type FormExposed } from '~/components/form.vue';
+import Panel from '~/components/panel.vue';
 import type { Data } from '@generated/data';
 
-const { getCsrfHeader, setLoading } = useAppStore();
-const { setTitle, setButtons, clearTitle, clearButtons } = useAppStore();
 const { t } = useI18n();
+const { setTitle, clearTitle, setButtons, clearButtons, toggleButtonState } = useAppStore();
 
-const page = usePage<Data.SharedProps & { user: UserProps }>();
+const page = usePage<Data.SharedProps>();
+const formEssential = ref<FormExposed | null>(null);
+const formPassword = ref<FormExposed | null>(null);
+const bothFormsValid = computed(() => formEssential.value?.valid && formPassword.value?.valid);
 
-type UserProps = {
-  id: number;
-  fullName: string | null;
-  email: string;
+const initEssential = {
+  fullName: page.props.user?.fullName ?? '',
+  email: page.props.user?.email ?? '',
 };
 
-const errors = reactive<Record<string, string | undefined>>({});
-
-const form = reactive({
-  fullName: page.props.user.fullName ?? '',
-  email: page.props.user.email,
+const initPassword = {
   currentPassword: '',
   newPassword: '',
   newPasswordConfirmation: '',
-});
+};
 
 watch(
-  () => form.newPasswordConfirmation,
-  () => {
-    errors.newPasswordConfirmation = undefined;
+  bothFormsValid,
+  (valid) => {
+    toggleButtonState('save-profile', valid ? 'enable' : 'disable');
   },
-);
-
-watch(
-  () => form.email,
-  () => {
-    errors.email = undefined;
+  {
+    immediate: true,
   },
 );
 
@@ -101,39 +122,25 @@ onMounted(() => {
 
   setButtons([
     {
-      title: t('app.terms.save'),
+      refId: 'save-profile',
       icon: 'bi bi-floppy-fill',
+      title: t('app.terms.save'),
+      disabled: true,
       click: async () => {
-        setLoading(true);
-
-        const hasNewPassword = !!form.newPassword;
-
-        if (!form.email.trim()) {
-          errors.email = t('app.profile.emailRequired');
-          setLoading(false);
-          return;
-        }
-
-        if (hasNewPassword && form.newPassword !== form.newPasswordConfirmation) {
-          errors.newPasswordConfirmation = t('app.profile.passwordsDoNotMatch');
-          setLoading(false);
-          return;
-        }
-
-        errors.newPasswordConfirmation = undefined;
-
-        const payload: Record<string, unknown> = {
-          fullName: form.fullName || null,
-          email: form.email,
-          currentPassword: form.currentPassword || undefined,
-        };
-
-        if (hasNewPassword) {
-          payload.newPassword = form.newPassword;
-          payload.newPasswordConfirmation = form.newPasswordConfirmation;
-        }
-
         try {
+          const essentialValues = await formEssential.value?.getValues();
+          const passwordValues = await formPassword.value?.getValues();
+          if (!essentialValues || !passwordValues) return;
+
+          const payload: Record<string, unknown> = {
+            fullName: essentialValues.fullName,
+            email: essentialValues.email,
+            currentPassword: passwordValues.currentPassword || undefined,
+            newPassword: passwordValues.newPassword || undefined,
+            newPasswordConfirmation: passwordValues.newPasswordConfirmation || undefined,
+          };
+
+          // TODO: colocar esse codigo no app.helper com o nome merge
           const response = await fetch('/profile', {
             method: 'PUT',
             credentials: 'include',
@@ -148,16 +155,20 @@ onMounted(() => {
             return;
           }
 
-          form.currentPassword = '';
-          form.newPassword = '';
-          form.newPasswordConfirmation = '';
-
+          formPassword.value?.reset();
           toast.success(t('app.profile.successSave'));
         } catch {
           toast.error(t('app.terms.error_unexpected'));
-        } finally {
-          setLoading(false);
         }
+      },
+    },
+    {
+      refId: 'reset-profile',
+      icon: 'bi bi-arrow-clockwise',
+      title: t('app.terms.reset'),
+      click: () => {
+        formEssential.value?.reset();
+        formPassword.value?.reset();
       },
     },
   ]);
@@ -167,4 +178,4 @@ onUnmounted(() => {
   clearTitle();
   clearButtons();
 });
-</script> -->
+</script>

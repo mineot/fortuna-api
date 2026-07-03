@@ -1,18 +1,10 @@
-type ResponseStatus = 'ERROR' | 'SUCCESS';
-type Response<T> = { status: ResponseStatus; message: string; data?: T };
-type TFunction = (key: string, params?: (string | number)[]) => string;
-
-type FindByIdArgs = { url: string; id: number; useCredential?: boolean; t: TFunction };
-type ArchiveArgs = { url: string; id: number; t: TFunction };
-type UpdateArgs = { url: string; id: number; t: TFunction; body: any };
-
-function getCsrfToken(): string | null {
+export function getCsrfToken(): string | null {
   const match = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]*)/);
 
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-function getCsrfHeader() {
+export function getCsrfHeader() {
   const csrfToken = getCsrfToken();
 
   return {
@@ -22,78 +14,88 @@ function getCsrfHeader() {
   };
 }
 
-export async function findById<T>(args: FindByIdArgs): Promise<Response<T>> {
-  const { url, id, useCredential, t } = args;
+// type ResponseStatus = 'ERROR' | 'SUCCESS';
+// type Response<T> = { status: ResponseStatus; message: string; data?: T };
 
-  try {
-    const options: RequestInit = useCredential
-      ? { credentials: 'include', headers: getCsrfHeader() }
-      : { headers: { Accept: 'application/json' } };
+// type FindByIdArgs = { url: string; id: number; useCredential?: boolean; t: TFunction };
+// type ArchiveArgs = { url: string; id: number; t: TFunction };
 
-    const response = await fetch(`${url}/${id}`, options);
+// export async function findById<T>(args: FindByIdArgs): Promise<Response<T>> {
+//   const { url, id, useCredential, t } = args;
 
-    if (!response.ok) {
-      const body = await response.json().catch(() => ({}));
-      return { status: 'ERROR', message: body.message };
-    }
+//   try {
+//     const options: RequestInit = useCredential
+//       ? { credentials: 'include', headers: getCsrfHeader() }
+//       : { headers: { Accept: 'application/json' } };
 
-    const body = await response.json();
-    return { status: 'SUCCESS', message: body.message, data: body.data as T };
-  } catch (error) {
-    return {
-      status: 'ERROR',
-      message: error instanceof Error ? error.message : t('app.terms.error_unexpected'),
-    };
-  }
-}
+//     const response = await fetch(`${url}/${id}`, options);
 
-export async function archive<T>(args: ArchiveArgs): Promise<Response<T>> {
-  const { url, id, t } = args;
+//     if (!response.ok) {
+//       const body = await response.json().catch(() => ({}));
+//       return { status: 'ERROR', message: body.message };
+//     }
 
-  try {
-    const response = await fetch(`${url}/${id}/archive`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: getCsrfHeader(),
-    });
+//     const body = await response.json();
+//     return { status: 'SUCCESS', message: body.message, data: body.data as T };
+//   } catch (error) {
+//     return {
+//       status: 'ERROR',
+//       message: error instanceof Error ? error.message : t('app.terms.error_unexpected'),
+//     };
+//   }
+// }
 
-    if (!response.ok) {
-      const body = await response.json().catch(() => ({}));
-      return { status: 'ERROR', message: body.message };
-    }
+// export async function archive<T>(args: ArchiveArgs): Promise<Response<T>> {
+//   const { url, id, t } = args;
 
-    const body = await response.json();
-    return { status: 'SUCCESS', message: body.message, data: body.data as T };
-  } catch (error) {
-    return {
-      status: 'ERROR',
-      message: error instanceof Error ? error.message : t('app.terms.error_unexpected'),
-    };
-  }
-}
+//   try {
+//     const response = await fetch(`${url}/${id}/archive`, {
+//       method: 'PATCH',
+//       credentials: 'include',
+//       headers: getCsrfHeader(),
+//     });
 
-export async function update<T>(args: UpdateArgs): Promise<Response<T>> {
-  const { url, body, t } = args;
+//     if (!response.ok) {
+//       const body = await response.json().catch(() => ({}));
+//       return { status: 'ERROR', message: body.message };
+//     }
 
-  try {
-    const response = await fetch(url, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: getCsrfHeader(),
-      body,
-    });
+//     const body = await response.json();
+//     return { status: 'SUCCESS', message: body.message, data: body.data as T };
+//   } catch (error) {
+//     return {
+//       status: 'ERROR',
+//       message: error instanceof Error ? error.message : t('app.terms.error_unexpected'),
+//     };
+//   }
+// }
 
-    if (!response.ok) {
-      const json = await response.json().catch(() => ({}));
-      return { status: 'ERROR', message: json.message };
-    }
+// export async function update<T>(url: string, id: number, body: any): Promise<Response<T>> {
+//   try {
+//     const response = await fetch(url, {
+//       method: 'PUT',
+//       credentials: 'include',
+//       headers: getCsrfHeader(),
+//       body,
+//     });
 
-    const json = await response.json();
-    return { status: 'SUCCESS', message: json.message, data: json.data as T };
-  } catch (error) {
-    return {
-      status: 'ERROR',
-      message: error instanceof Error ? error.message : t('app.terms.error_unexpected'),
-    };
-  }
-}
+//     if (!response.ok) {
+//       const json = await response.json().catch(() => ({}));
+
+//       return {
+//         status: 'ERROR',
+//         message: json.message,
+//       };
+//     }
+
+//     const json = await response.json();
+
+//     return {
+//       status: 'SUCCESS',
+//       message: json.message,
+//       data: json.data as T,
+//     };
+//   } catch (error) {
+//     throw error;
+//   }
+// }

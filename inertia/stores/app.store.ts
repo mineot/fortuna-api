@@ -2,8 +2,10 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 type Button = {
+  refId: string;
   icon: string;
   title: string;
+  disabled?: boolean;
   click: (event?: any) => void;
 };
 
@@ -48,6 +50,14 @@ export const useAppStore = defineStore('appStore', () => {
     buttons.value = values;
   };
 
+  const toggleButtonState = (refId: string, state: 'enable' | 'disable') => {
+    const button = buttons.value.find((btn) => btn.refId === refId);
+
+    if (button) {
+      button.disabled = state === 'disable';
+    }
+  };
+
   return {
     isLoading,
     startLoading,
@@ -58,5 +68,6 @@ export const useAppStore = defineStore('appStore', () => {
     clearButtons,
     getButtons,
     setButtons,
+    toggleButtonState,
   };
 });
