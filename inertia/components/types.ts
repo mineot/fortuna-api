@@ -35,11 +35,6 @@ export type InputTypes =
   | 'url'
   | 'week';
 
-export type SelectOption = {
-  value: any;
-  label: string;
-};
-
 // TABLE
 
 export type TableDataActionTypes = 'edit' | 'delete';

@@ -81,8 +81,12 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, onMounted, onUnmounted, PropType } from 'vue';
-import { SelectOption } from './types';
 import { useI18n } from '~/lib/i18n';
+
+export type SelectOption = {
+  value: any;
+  label: string;
+};
 
 const { t } = useI18n();
 

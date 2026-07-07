@@ -89,7 +89,16 @@ import Panel from '~/components/panel.vue';
 import type { Data } from '@generated/data';
 
 const { t } = useI18n();
-const { setTitle, clearTitle, setButtons, clearButtons, toggleButtonState } = useAppStore();
+
+const {
+  clearButtons,
+  clearTitle,
+  setButtons,
+  setTitle,
+  startLoading,
+  stopLoading,
+  toggleButtonState,
+} = useAppStore();
 
 const page = usePage<Data.SharedProps>();
 const formEssential = ref<FormExposed | null>(null);
@@ -128,6 +137,7 @@ onMounted(() => {
       disabled: true,
       click: async () => {
         try {
+          startLoading();
           const essentialValues = await formEssential.value?.getValues();
           const passwordValues = await formPassword.value?.getValues();
 
@@ -148,6 +158,8 @@ onMounted(() => {
           toast.success(t('app.profile.successSave'));
         } catch (msg) {
           toast.error(typeof msg === 'string' ? msg : t('app.terms.error_unexpected'));
+        } finally {
+          stopLoading();
         }
       },
     },

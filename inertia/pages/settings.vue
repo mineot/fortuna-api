@@ -1,113 +1,96 @@
 <template>
-  <h1>Settings</h1>
-</template>
-
-<!-- <template>
-  <section class="d-flex flex-column gap-3">
-    <FormControl
-      type="select"
-      v-model="form.locale"
-      :label="t('app.settings.locale')"
-      :options="[
-        { label: t('app.settings.localeEnUs'), value: 'en-US' },
-        { label: t('app.settings.localePtBr'), value: 'pt-BR' },
+  <Panel>
+    <Form
+      ref="form"
+      :fields="[
+        {
+          name: 'locale-select',
+          type: 'SELECT',
+          label: t('app.settings.locale'),
+          options: languageOptions({
+            enUsLang: t('app.settings.localeEnUs'),
+            ptBrLang: t('app.settings.localePtBr'),
+          }),
+        },
+        {
+          name: 'currency-select',
+          type: 'SELECT',
+          label: t('app.settings.currency'),
+          options: currencyOptions,
+        },
+        {
+          name: 'timezone-select',
+          type: 'SELECT',
+          label: t('app.settings.timezone'),
+          searchable: true,
+          options: timezoneOptions,
+        },
       ]"
+      :initial-values="{
+        'locale-select': locale,
+        'currency-select': currency,
+        'timezone-select': timezone,
+      }"
     />
-
-    <FormControl
-      type="select"
-      v-model="form.currency"
-      :label="t('app.settings.currency')"
-      :options="[
-        { label: 'USD', value: 'USD' },
-        { label: 'BRL', value: 'BRL' },
-      ]"
-    />
-
-    <FormControl
-      type="select"
-      v-model="form.timezone"
-      :label="t('app.settings.timezone')"
-      :options="timezones"
-      searchable
-    />
-  </section>
+  </Panel>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive } from 'vue';
-import { SelectOption } from '~/components/types';
-import { toast } from 'vue-sonner';
+import { Data } from '@generated/data';
+import { languageOptions, currencyOptions, timezoneOptions } from '~/helpers/app.options';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import { usePage } from '@inertiajs/vue3';
-import FormControl from '~/components/form-control.vue';
-import type { Data } from '@generated/data';
+import Form from '~/components/form.vue';
+import Panel from '~/components/panel.vue';
 
-const { setLoading } = useAppStore();
-const { setTitle, setButtons, clearTitle, clearButtons } = useAppStore();
 const { t } = useI18n();
-
-const page = usePage<Data.SharedProps & { setting: SettingProps }>();
-
-type SettingProps = {
-  id: number;
-  userId: number;
-  locale: string;
-  currency: string;
-  timezone: string;
-};
-
-const form = reactive<SettingProps>({
-  id: page.props.setting.id,
-  userId: page.props.setting.userId,
-  locale: page.props.setting.locale,
-  currency: page.props.setting.currency,
-  timezone: page.props.setting.timezone,
-});
-
-const timezones: SelectOption[] = Intl.supportedValuesOf('timeZone').map((tz) => ({
-  label: tz,
-  value: tz,
-}));
+const { setTitle, clearTitle, setButtons, clearButtons, startLoading, stopLoading } = useAppStore();
+const page = usePage<Data.SharedProps>();
+const form = ref<InstanceType<typeof Form> | null>(null);
+const { currency, locale, timezone } = page.props.settings as any;
 
 onMounted(() => {
   setTitle(t('app.settings.title'));
 
   setButtons([
     {
-      title: t('app.terms.save'),
+      refId: 'save-profile',
       icon: 'bi bi-floppy-fill',
+      title: t('app.terms.save'),
       click: async () => {
-        setLoading(true);
-
         try {
-          const response = await fetch('/settings', {
-            method: 'PUT',
-            credentials: 'include',
-            // headers: getCsrfHeader(),
-            body: JSON.stringify({
-              locale: form.locale,
-              currency: form.currency,
-              timezone: form.timezone,
-            }),
-          });
+          startLoading();
+          const formValues = await form.value?.getValues();
 
-          if (!response.ok) {
-            const body = await response.json().catch(() => ({}));
-            const msg = body.errors?.[0]?.message || body.message || t('app.terms.error_occurred');
-            toast.error(msg);
+          if (!formValues) {
             return;
           }
 
-          toast.success(t('app.settings.successSave'));
-        } catch {
-          toast.error(t('app.terms.error_unexpected'));
+          // const payload: Record<string, unknown> = {
+          //   fullName: essentialValues.fullName,
+          //   email: essentialValues.email,
+          //   currentPassword: passwordValues.currentPassword || undefined,
+          //   newPassword: passwordValues.newPassword || undefined,
+          //   newPasswordConfirmation: passwordValues.newPasswordConfirmation || undefined,
+          // };
+
+          // await merge({ url: '/profile', payload, options: { t } });
+          // TODO: reload all system
+          // toast.success(t('app.profile.successSave'));
+        } catch (msg) {
+          // toast.error(typeof msg === 'string' ? msg : t('app.terms.error_unexpected'));
         } finally {
-          setLoading(false);
-          setTimeout(() => location.reload(), 1000);
+          stopLoading();
         }
       },
+    },
+    {
+      refId: 'reset-profile',
+      icon: 'bi bi-arrow-clockwise',
+      title: t('app.terms.reset'),
+      click: () => form.value?.reset(),
     },
   ]);
 });
@@ -116,4 +99,4 @@ onUnmounted(() => {
   clearTitle();
   clearButtons();
 });
-</script> -->
+</script>

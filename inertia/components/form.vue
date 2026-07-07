@@ -37,6 +37,26 @@
           <ErrorMessage as="small" :name="field.name" class="text-danger" />
         </div>
       </template>
+      <template v-else-if="isSelect(field)">
+        <div class="d-flex flex-column">
+          <div class="d-flex gap-1 align-items-end">
+            <small>{{ field.label }}</small>
+            <small class="text-danger" v-if="field.rules?.REQUIRED">*</small>
+          </div>
+          <Field v-slot="{ field: fp }" :name="field.name" validate-on-input>
+            <Select
+              :invalid="!!errors[field.name]"
+              :modelValue="fp.value"
+              :name="field.name"
+              :options="field.options ?? []"
+              :placeholder="field.label"
+              :searchable="field.searchable ?? false"
+              @update:modelValue="fp.onChange"
+            />
+          </Field>
+          <ErrorMessage as="small" :name="field.name" class="text-danger" />
+        </div>
+      </template>
     </template>
   </Form>
 </template>
@@ -45,8 +65,10 @@
 import { computed, PropType, ref } from 'vue';
 import { Field, Form, ErrorMessage } from 'vee-validate';
 import * as yup from 'yup';
+import Select from '~/components/controls/select.vue';
+import type { SelectOption } from '~/components/controls/select.vue';
 
-type FieldType = 'TEXT' | 'EMAIL' | 'PASSWORD';
+type FieldType = 'TEXT' | 'EMAIL' | 'PASSWORD' | 'SELECT';
 type FieldValue = Partial<Record<string, any>>;
 
 type Rule = {
@@ -64,6 +86,8 @@ type Field = {
   label: string;
   type: FieldType;
   rules?: Rule;
+  options?: SelectOption[];
+  searchable?: boolean;
 };
 
 export interface FormExposed {
@@ -120,6 +144,9 @@ const schema = computed(() => {
         case 'EMAIL':
         case 'PASSWORD':
           rules[field.name] = yup.string();
+          break;
+        case 'SELECT':
+          rules[field.name] = yup.mixed();
           break;
       }
 
@@ -191,6 +218,10 @@ function checkInputType(field: Field): string {
 
 function isInput(field: Field): boolean {
   return field.type === 'TEXT' || field.type === 'EMAIL' || field.type === 'PASSWORD';
+}
+
+function isSelect(field: Field): boolean {
+  return field.type === 'SELECT';
 }
 
 async function validate(): Promise<boolean> {
