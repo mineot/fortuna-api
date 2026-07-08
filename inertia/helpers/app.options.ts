@@ -1,4 +1,4 @@
-import { type SelectOption } from '~/components/controls/select.vue';
+import type { SelectOption } from '~/components/form/form.types';
 
 export type LanguageOptionArgs = {
   enUsLang: string;

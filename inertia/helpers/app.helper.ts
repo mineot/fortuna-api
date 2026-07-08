@@ -1,10 +1,12 @@
+export type Payload = Record<string, unknown>;
+
 type OptionArgs = {
   t?: (key: string) => string;
 };
 
 type MergeArgs = {
   url: string;
-  payload: any;
+  payload: Payload;
   options?: OptionArgs;
 };
 

@@ -42,7 +42,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import { usePage } from '@inertiajs/vue3';
-import Form from '~/components/form.vue';
+import Form from '~/components/form/form.vue';
 import Panel from '~/components/panel.vue';
 
 const { t } = useI18n();
