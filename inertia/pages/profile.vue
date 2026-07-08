@@ -1,7 +1,12 @@
 <template>
   <div class="d-flex flex-column gap-3">
     <Panel>
-      <Form ref="formEssential" :rules="rulesEssential" :init-values="initEssential">
+      <Form
+        v-if="page.props.user"
+        ref="formEssential"
+        :rules="rulesEssential"
+        :init-values="initEssential"
+      >
         <FormInput name="fullName" type="text" :label="t('app.auth.fullName')" />
         <FormInput name="email" type="email" :label="t('app.auth.email')" />
       </Form>
@@ -70,11 +75,6 @@ const rulesEssential: RuleObject = {
   },
 };
 
-const initEssential = {
-  fullName: page.props.user?.fullName ?? '',
-  email: page.props.user?.email ?? '',
-};
-
 const rulesPassword: RuleObject = {
   currentPassword: {
     type: 'password',
@@ -111,6 +111,11 @@ const rulesPassword: RuleObject = {
     },
   },
 };
+
+const initEssential = computed(() => ({
+  fullName: page.props.user?.fullName ?? '',
+  email: page.props.user?.email ?? '',
+}));
 
 const initPassword = {
   currentPassword: '',
@@ -155,7 +160,21 @@ onMounted(() => {
             newPasswordConfirmation: passwordValues.newPasswordConfirmation || undefined,
           };
 
-          await merge({ url: '/profile', payload, options: { t } });
+          const updated: Data.User = await merge<Data.User>({
+            url: '/profile',
+            payload,
+            options: { t },
+          });
+
+          if (page.props.user && updated) {
+            page.props.user = {
+              ...page.props.user,
+              fullName: updated.fullName,
+              email: updated.email,
+              updatedAt: updated.updatedAt,
+            } as Data.User;
+          }
+
           formPassword.value?.reset();
           toast.success(t('app.profile.successSave'));
         } catch (msg) {

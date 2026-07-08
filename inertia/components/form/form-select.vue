@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+import { Field } from 'vee-validate';
 import { inject } from 'vue';
 import { FormError, selectProps } from './form.types.js';
 import Base from './control.vue';

@@ -1,4 +1,5 @@
 import Setting from '#models/setting';
+import SettingsTransformer from '#transformers/settings_transformer';
 import { updateSettingValidator } from '#validators/setting';
 import type { HttpContext } from '@adonisjs/core/http';
 
@@ -7,7 +8,7 @@ export default class SettingsController {
     const settings = await Setting.query().where('user_id', auth.user!.id).firstOrFail();
 
     return inertia.render('settings', {
-      settings: settings.toJSON(),
+      settings: SettingsTransformer.transform(settings),
     });
   }
 
@@ -24,6 +25,6 @@ export default class SettingsController {
 
     await settings.save();
 
-    return response.ok({ data: settings });
+    return response.ok({ data: SettingsTransformer.transform(settings) });
   }
 }

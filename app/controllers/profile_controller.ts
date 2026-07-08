@@ -7,9 +7,12 @@ import User from '#models/user';
 export default class UserProfileController {
   async index({ auth, inertia }: HttpContext) {
     const user = await User.query().where('id', auth.user!.id).firstOrFail();
+    const userData = user.toJSON() as Record<string, unknown>;
+
+    userData.fullName = userData.fullName ?? '';
 
     return inertia.render('profile', {
-      user: user.toJSON(),
+      user: userData,
     });
   }
 

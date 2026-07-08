@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import { Field } from 'vee-validate';
 import { FormError, inputProps } from './form.types.js';
 import { inject, ref } from 'vue';
 import Base from './control.vue';

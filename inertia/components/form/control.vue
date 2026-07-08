@@ -12,6 +12,7 @@
 </template>
 
 <script setup lang="ts">
+import { ErrorMessage } from 'vee-validate';
 import { baseControlProps } from './form.types';
 const props = defineProps(baseControlProps);
 </script>
