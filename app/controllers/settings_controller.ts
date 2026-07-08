@@ -1,7 +1,12 @@
 import Setting from '#models/setting';
 import SettingsTransformer from '#transformers/settings_transformer';
 import { updateSettingValidator } from '#validators/setting';
+import i18nManager from '@adonisjs/i18n/services/main';
 import type { HttpContext } from '@adonisjs/core/http';
+
+function pickUiMessages(messages: Record<string, string>) {
+  return Object.fromEntries(Object.entries(messages).filter(([key]) => key.startsWith('app.')));
+}
 
 export default class SettingsController {
   async index({ auth, inertia }: HttpContext) {
@@ -25,6 +30,14 @@ export default class SettingsController {
 
     await settings.save();
 
-    return response.ok({ data: SettingsTransformer.transform(settings) });
+    const newI18n = i18nManager.locale(payload.locale);
+
+    return response.ok({
+      data: {
+        settings: SettingsTransformer.transform(settings),
+        locale: payload.locale,
+        messages: pickUiMessages(newI18n.localeTranslations as Record<string, string>),
+      },
+    });
   }
 }

@@ -6,10 +6,15 @@ type Dict = Record<string, string>;
 type TranslationParam = string | number;
 
 export function useI18n() {
-  const page = usePage<Data.SharedProps & { locale?: string; messages?: Dict }>();
+  const page = usePage<
+    Data.SharedProps & { locale?: string; messages?: Dict; allMessages?: Record<string, Dict> }
+  >();
 
   const locale = computed(() => page.props.locale ?? 'en-US');
-  const messages = computed(() => (page.props.messages ?? {}) as Dict);
+  const allMessages = computed(() => (page.props.allMessages ?? {}) as Record<string, Dict>);
+  const messages = computed<Dict>(
+    () => allMessages.value[locale.value] ?? page.props.messages ?? {},
+  );
 
   const t = (key: string, params: TranslationParam[] = []) => {
     let message = messages.value[key] ?? key;

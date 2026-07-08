@@ -3,6 +3,7 @@ import type { NextFn } from '@adonisjs/core/types/http';
 import i18nManager from '@adonisjs/i18n/services/main';
 import UserTransformer from '#transformers/user_transformer';
 import BaseInertiaMiddleware from '@adonisjs/inertia/inertia_middleware';
+import config from '@adonisjs/core/services/config';
 
 function pickUiMessages(messages: Record<string, string>) {
   return Object.fromEntries(Object.entries(messages).filter(([key]) => key.startsWith('app.')));
@@ -18,6 +19,14 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
     const i18n =
       'i18n' in ctx && ctx.i18n ? ctx.i18n : i18nManager.locale(i18nManager.defaultLocale);
 
+    const supportedLocales = config.get('i18n.supportedLocales', ['en-US', 'pt-BR']) as string[];
+    const allMessages: Record<string, Record<string, string>> = {};
+    for (const locale of supportedLocales) {
+      allMessages[locale] = pickUiMessages(
+        i18nManager.locale(locale).localeTranslations as Record<string, string>,
+      );
+    }
+
     return {
       errors: ctx.inertia.always(this.getValidationErrors(ctx)),
       flash: ctx.inertia.always({
@@ -28,6 +37,7 @@ export default class InertiaMiddleware extends BaseInertiaMiddleware {
       messages: ctx.inertia.always(
         pickUiMessages(i18n.localeTranslations as Record<string, string>),
       ),
+      allMessages: ctx.inertia.always(allMessages),
       timezone: ctx.inertia.always(ctx.userTimezone ?? 'UTC'),
       user: ctx.inertia.always(auth?.user ? UserTransformer.transform(auth.user) : undefined),
     };

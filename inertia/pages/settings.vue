@@ -9,18 +9,18 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Data } from '@generated/data';
 import { languageOptions, currencyOptions, timezoneOptions } from '~/helpers/app.options';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { merge, Payload } from '~/helpers/app.helper';
 import { SelectOption } from '~/components/form/form.types';
+import { toast } from 'vue-sonner';
 import { useAppStore } from '~/stores/app.store';
 import { useI18n } from '~/lib/i18n';
 import { usePage } from '@inertiajs/vue3';
 import Form from '~/components/form/form.vue';
 import Panel from '~/components/panel.vue';
 import SelectForm from '~/components/form/form-select.vue';
-import { toast } from 'vue-sonner';
-import { merge, Payload } from '~/helpers/app.helper';
 
 const { t } = useI18n();
 const { setTitle, clearTitle, setButtons, clearButtons, startLoading, stopLoading } = useAppStore();
@@ -41,9 +41,11 @@ const initValues: Pick<Data.Settings, 'locale' | 'currency' | 'timezone'> = {
   timezone: timezone,
 };
 
-onMounted(() => {
-  setTitle(t('app.settings.title'));
+const pageTitle = computed(() => t('app.settings.title'));
 
+watch(pageTitle, setTitle, { immediate: true });
+
+onMounted(() => {
   setButtons([
     {
       refId: 'save-settings',
@@ -64,23 +66,33 @@ onMounted(() => {
             timezone: values.timezone,
           };
 
-          const updated: Data.Settings = await merge<Data.Settings>({
+          const updated = await merge<{
+            settings: Data.Settings;
+            locale: string;
+            messages: Record<string, string>;
+          }>({
             url: '/settings',
             payload,
             options: { t },
           });
 
-          if (page.props.settings && updated) {
-            page.props.settings = {
-              ...page.props.settings,
-              locale: updated.locale,
-              currency: updated.currency,
-              timezone: updated.timezone,
-              updatedAt: updated.updatedAt,
-            } as Data.Settings;
+          if (updated) {
+            if (page.props.settings && updated.settings) {
+              page.props.settings = {
+                ...page.props.settings,
+                locale: updated.settings.locale,
+                currency: updated.settings.currency,
+                timezone: updated.settings.timezone,
+                updatedAt: updated.settings.updatedAt,
+              } as Data.Settings;
+            }
+
+            if (updated.locale && updated.messages) {
+              page.props.locale = updated.locale;
+              page.props.messages = updated.messages;
+            }
           }
 
-          // TODO: precisamos achar um jeito de atualizar o sistema, pois se mudarmos o idioma tem que refletir essa mudança
           toast.success(t('app.settings.successSave'));
         } catch (msg) {
           toast.error(typeof msg === 'string' ? msg : t('app.terms.error_unexpected'));
